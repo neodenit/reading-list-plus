@@ -1,0 +1,232 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Entity;
+using System.Linq;
+using System.Net;
+using System.Web;
+using System.Web.Mvc;
+using IncrementalReading.Models;
+using ReadingListPlus.Models;
+using Microsoft.AspNet.Identity;
+using Ionic.Zip;
+using System.IO;
+
+namespace ReadingListPlus.Controllers
+{
+    [Authorize]
+#if !DEBUG
+[RequireHttps]
+#endif
+    public class DecksController : Controller
+    {
+        private ApplicationDbContext db = new ApplicationDbContext();
+
+        // GET: Decks
+        public ActionResult Index()
+        {
+            var items = GetUserDecks();
+
+            return View(items.ToList());
+        }
+
+        private IQueryable<Deck> GetUserDecks()
+        {
+            var userID = User.Identity.GetUserId();
+            var items = db.Decks.Where(item => item.OwnerID == userID);
+            return items;
+        }
+
+        public ActionResult Export()
+        {
+            var decks = GetUserDecks().ToList();//tolist?
+
+            return new JsonResult { Data = decks, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+        }
+
+        public ActionResult Test()
+        {
+            //var decks = GetUserDecks().ToList();//tolist?
+            //var json = new JsonResult { Data = decks, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+
+            //return Enumerable.Repeat(json, 2);
+
+            var decks = GetUserDecks().ToList();//tolist?
+
+            using (var zip = new ZipFile())
+            {
+                foreach (var deck in decks)
+                {
+                    foreach (var card in deck.Cards)
+                    {
+                        zip.AddEntry(String.Format(@"{0}\{1} - {2}.txt", deck.Title, card.Position, card.Title), card.Text);
+                    }
+                }
+                using (var outputStream = new MemoryStream())
+                {
+                    zip.Save(outputStream);
+
+                    outputStream.Position = 0;//???
+
+                    return File(outputStream, "application/zip", "Export.zip");
+                }
+            }
+
+        }
+
+        // GET: Decks/Details/5
+        public ActionResult Details(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            else
+            {
+                return RedirectToAction("Read", "ReadingCard", new { DeckID = id });
+            }
+        }
+
+        // GET: Decks/Create
+        public ActionResult Create()
+        {
+            var deck = new Deck { Coeff = 2, StartDelay = 8 }; //TODO: config
+
+            return View(deck);
+        }
+
+        // POST: Decks/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create([Bind(Include = "ID,Title,Type,StartDelay,Coeff")] Deck deck)//todo id
+        {
+            if (ModelState.IsValid)
+            {
+                deck.OwnerID = User.Identity.GetUserId();
+                
+                db.Decks.Add(deck);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+
+            return View(deck);
+        }
+
+        // GET: Decks/Edit/5
+        public ActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Deck deck = db.Decks.Find(id);
+            if (deck == null)
+            {
+                return HttpNotFound();
+            }
+            return View(deck);
+        }
+
+        // POST: Decks/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        //public ActionResult Edit([Bind(Include = "ID,Title,OwnerID,Type,StartDelay,Coeff")] Deck deck)//TODO get rid of OwnerID and Type
+        public ActionResult Edit([Bind(Include = "ID,Title,StartDelay,Coeff")] Deck deck)//TODO get rid of OwnerID and Type
+        {
+            if (ModelState.IsValid)
+            {
+#if false
+                db.Entry(deck).State = EntityState.Modified;
+#else
+                var dbDeck = db.Decks.Find(deck.ID);
+
+                dbDeck.Title = deck.Title;
+                dbDeck.StartDelay = deck.StartDelay;
+                dbDeck.Coeff = deck.Coeff;
+#endif
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return View(deck);
+            }
+        }
+
+        public ActionResult Read(int? id)
+        {
+            //TODO: userid
+
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            Deck deck = db.Decks.Find(id);
+
+            if (deck == null)
+            {
+                return HttpNotFound();
+            }
+            else
+            {
+                if (deck.Cards.Any())
+                {
+                    var card =
+                        deck.Cards
+                        .OrderBy(item => item.Position)//todo
+                        .First();
+
+                    //ViewBag.Markup = TextConverter.GetHtml(card.Text);
+
+                    //return View(card);
+                    return RedirectToAction("Read", "Cards", new { id = card.ID }); //todo id null
+                }
+                else
+                {
+                    //return View(new Card { DeckID = DeckID, ID = -1 });
+                    return RedirectToAction("Read", "Cards", new { DeckID = id.Value }); //todo id null
+                }
+            }
+        }
+
+        // GET: Decks/Delete/5
+        public ActionResult Delete(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Deck deck = db.Decks.Find(id);
+            if (deck == null)
+            {
+                return HttpNotFound();
+            }
+            return View(deck);
+        }
+
+        // POST: Decks/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            Deck deck = db.Decks.Find(id);
+            db.Decks.Remove(deck);
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+    }
+}

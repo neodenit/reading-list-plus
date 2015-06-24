@@ -1,0 +1,92 @@
+﻿@model ReadingListPlus.Web.Models.Card
+
+@{
+    ViewBag.Title = "Details";
+}
+
+@section scripts {
+    <script src="~/Scripts/App/Cards.js"></script>
+}
+
+<h2>
+    @Html.DisplayFor(model => model.Title)
+</h2>
+
+@using (Html.BeginForm("Details", "Cards", FormMethod.Post, new { id = "myForm" }))
+{
+    <fieldset>
+        @Html.HiddenFor(model => model.ID)
+        @Html.HiddenFor(model => model.Selection)
+        @Html.HiddenFor(model => model.NextAction)
+        @Html.HiddenFor(model => model.DeckID)
+        @Html.HiddenFor(model => model.IsNew)
+
+        @if (Model.ID == -1)
+        {
+            <div class="topactions">
+                @Html.ActionLink("Add card", "Create", new { DeckID = Model.DeckID }) |
+                <span>Scale:</span>
+                <select>
+                    @foreach (var item in Enumerable.Range(1, 10).Select(n => n * 50).Concat(Enumerable.Range(6, 5).Select(n2 => n2 * 100)))
+                    {
+                        <option value="@(item)">@(item)%</option>
+                    }
+                </select>
+            </div>
+            <hr />
+            <p>
+                It's lonely here.
+            </p>
+        }
+        else
+        {
+            <p>
+                <div class="topactions">
+                    <a href="#" id="ScrollDown">Scroll down</a> |
+                    @Html.ActionLink("Add card", "Create", new { DeckID = Model.DeckID }) |
+                    @Html.ActionLink("Delete card", "Delete", new { id = Model.ID }) |
+                    @Html.ActionLink("Edit card", "Edit", new { id = Model.ID }) |
+                    @Html.ActionLink("Index", "Index", new { DeckID = Model.DeckID }) |
+                    <span>Scale:</span>
+                    <select>
+                        @foreach (var item in Enumerable.Range(1, 10).Select(n => n * 50).Concat(Enumerable.Range(6, 5).Select(n2 => n2 * 100)))
+                        {
+                            <option value="@(item)">@(item)%</option>
+                        }
+                    </select>
+                </div>
+                <hr />
+                <div id="scroll">
+                    <div class="actions">
+                        <a href="#" id="ScrollUp">Scroll up</a> |
+                        <a href="#" id="Extract" class="act">Extract</a> |
+                        @if (false)
+                        {
+                            <a href="#" id="Highlight" class="act">Highlight</a><text> |</text>
+                        }
+                        <a href="#" id="Cloze" class="act">Cloze</a> |
+                        <a href="#" id="DeleteRegion" class="act">Drop</a> |
+                        <a href="#" id="ExtractCloze" class="act">Extract Cloze</a> |
+                        <span>New priority:</span>
+                        @Html.ActionLink("High", "PostponeSRS", new { ID = Model.ID, Priority = "High" }) |
+                        @Html.ActionLink("Medium", "PostponeSRS", new { ID = Model.ID, Priority = "Medium" }) |
+                        @Html.ActionLink("Low", "PostponeSRS", new { ID = Model.ID, Priority = "Low" })
+                    </div>
+                </div>
+            </p>
+
+            if (!Model.Url.IsEmpty())
+            {
+                @Html.DisplayFor(model => model.Url)
+            }
+
+            <p>
+                <div id="article">
+                    @Html.Raw(ViewBag.Markup)
+                </div>
+            </p>
+
+        }
+
+    </fieldset>
+}
