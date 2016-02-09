@@ -10,6 +10,8 @@ namespace ReadingListPlus.Web.Models
 {
     public class ReadingListPlusContext : DbContext
     {
+        public ReadingListPlusContext() : base("DefaultConnection") { }
+
         public System.Data.Entity.DbSet<ReadingListPlus.Web.Models.Deck> Decks { get; set; }
 
         public System.Data.Entity.DbSet<ReadingListPlus.Web.Models.Card> Cards { get; set; }
