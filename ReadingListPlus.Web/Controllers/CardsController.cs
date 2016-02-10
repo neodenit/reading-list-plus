@@ -148,7 +148,7 @@ namespace ReadingListPlus.Web.Controllers
 
                     await db.SaveChangesAsync();
 
-                    return RedirectToAction("Details", "Decks", new { id = card.DeckID });
+                    return RedirectToDeckDetails(card.DeckID);
                 }
             }
             else
@@ -222,7 +222,7 @@ namespace ReadingListPlus.Web.Controllers
             }
             else if (card.Position != 0)
             {
-                return RedirectToAction("Details", "Deck", new { id = card.DeckID });
+                return RedirectToDeckDetails(card.DeckID);
             }
             else
             {
@@ -244,7 +244,7 @@ namespace ReadingListPlus.Web.Controllers
 
                 await db.SaveChangesAsync();
 
-                return RedirectToAction("Details", "Deck", new { id = card.DeckID });
+                return RedirectToDeckDetails(card.DeckID);
             }
         }
 
@@ -265,7 +265,7 @@ namespace ReadingListPlus.Web.Controllers
 
                 await db.SaveChangesAsync();
 
-                return RedirectToAction("Details", "Deck", new { id = card.DeckID });
+                return RedirectToDeckDetails(card.DeckID);
             }
         }
 
@@ -285,7 +285,7 @@ namespace ReadingListPlus.Web.Controllers
 
                 await db.SaveChangesAsync();
 
-                return RedirectToAction("Details", "Deck", new { id = card.DeckID });
+                return RedirectToDeckDetails(card.DeckID);
             }
         }
 
@@ -299,7 +299,7 @@ namespace ReadingListPlus.Web.Controllers
             }
             else if (card.Text == text)
             {
-                return RedirectToAction("Details", "Deck", new { id = card.DeckID });
+                return RedirectToDeckDetails(card.DeckID);
             }
             else
             {
@@ -337,7 +337,7 @@ namespace ReadingListPlus.Web.Controllers
 
                 await db.SaveChangesAsync();
 
-                return RedirectToAction("Details", "Deck", new { id = card.DeckID });
+                return RedirectToDeckDetails(card.DeckID);
             }
         }
         #endregion
@@ -382,7 +382,12 @@ namespace ReadingListPlus.Web.Controllers
 
             await db.SaveChangesAsync();
 
-            return RedirectToAction("Details", "Deck", new { id = card.DeckID });
+            return RedirectToDeckDetails(card.DeckID);
+        }
+
+        private ActionResult RedirectToDeckDetails(int deckID)
+        {
+            return RedirectToAction("Details", "Decks", new { id = deckID });
         }
 
         protected override void Dispose(bool disposing)
