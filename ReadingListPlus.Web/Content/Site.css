@@ -22,3 +22,41 @@ select,
 textarea {
     max-width: 600px;
 }
+
+.extract {
+    color: black;
+    background-color: cyan;
+}
+
+.extractselected {
+    color: black;
+    background-color: lime;
+}
+
+.cloze {
+    color: black;
+    background-color: black;
+    display: inline-block;
+    text-align: center;
+}
+
+.clozeselected {
+    color: black;
+    background-color: lime;
+    display: inline-block;
+    text-align: center;
+}
+
+.highlight {
+    color: black;
+    background-color: yellow;
+}
+
+.highlightselected {
+    color: black;
+    background-color: lime;
+}
+
+.actions {
+    background-color: white;
+}
