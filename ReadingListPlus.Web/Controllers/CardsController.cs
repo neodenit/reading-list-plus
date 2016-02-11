@@ -93,10 +93,12 @@ namespace ReadingListPlus.Web.Controllers
         {
             switch (card.NextAction)
             {
-                case "Cloze":
-                    return await Cloze(card.ID, card.Selection);
                 case "Extract":
                     return await Extract(card.ID, card.Selection);
+                case "Cloze":
+                    return await Cloze(card.ID, card.Selection);
+                case "Highlight":
+                    return await Highlight(card.ID, card.Selection);
                 case "DeleteRegion":
                     return await DeleteRegion(card.ID, card.Selection);
                 default:
@@ -248,7 +250,6 @@ namespace ReadingListPlus.Web.Controllers
             }
         }
 
-        [Obsolete]
         public async Task<ActionResult> Highlight(int ID, string text)
         {
             var card = await db.Cards.FindAsync(ID);
