@@ -1,5 +1,8 @@
 ﻿$(function () {
     var actionsHeight = $('.actions').outerHeight(true);
+    var topBar = $('#top-bar');
+    var topBarHeight = topBar.height();
+    var headerHeight = $('#scroll').offset().top;
 
     var maxClozeWidth = Math.max.apply(null, $('.cloze').map(function () {
         return $(this).width();
@@ -10,8 +13,6 @@
     $('#ScrollDown').click(function () {
         if ($('.extract').length) {
             DropSelections();
-
-            var headerHeight = $('#scroll').offset().top;
 
             $('.extract:last').before('<span class="top" />');
 
@@ -105,17 +106,17 @@
         }
     });
 
-    $(window).scroll(function () {
-        var headerHeight = $('#scroll').offset().top;
-
+    var throttledScroll = $.throttle(100, function () {
         if ($(window).scrollTop() >= headerHeight) {
             $('.actions').css('position', 'fixed');
-            $('.actions').css('top', 0);
+            $('.actions').css('top', topBarHeight);
         }
         else {
             $('.actions').css('position', 'relative');
-        }
+        };
     });
+
+    $(window).scroll(throttledScroll);
 });
 
 function ReplaceBR(text) {
