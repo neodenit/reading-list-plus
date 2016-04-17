@@ -2,7 +2,7 @@
     var actionsHeight = $('.actions').outerHeight(true);
     var topBar = $('#top-bar');
     var topBarHeight = topBar.height();
-    var headerHeight = $('#scroll').offset().top;
+    var headerHeight = $('#scrollArea').offset().top;
 
     var maxClozeWidth = Math.max.apply(null, $('.cloze').map(function () {
         return $(this).width();
