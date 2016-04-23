@@ -233,16 +233,7 @@ namespace ReadingListPlus.Web.Controllers
 
                 var priority = Scheduler.ParsePriority(Priority);
 
-                if (deck.Type != DeckType.Spaced)
-                {
-                    Scheduler.ChangeFirstCardPosition(deck, deckCards, card, priority);
-                }
-                else
-                {
-                    var delay = Scheduler.Mapper[priority];
-
-                    Scheduler.PromoteCard(deck, deckCards, delay);
-                }
+                Scheduler.ChangeFirstCardPosition(deck, deckCards, card, priority);
 
                 await db.SaveChangesAsync();
 

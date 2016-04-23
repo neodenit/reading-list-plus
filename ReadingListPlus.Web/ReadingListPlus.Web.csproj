@@ -212,7 +212,6 @@
     <Content Include="Scripts\App\Common.js" />
     <Content Include="Scripts\App\CardCreate.js" />
     <Content Include="Scripts\App\TextConverter.js" />
-    <Content Include="Scripts\App\DeckCreate.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
