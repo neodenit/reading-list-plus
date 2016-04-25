@@ -32,9 +32,9 @@ namespace ReadingListPlus.Web.Models
 
         public bool IsAuthorized(IPrincipal user)
         {
-            var userID = user.Identity.GetUserId();
+            var userName = user.Identity.Name;
 
-            return OwnerID == userID;
+            return OwnerID == userName;
         }
     }
 
@@ -73,9 +73,9 @@ namespace ReadingListPlus.Web.Models
 
         public bool IsAuthorized(IPrincipal user)
         {
-            var userID = user.Identity.GetUserId();
+            var userName = user.Identity.Name;
 
-            return Deck.OwnerID == userID;
+            return Deck.OwnerID == userName;
         }
     }
 }

@@ -83,7 +83,7 @@ namespace ReadingListPlus.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                deck.OwnerID = User.Identity.GetUserId();
+                deck.OwnerID = User.Identity.Name;
 
                 db.Decks.Add(deck);
 

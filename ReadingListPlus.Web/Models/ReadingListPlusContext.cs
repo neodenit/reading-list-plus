@@ -18,8 +18,8 @@ namespace ReadingListPlus.Web.Models
 
         public IQueryable<Deck> GetUserDecks(IPrincipal user)
         {
-            var userID = user.Identity.GetUserId();
-            var items = Decks.Where(item => item.OwnerID == userID);
+            var userName = user.Identity.Name;
+            var items = Decks.Where(item => item.OwnerID == userName);
 
             return items;
         }
