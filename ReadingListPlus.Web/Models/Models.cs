@@ -47,7 +47,6 @@ namespace ReadingListPlus.Web.Models
         [ScriptIgnore(ApplyToOverrides = true)]
         public virtual Deck Deck { get; set; }
 
-        [Required]
         public string Title { get; set; }
 
         [Required]
