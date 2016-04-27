@@ -182,6 +182,10 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201604271715245_Make title not required.cs" />
+    <Compile Include="Migrations\201604271715245_Make title not required.Designer.cs">
+      <DependentUpon>201604271715245_Make title not required.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs">
       <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
     </Compile>
@@ -295,6 +299,11 @@
       <Project>{2f5faa65-d83a-47d4-abea-f2693dae25a3}</Project>
       <Name>ReadingListPlus.Reading</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201604271715245_Make title not required.resx">
+      <DependentUpon>201604271715245_Make title not required.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
