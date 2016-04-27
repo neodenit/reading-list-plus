@@ -303,11 +303,9 @@ namespace ReadingListPlus.Web.Controllers
 
                 var cards = card.Deck.Cards;
 
-                var title = card.Text.Length > 140 ? string.Format("{0}...", card.Text.Substring(0, 140)) : card.Text;
-
                 var selection = TextConverter.GetSelection(text);
 
-                var newCard = new Card { DeckID = card.DeckID, Title = title, Url = card.Url, ParentCardID = card.ID, Text = selection };
+                var newCard = new Card { DeckID = card.DeckID, Url = card.Url, ParentCardID = card.ID, Text = selection };
 
                 return View("Create", newCard);
             }
