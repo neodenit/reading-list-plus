@@ -52,32 +52,26 @@
 
     $('.act').click(function () {
         if (this.id == 'Extract') {
-            var htmlText0 = $('#article').html();
+            var newNode = createSelectionSpan();
 
-            var isValid = checkSelection();
+            surroundSelection(newNode);
 
-            if (isValid) {
-                var newNode = createSelectionSpan();
+            var htmlText1 = $('#article').html();
 
-                surroundSelection(newNode);
+            clean();
 
-                var htmlText1 = $('#article').html();
+            var htmlText2 = $('#article').html();
 
-                clean();
+            var selection = getSelectionSpan();
 
-                var htmlText2 = $('#article').html();
+            var isSelectionExists = checkForExistence(selection);
 
-                var selection = getSelectionSpan();
+            if (isSelectionExists) {
+                var htmlText = $('#article').html();
+                var convertedText = HtmlToText(htmlText);
+                var trimmedText = convertedText.trim();
 
-                var isSelectionExists = checkForExistence(selection);
-
-                if (isSelectionExists) {
-                    var htmlText = $('#article').html();
-                    var convertedText = HtmlToText(htmlText);
-                    var trimmedText = convertedText.trim();
-
-                    SubmitSelection(trimmedText, this.id)
-                }
+                SubmitSelection(trimmedText, this.id)
             }
         } else if (this.id == 'DeleteRegion') {
             if ($('.highlightselected').length) {
