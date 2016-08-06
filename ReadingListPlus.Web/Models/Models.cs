@@ -77,4 +77,10 @@ namespace ReadingListPlus.Web.Models
             return Deck.OwnerID == userName;
         }
     }
+
+    public class CreateCardViewModel : Card
+    {
+        [Required]
+        public Scheduler.Priority? Priority { get; set; }
+    }
 }

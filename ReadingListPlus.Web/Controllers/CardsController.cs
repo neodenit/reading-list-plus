@@ -107,19 +107,19 @@ namespace ReadingListPlus.Web.Controllers
         }
 
         // GET: Cards/Create/5
-        public ActionResult Create(int? DeckID)
+        public ActionResult Create(int? DeckID, string text)
         {
             if (DeckID == null)
             {
                 ViewBag.DeckID = new SelectList(db.GetUserDecks(User), "ID", "Title");
 
-                var card = new Card();
+                var card = new CreateCardViewModel();
 
                 return View(card);
             }
             else
             {
-                var card = new Card { DeckID = DeckID.Value };
+                var card = new CreateCardViewModel { DeckID = DeckID.Value, Text = text };
 
                 return View(card);
             }
@@ -128,7 +128,7 @@ namespace ReadingListPlus.Web.Controllers
         // POST: Cards/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "ID,DeckID,Title,Text,NextAction")] Card card)
+        public async Task<ActionResult> Create([Bind(Include = "ID,DeckID,Title,Text,NextAction")] CreateCardViewModel card)
         {
             card.Text = card.Text.Trim();
 
@@ -142,9 +142,7 @@ namespace ReadingListPlus.Web.Controllers
                 }
                 else
                 {
-                    var priority = Scheduler.ParsePriority(card.NextAction);
-
-                    Scheduler.PrepareForAdding(deck, deck.Cards, card, priority);
+                    Scheduler.PrepareForAdding(deck, deck.Cards, card, card.Priority.Value);
 
                     db.Cards.Add(card);
 
