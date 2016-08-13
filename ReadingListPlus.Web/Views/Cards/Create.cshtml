@@ -1,16 +1,16 @@
 ﻿@model ReadingListPlus.Web.Models.CreateCardViewModel
 
-    @{
-        ViewBag.Title = "Create";
-    }
+@{
+    ViewBag.Title = "Create";
+}
 
-    <h2>Create</h2>
+<h2>Create</h2>
 
-    @using (Html.BeginForm("Create", "Cards", FormMethod.Post, new { @class = "form-horizontal" }))
-    {
-        @Html.AntiForgeryToken()
+@using (Html.BeginForm("Create", "Cards", FormMethod.Post, new { @class = "form-horizontal" }))
+{
+    @Html.AntiForgeryToken()
 
-        <h4>Card</h4>
+    <h4>Card</h4>
         <hr />
 
         @Html.HiddenFor(model => model.NextAction)
@@ -18,10 +18,10 @@
 
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-        @if (false)
+        if (ViewBag.DeckID != null)
         {
             <div class="form-group">
-                @Html.LabelFor(model => model.DeckID, "DeckID", htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.DeckID, "Deck", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
                     @Html.DropDownList("DeckID", null, htmlAttributes: new { @class = "form-control" })
                     @Html.ValidationMessageFor(model => model.DeckID, "", new { @class = "text-danger" })
@@ -67,13 +67,13 @@
                 <input type="submit" value="Create" class="btn btn-default" />
             </div>
         </div>
-    }
+}
 
-    <div>
-        @Html.ActionLink("Back", "Details", new { DeckID = Model.DeckID })
-    </div>
+<div>
+    @Html.ActionLink("Back", "Details", new { DeckID = Model.DeckID })
+</div>
 
-    @section Scripts {
-        @Scripts.Render("~/bundles/jqueryval")
-        <script src="~/Scripts/App/CardCreate.js"></script>
-    }
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/App/CardCreate.js"></script>
+}
