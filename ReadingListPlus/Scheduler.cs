@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 
 namespace ReadingListPlus
 {
+    public enum Priority
+    {
+        Low,
+        Medium,
+        High,
+    }
+
     public static class Scheduler
     {
         private static readonly Random Random = new Random();
-
-        public enum Priority
-        {
-            Low,
-            Medium,
-            High,
-        }
 
         public static Priority ParsePriority(string text)
         {

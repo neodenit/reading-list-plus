@@ -81,6 +81,6 @@ namespace ReadingListPlus.Web.Models
     public class CreateCardViewModel : Card
     {
         [Required]
-        public Scheduler.Priority? Priority { get; set; }
+        public Priority? Priority { get; set; }
     }
 }

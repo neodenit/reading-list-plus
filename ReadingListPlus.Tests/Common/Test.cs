@@ -19,7 +19,7 @@ namespace ReadingListPlus.Tests
                 try
                 {
                     Console.WriteLine("{0}:", i);
-                    Scheduler.GetStaticPosition(Scheduler.Priority.Low, i);
+                    Scheduler.GetStaticPosition(Priority.Low, i);
                 }
                 catch (Exception)
                 {
