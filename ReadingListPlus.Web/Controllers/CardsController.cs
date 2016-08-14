@@ -303,7 +303,7 @@ namespace ReadingListPlus.Web.Controllers
 
                 var selection = TextConverter.GetSelection(text);
 
-                var newCard = new Card { DeckID = card.DeckID, Url = card.Url, ParentCardID = card.ID, Text = selection };
+                var newCard = new CreateCardViewModel { DeckID = card.DeckID, Url = card.Url, ParentCardID = card.ID, Text = selection };
 
                 return View("Create", newCard);
             }
