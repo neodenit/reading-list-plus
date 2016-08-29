@@ -89,18 +89,18 @@ namespace ReadingListPlus.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Details([Bind(Include = "ID, NextAction, Selection")] Card card)
+        public Task<ActionResult> Details([Bind(Include = "ID, NextAction, Selection")] Card card)
         {
             switch (card.NextAction)
             {
                 case "Extract":
-                    return await Extract(card.ID, card.Selection);
+                    return Extract(card.ID, card.Selection);
                 case "Cloze":
-                    return await Cloze(card.ID, card.Selection);
+                    return Cloze(card.ID, card.Selection);
                 case "Highlight":
-                    return await Highlight(card.ID, card.Selection);
+                    return Highlight(card.ID, card.Selection);
                 case "DeleteRegion":
-                    return await DeleteRegion(card.ID, card.Selection);
+                    return DeleteRegion(card.ID, card.Selection);
                 default:
                     throw new Exception();
             }
@@ -287,12 +287,10 @@ namespace ReadingListPlus.Web.Controllers
             {
                 return new HttpUnauthorizedResult();
             }
-            else if (card.Text == text)
-            {
-                return RedirectToDeckDetails(card.DeckID);
-            }
             else
             {
+                ModelState.Clear();
+
                 var newText = TextConverter.ReplaceSelectionWithExtract(text);
 
                 card.Text = newText;
