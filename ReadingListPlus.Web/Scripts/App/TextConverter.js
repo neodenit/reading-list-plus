@@ -1,6 +1,6 @@
-﻿var spanRegex = /<span .*?class="(\w+)".*?>(.+?)<\/span>/gi;
+﻿var spanRegex = /<span class="(\w+)">([\s\S]+?)<\/span>/gi;
 
-var spanStartRegex = /<span .*?class="\w+".*?>/gi;
+var spanStartRegex = /<span class="\w+">/gi;
 
 var spanEndRegex = /<\/span>/gi;
 
