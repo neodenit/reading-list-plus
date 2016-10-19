@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using ReadingListPlus.Web.Models;
+using Boilerpipe.Net.Extractors;
+using System.IO;
 
 namespace ReadingListPlus.Web.Controllers
 {
@@ -113,7 +115,7 @@ namespace ReadingListPlus.Web.Controllers
             {
                 ViewBag.DeckID = new SelectList(db.GetUserDecks(User), "ID", "Title");
 
-                var card = new CreateCardViewModel();
+                var card = new CreateCardViewModel { Text = text };
 
                 return View(card);
             }
@@ -123,6 +125,22 @@ namespace ReadingListPlus.Web.Controllers
 
                 return View(card);
             }
+        }
+
+        public async Task<ActionResult> CreateFromUrl(string url)
+        {
+            ViewBag.DeckID = new SelectList(db.GetUserDecks(User), "ID", "Title");
+
+            var request = WebRequest.Create(url);
+            var responce = await request.GetResponseAsync();
+            var responseStream = responce.GetResponseStream();
+            var streamReader = new StreamReader(responseStream);
+
+            var text = ArticleExtractor.Instance.GetText(streamReader);
+            var formattedText = text.Replace("\n", Environment.NewLine + Environment.NewLine);
+            var card = new CreateCardViewModel { Text = formattedText, Url = url };
+
+            return View("Create", card);
         }
 
         // POST: Cards/Create
