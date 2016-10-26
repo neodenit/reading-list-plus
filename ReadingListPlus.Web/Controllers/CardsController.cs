@@ -136,7 +136,7 @@ namespace ReadingListPlus.Web.Controllers
             var responseStream = responce.GetResponseStream();
             var streamReader = new StreamReader(responseStream);
 
-            var text = ArticleExtractor.Instance.GetText(streamReader);
+            var text = DefaultExtractor.Instance.GetText(streamReader);
             var formattedText = text.Replace("\n", Environment.NewLine + Environment.NewLine);
             var card = new CreateCardViewModel { Text = formattedText, Url = url };
 
