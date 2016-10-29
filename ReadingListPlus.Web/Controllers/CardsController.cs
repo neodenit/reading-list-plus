@@ -131,12 +131,15 @@ namespace ReadingListPlus.Web.Controllers
         {
             ViewBag.DeckID = new SelectList(db.GetUserDecks(User), "ID", "Title");
 
-            var request = WebRequest.Create(url);
+            var urlParameter = Uri.EscapeDataString(url);
+            var fullUrl = $"https://boilerpipe-web.appspot.com/extract?url={urlParameter}&output=text";
+
+            var request = WebRequest.Create(fullUrl);
             var responce = await request.GetResponseAsync();
             var responseStream = responce.GetResponseStream();
             var streamReader = new StreamReader(responseStream);
 
-            var text = DefaultExtractor.Instance.GetText(streamReader);
+            var text = await streamReader.ReadToEndAsync();
             var formattedText = text.Replace("\n", Environment.NewLine + Environment.NewLine);
             var card = new CreateCardViewModel { Text = formattedText, Url = url };
 
