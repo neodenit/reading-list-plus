@@ -53,16 +53,18 @@ namespace ReadingListPlus
         }
 
         /// <summary>
-        /// Generates position in a range 1..max based on priority.
+        /// Generates position in a range 1..max based on priority. Returns 0 if max is 0.
         /// </summary>
         /// <param name="priority">Priority of the card.</param>
         /// <param name="max">Max position to return.</param>
         /// <returns>Position of the card.</returns>
         public static int GetRandomPosition(Priority priority, int max, bool verbose = false)
         {
-            Debug.Assert(max >= 1);
-
-            if (max == 1)
+            if (max == 0)
+            {
+                return 0;
+            }
+            else if (max == 1)
             {
                 return 1;
             }
