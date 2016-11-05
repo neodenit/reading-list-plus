@@ -38,16 +38,14 @@
         {
             <p>
                 <div class="topactions">
-                    <a href="#" id="ScrollDown">Scroll down</a> |
                     @Html.ActionLink("Add card", "Create", new { DeckID = Model.DeckID }) |
                     @Html.ActionLink("Delete card", "Delete", new { id = Model.ID }) |
                     @Html.ActionLink("Edit card", "Edit", new { id = Model.ID }) |
-                    @Html.ActionLink("Index", "Index", new { DeckID = Model.DeckID }) |
+                    @Html.ActionLink("Index", "Index", new { DeckID = Model.DeckID })
                 </div>
                 <hr />
                 <div id="scrollArea">
                     <div class="actions">
-                        <a href="#" id="ScrollUp">Scroll up</a> |
                         <a href="#" id="Extract" class="act">Extract</a> |
                         <a href="#" id="Highlight" class="act">Highlight</a> |
                         <a href="#" id="Cloze" class="act">Cloze</a> |
