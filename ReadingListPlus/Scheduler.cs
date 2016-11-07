@@ -31,7 +31,12 @@ namespace ReadingListPlus
                 GetStaticPosition(priority, maxNewPosition) :
                 GetRandomPosition(priority, maxNewPosition);
 
-            PrepareForAdding(deck, cards, card, position);
+            PrepareForAdding(cards, card, position);
+        }
+
+        public static void PrepareForDeletion(IEnumerable<ICard> cards, ICard card)
+        {
+            ExcludePosition(cards, card.Position);
         }
 
         public static void ShuffleNewCards(IEnumerable<ICard> cards)
@@ -43,11 +48,11 @@ namespace ReadingListPlus
 
         public static void ChangeFirstCardPosition(IDeck deck, IEnumerable<ICard> cards, ICard card, Priority priority)
         {
-            var maxNewPosition = GetMaxPosition(cards);
+            var maxPosition = GetMaxPosition(cards);
 
             var position = deck.Type == DeckType.Predictable ?
-                GetStaticPosition(priority, maxNewPosition) :
-                GetRandomPosition(priority, maxNewPosition);
+                GetStaticPosition(priority, maxPosition) :
+                GetRandomPosition(priority, maxPosition);
 
             ChangeFirstCardPosition(cards, card, position);
         }
@@ -161,13 +166,20 @@ namespace ReadingListPlus
             }
         }
 
-        private static void PrepareForAdding(IDeck deck, IEnumerable<ICard> cards, ICard card, int position)
+        private static void PrepareForAdding(IEnumerable<ICard> cards, ICard card, int position)
         {
             ReservePosition(cards, position);
 
             card.Position = position;
 
             card.IsNew = true;
+        }
+
+        private static void PrepareForDeletion(IEnumerable<ICard> cards, ICard card, int position)
+        {
+            ExcludePosition(cards, position);
+
+            card.Position = -1;
         }
 
         private static void ShuffleCards(IEnumerable<ICard> cards)
@@ -190,14 +202,14 @@ namespace ReadingListPlus
 
         private static void PrepareFirstCardMove(IEnumerable<ICard> cards, int newPosition)
         {
-            DecreasePositions(cards, newPosition);
+            var highPriorityCards = GetHighPriorityCards(cards, newPosition);
+
+            DecreasePositions(highPriorityCards, newPosition);
         }
 
         private static void IncreasePositions(IEnumerable<ICard> cards, int position)
         {
-            var more = from item in cards where item.Position >= position select item;
-
-            foreach (var item in more)
+            foreach (var item in cards)
             {
                 item.Position++;
             }
@@ -205,12 +217,30 @@ namespace ReadingListPlus
 
         private static void DecreasePositions(IEnumerable<ICard> cards, int position)
         {
-            var less = from item in cards where item.Position <= position select item;
-
-            foreach (var item in less)
+            foreach (var item in cards)
             {
                 item.Position--;
             }
+        }
+
+        private static IEnumerable<ICard> GetLowPriorityCards(IEnumerable<ICard> cards, int position)
+        {
+            return from item in cards where item.Position >= position select item;
+        }
+
+        private static IEnumerable<ICard> GetLowPriorityCardsExclusive(IEnumerable<ICard> cards, int position)
+        {
+            return from item in cards where item.Position > position select item;
+        }
+
+        private static IEnumerable<ICard> GetHighPriorityCards(IEnumerable<ICard> cards, int position)
+        {
+            return from item in cards where item.Position <= position select item;
+        }
+
+        private static IEnumerable<ICard> GetHighPriorityCardsExclusive(IEnumerable<ICard> cards, int position)
+        {
+            return from item in cards where item.Position < position select item;
         }
 
         private static int GetMaxNewPosition(IEnumerable<ICard> cards)
@@ -248,7 +278,16 @@ namespace ReadingListPlus
 
         private static void ReservePosition(IEnumerable<ICard> cards, int position)
         {
-            IncreasePositions(cards, position);
+            var lowPriorityCards = GetLowPriorityCards(cards, position);
+
+            IncreasePositions(lowPriorityCards, position);
+        }
+
+        private static void ExcludePosition(IEnumerable<ICard> cards, int position)
+        {
+            var lowPriorityCards = GetLowPriorityCardsExclusive(cards, position);
+
+            DecreasePositions(lowPriorityCards, position);
         }
     }
 }

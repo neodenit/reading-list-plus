@@ -378,12 +378,16 @@ namespace ReadingListPlus.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            var card = await db.Cards.FindAsync(id);
+            var card = await db.Cards.Include(c => c.Deck.Cards).SingleAsync(c => c.ID == id);
 
             if (!card.IsAuthorized(User))
             {
                 return new HttpUnauthorizedResult();
             }
+
+            var cards = card.Deck.Cards;
+
+            Scheduler.PrepareForDeletion(cards, card);
 
             db.Cards.Remove(card);
 
