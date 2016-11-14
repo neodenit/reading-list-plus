@@ -101,6 +101,8 @@ namespace ReadingListPlus.Web.Controllers
                     return Cloze(card.ID, card.Selection);
                 case "Highlight":
                     return Highlight(card.ID, card.Selection);
+                case "Bookmark":
+                    return Bookmark(card.ID, card.Selection);
                 case "DeleteRegion":
                     return DeleteRegion(card.ID, card.Selection);
                 default:
@@ -312,7 +314,7 @@ namespace ReadingListPlus.Web.Controllers
             {
                 ModelState.Clear();
 
-                var newText = TextConverter.ReplaceSelectionWithExtract(text);
+                var newText = TextConverter.ReplaceTag(text, "selection", "extract");
 
                 card.Text = newText;
 
@@ -328,6 +330,28 @@ namespace ReadingListPlus.Web.Controllers
             }
         }
 
+        public async Task<ActionResult> Bookmark(int ID, string text)
+        {
+            var card = await db.Cards.FindAsync(ID);
+
+            if (!card.IsAuthorized(User))
+            {
+                return new HttpUnauthorizedResult();
+            }
+            else
+            {
+                var textWithoutBookmarks = TextConverter.DeleteTagByName(text, "bookmark");
+
+                var newText = TextConverter.ReplaceTag(textWithoutBookmarks, "selection", "bookmark");
+
+                card.Text = newText;
+
+                await db.SaveChangesAsync();
+
+                return RedirectToDeckDetails(card.DeckID);
+            }
+        }
+
         public async Task<ActionResult> DeleteRegion(int ID, string text)
         {
             var card = await db.Cards.FindAsync(ID);
@@ -338,7 +362,7 @@ namespace ReadingListPlus.Web.Controllers
             }
             else
             {
-                var newText = TextConverter.DeleteTag(card.Text, text);
+                var newText = TextConverter.DeleteTagByText(card.Text, text);
 
                 card.Text = newText;
 

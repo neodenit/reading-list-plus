@@ -64,14 +64,10 @@ namespace ReadingListPlus
             return result;
         }
 
-        public static string ReplaceSelectionWithExtract(string text)
-        {
-            var result = Regex.Replace(text, @"{{selection::(?s)(.+?)}}", @"{{extract::$1}}");
+        public static string ReplaceTag(string text, string oldTag, string newTag) =>
+            Regex.Replace(text, $"{{{{{oldTag}::(?s)(.+?)}}}}", $"{{{{{newTag}::$1}}}}");
 
-            return result;
-        }
-
-        public static string DeleteTag(string initialText, string htmlSelection)
+        public static string DeleteTagByText(string initialText, string htmlSelection)
         {
             var pattern = @"{{\w+::(" + htmlSelection + ")}}";
 
@@ -79,6 +75,9 @@ namespace ReadingListPlus
 
             return result;
         }
+
+        public static string DeleteTagByName(string initialText, string tagName) =>
+            Regex.Replace(initialText, $"{{{{{tagName}::(?s)(.+?)}}}}", "$1", RegexOptions.IgnoreCase);
 
         public static string GetWords(string text)
         {

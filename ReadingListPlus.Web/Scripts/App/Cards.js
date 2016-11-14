@@ -10,6 +10,18 @@
 
     $('.cloze').width(maxClozeWidth);
 
+    if ($('.bookmark').length) {
+        $('.bookmark').before('<span class="top" />');
+
+        var position = $('.top').offset().top - topBarHeight - actionsHeight;
+
+        $('html, body').animate({
+            scrollTop: position
+        }, 'slow', 'swing');
+
+        $('.top').remove();
+    }
+
     $('#ScrollDown').click(function () {
         if ($('.extract').length) {
             DropSelections();
@@ -35,6 +47,11 @@
         }, 'slow', 'swing');
     });
 
+    $('.bookmark').click(function () {
+        DropSelections();
+        $(this).removeClass('bookmark').addClass('bookmarkselected');
+    });
+
     $('.highlight').click(function () {
         DropSelections();
         $(this).removeClass('highlight').addClass('highlightselected');
@@ -51,7 +68,9 @@
     });
 
     $('.act').click(function () {
-        if (this.id == 'Extract') {
+        var action = this.id;
+
+        if (action === 'Extract' || action === 'Bookmark') {
             var newNode = createSelectionSpan();
 
             surroundSelection(newNode);
@@ -71,21 +90,25 @@
                 var convertedText = HtmlToText(htmlText);
                 var trimmedText = convertedText.trim();
 
-                SubmitSelection(trimmedText, this.id)
+                SubmitSelection(trimmedText, action)
             }
-        } else if (this.id == 'DeleteRegion') {
-            if ($('.highlightselected').length) {
+        } else if (action === 'DeleteRegion') {
+            if ($('.bookmarkselected').length) {
+                var pattern = getPatternFromTag('.bookmarkselected');
+
+                SubmitSelection(pattern, action);
+            } else if ($('.highlightselected').length) {
                 var pattern = getPatternFromTag('.highlightselected');
 
-                SubmitSelection(pattern, this.id);
+                SubmitSelection(pattern, action);
             } else if ($('.extractselected').length) {
                 var pattern = getPatternFromTag('.extractselected');
 
-                SubmitSelection(pattern, this.id);
+                SubmitSelection(pattern, action);
             } else if ($('.clozeselected').length) {
                 var pattern = getPatternFromTag('.clozeselected');
 
-                SubmitSelection(pattern, this.id);
+                SubmitSelection(pattern, action);
             }
         } else {
             var text = getSelectionText();
@@ -95,7 +118,7 @@
             if (trimmed.length > 0) {
                 var escaped = GetWords(trimmed);
 
-                SubmitSelection(escaped, this.id);
+                SubmitSelection(escaped, action);
             }
         }
     });
@@ -126,6 +149,7 @@ function htmlDecode(value) {
 }
 
 function DropSelections() {
+    $('.bookmarkselected').removeClass('bookmarkselected').addClass('bookmark');
     $('.highlightselected').removeClass('highlightselected').addClass('highlight');
     $('.extractselected').removeClass('extractselected').addClass('extract');
     $('.clozeselected').removeClass('clozeselected').addClass('cloze');
@@ -194,7 +218,7 @@ function getSelectionText3() {
 
 function checkSelection() {
     var node = window.getSelection().focusNode.parentNode;
-    return node.id == 'article';
+    return node.id === 'article';
 }
 
 function createSelectionSpan() {
