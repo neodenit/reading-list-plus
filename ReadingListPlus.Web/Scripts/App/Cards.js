@@ -10,18 +10,6 @@
 
     $('.cloze').width(maxClozeWidth);
 
-    if ($('.bookmark').length) {
-        $('.bookmark').before('<span class="top" />');
-
-        var position = $('.top').offset().top - topBarHeight - actionsHeight;
-
-        $('html, body').animate({
-            scrollTop: position
-        }, 'slow', 'swing');
-
-        $('.top').remove();
-    }
-
     $('#ScrollDown').click(function () {
         if ($('.extract').length) {
             DropSelections();
@@ -134,6 +122,19 @@
     });
 
     $(window).scroll(throttledScroll);
+
+    if ($('.bookmark').length) {
+        $('.actions').css('position', 'fixed');
+        $('.actions').css('top', topBarHeight);
+
+        var position = $('.bookmark').offset().top - topBarHeight - actionsHeight;
+
+        $('.actions').css('position', 'relative');
+
+        $('html, body').animate({
+            scrollTop: position
+        }, 'slow', 'swing');
+    }
 });
 
 function ReplaceBR(text) {
