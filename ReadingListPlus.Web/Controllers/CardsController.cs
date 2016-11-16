@@ -38,7 +38,7 @@ namespace ReadingListPlus.Web.Controllers
                 }
                 else
                 {
-                    return View(deck.Cards.ToList());
+                    return View(deck.Cards.OrderBy(c => c.Position).ToList());
                 }
             }
         }
