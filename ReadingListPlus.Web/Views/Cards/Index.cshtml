@@ -1,10 +1,12 @@
 ﻿@model IEnumerable<ReadingListPlus.Web.Models.Card>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = Model.First().Deck.Title;
 }
 
 <h2>@(Model.First().Deck.Title)</h2>
+
+@Html.ActionLink("Back", "Details", "Decks", new { id = Model.First().DeckID }, null)
 
 <table class="table">
     <tr>
@@ -46,5 +48,3 @@
     }
 
 </table>
-
-@Html.ActionLink("Back", "Details", "Decks", new { id = Model.First().DeckID }, null)

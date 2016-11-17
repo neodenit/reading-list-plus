@@ -72,7 +72,7 @@
 }
 
 <div>
-    @Html.ActionLink("Back", "Details", new { DeckID = Model.DeckID })
+    @Html.ActionLink("Back", "Details", "Decks", new { id = Model.DeckID }, null)
 </div>
 
 @section Scripts {
