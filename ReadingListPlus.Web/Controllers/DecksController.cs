@@ -25,7 +25,7 @@ namespace ReadingListPlus.Web.Controllers
         // GET: Decks
         public async Task<ActionResult> Index()
         {
-            var items = db.GetUserDecks(User);
+            var items = db.GetUserDecks(User).OrderBy(d => d.Title);
 
             return View(await items.ToListAsync());
         }
