@@ -52,6 +52,11 @@ textarea {
     background-color: red;
 }
 
+.bookmarkselected {
+    color: black;
+    background-color: lime;
+}
+
 .highlight {
     color: black;
     background-color: yellow;
