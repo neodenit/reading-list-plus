@@ -81,22 +81,16 @@
                 SubmitSelection(trimmedText, action)
             }
         } else if (action === 'DeleteRegion') {
-            if ($('.bookmarkselected').length) {
-                var pattern = getPatternFromTag('.bookmarkselected');
+            var regionTypes = ['.bookmarkselected', '.highlightselected', '.extractselected', '.clozeselected'];
 
-                SubmitSelection(pattern, action);
-            } else if ($('.highlightselected').length) {
-                var pattern = getPatternFromTag('.highlightselected');
+            for (var i in regionTypes) {
+                var regionType = regionTypes[i];
 
-                SubmitSelection(pattern, action);
-            } else if ($('.extractselected').length) {
-                var pattern = getPatternFromTag('.extractselected');
-
-                SubmitSelection(pattern, action);
-            } else if ($('.clozeselected').length) {
-                var pattern = getPatternFromTag('.clozeselected');
-
-                SubmitSelection(pattern, action);
+                if ($(regionType).length) {
+                    var pattern = getPatternFromTag(regionType);
+                    SubmitSelection(pattern, action);
+                    break;
+                }
             }
         } else {
             var text = getSelectionText();
