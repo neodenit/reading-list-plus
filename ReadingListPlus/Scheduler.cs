@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -9,9 +10,9 @@ namespace ReadingListPlus
 {
     public enum Priority
     {
-        Low,
-        Medium,
         High,
+        Medium,
+        Low,
     }
 
     public static class Scheduler
