@@ -10,6 +10,8 @@ using System.Web.Mvc;
 using ReadingListPlus.Web.Models;
 using Boilerpipe.Net.Extractors;
 using System.IO;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace ReadingListPlus.Web.Controllers
 {
@@ -117,13 +119,17 @@ namespace ReadingListPlus.Web.Controllers
             {
                 ViewBag.DeckID = new SelectList(db.GetUserDecks(User), "ID", "Title");
 
-                var card = new CreateCardViewModel { Text = text };
+                var priorities = GetFullPriorityList();
+
+                var card = new CreateCardViewModel { Text = text, PriorityList = priorities };
 
                 return View(card);
             }
             else
             {
-                var card = new CreateCardViewModel { DeckID = DeckID.Value, Text = text };
+                var priorities = GetFullPriorityList();
+
+                var card = new CreateCardViewModel { DeckID = DeckID.Value, Text = text, PriorityList = priorities };
 
                 return View(card);
             }
@@ -143,7 +149,9 @@ namespace ReadingListPlus.Web.Controllers
 
             var text = await streamReader.ReadToEndAsync();
             var formattedText = text.Replace("\n", Environment.NewLine + Environment.NewLine);
-            var card = new CreateCardViewModel { Text = formattedText, Url = url };
+            var priorities = GetFullPriorityList();
+
+            var card = new CreateCardViewModel { Text = formattedText, Url = url, PriorityList = priorities };
 
             return View("Create", card);
         }
@@ -324,7 +332,9 @@ namespace ReadingListPlus.Web.Controllers
 
                 var selection = TextConverter.GetSelection(text);
 
-                var newCard = new CreateCardViewModel { DeckID = card.DeckID, Url = card.Url, ParentCardID = card.ID, Text = selection };
+                var priorities = GetShortPriorityList();
+
+                var newCard = new CreateCardViewModel { DeckID = card.DeckID, Url = card.Url, ParentCardID = card.ID, Text = selection, PriorityList = priorities };
 
                 return View("Create", newCard);
             }
@@ -424,6 +434,40 @@ namespace ReadingListPlus.Web.Controllers
         {
             return RedirectToAction("Details", "Decks", new { id = deckID });
         }
+
+        private IEnumerable<SelectListItem> GetFullPriorityList()
+        {
+            var priorities = new[]
+            {
+                Priority.Highest,
+                Priority.High,
+                Priority.Medium,
+                Priority.Low,
+            };
+
+            return GetPriorities(priorities);
+        }
+
+        private IEnumerable<SelectListItem> GetShortPriorityList()
+        {
+            var priorities = new[]
+            {
+                Priority.High,
+                Priority.Medium,
+                Priority.Low,
+            };
+
+            return GetPriorities(priorities);
+        }
+
+        private IEnumerable<SelectListItem> GetPriorities(IEnumerable<Priority> priorities) =>
+            from x in priorities
+            let displayName = x.GetAttribute<DisplayAttribute>()
+            select new SelectListItem
+            {
+                Value = ((int)x).ToString(),
+                Text = displayName != null ? displayName.GetName() : x.ToString()
+            };
 
         protected override void Dispose(bool disposing)
         {

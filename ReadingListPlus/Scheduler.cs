@@ -10,6 +10,8 @@ namespace ReadingListPlus
 {
     public enum Priority
     {
+        [Display(Name = "Highest (not recommended)")]
+        Highest,
         High,
         Medium,
         Low,
@@ -66,7 +68,11 @@ namespace ReadingListPlus
         /// <returns>Position of the card.</returns>
         public static int GetRandomPosition(Priority priority, int max, bool verbose = false)
         {
-            if (max == 0)
+            if (priority == Priority.Highest)
+            {
+                return 0;
+            }
+            else if (max == 0)
             {
                 return 0;
             }
@@ -162,6 +168,8 @@ namespace ReadingListPlus
                     return med;
                 case Priority.High:
                     return hi;
+                case Priority.Highest:
+                    return 0;
                 default:
                     return -1;
             }

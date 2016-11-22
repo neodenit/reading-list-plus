@@ -6,6 +6,7 @@ using System.Security.Principal;
 using System.Web;
 using System.Web.Script.Serialization;
 using Microsoft.AspNet.Identity;
+using System.Web.Mvc;
 
 namespace ReadingListPlus.Web.Models
 {
@@ -82,5 +83,7 @@ namespace ReadingListPlus.Web.Models
     {
         [Required]
         public Priority? Priority { get; set; }
+
+        public IEnumerable<SelectListItem> PriorityList { get; set; }
     }
 }
