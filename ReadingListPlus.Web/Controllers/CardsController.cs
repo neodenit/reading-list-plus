@@ -159,7 +159,7 @@ namespace ReadingListPlus.Web.Controllers
         // POST: Cards/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "ID,DeckID,Title,Text,Priority")] CreateCardViewModel card)
+        public async Task<ActionResult> Create([Bind(Include = "DeckID, Title, Text, Url, Priority")] CreateCardViewModel card)
         {
             card.Text = card.Text.Trim();
 
