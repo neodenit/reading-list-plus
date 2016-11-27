@@ -11,6 +11,7 @@ using System.Web.Mvc;
 using Ionic.Zip;
 using Microsoft.AspNet.Identity;
 using ReadingListPlus.Web.Models;
+using ReadingListPlus.Persistence.Models;
 
 namespace ReadingListPlus.Web.Controllers
 {

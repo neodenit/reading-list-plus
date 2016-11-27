@@ -12,6 +12,7 @@ using Boilerpipe.Net.Extractors;
 using System.IO;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using ReadingListPlus.Persistence.Models;
 
 namespace ReadingListPlus.Web.Controllers
 {
@@ -161,11 +162,20 @@ namespace ReadingListPlus.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create([Bind(Include = "DeckID, Title, Text, Url, Priority")] CreateCardViewModel card)
         {
-            card.Text = card.Text.Trim();
-
             if (ModelState.IsValid)
             {
-                var deck = db.Decks.Find(card.DeckID);
+                var priority = card.Priority.Value;
+
+                var newCard = new Card
+                {
+                    DeckID = card.DeckID,
+                    Title = card.Title,
+                    Text = card.Text.Trim(),
+                    Url = card.Url,
+                    Discriminator = string.Empty,
+                };
+
+                var deck = db.Decks.Find(newCard.DeckID);
 
                 if (!deck.IsAuthorized(User))
                 {
@@ -173,13 +183,13 @@ namespace ReadingListPlus.Web.Controllers
                 }
                 else
                 {
-                    Scheduler.PrepareForAdding(deck, deck.Cards, card, card.Priority.Value);
+                    Scheduler.PrepareForAdding(deck, deck.Cards, newCard, priority);
 
-                    db.Cards.Add(card);
+                    db.Cards.Add(newCard);
 
                     await db.SaveChangesAsync();
 
-                    return RedirectToDeckDetails(card.DeckID);
+                    return RedirectToDeckDetails(newCard.DeckID);
                 }
             }
             else

@@ -9,6 +9,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using ReadingListPlus.Web.Models;
+using ReadingListPlus.Persistence.Models;
 
 namespace ReadingListPlus.Web.Controllers
 {

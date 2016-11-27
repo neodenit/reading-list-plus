@@ -1,18 +1,18 @@
-namespace ReadingListPlus.Web.Migrations
+namespace ReadingListPlus.Persistence.Migrations
 {
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<ReadingListPlus.Web.Models.ReadingListPlusContext>
+    internal sealed class Configuration : DbMigrationsConfiguration<ReadingListPlus.Persistence.Models.ReadingListPlusContext>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = true;
         }
 
-        protected override void Seed(ReadingListPlus.Web.Models.ReadingListPlusContext context)
+        protected override void Seed(ReadingListPlus.Persistence.Models.ReadingListPlusContext context)
         {
             //  This method will be called after migrating to the latest version.
 
