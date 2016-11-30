@@ -59,17 +59,18 @@ namespace ReadingListPlus.Web.Controllers
             return View("Index", deck.Cards);
         }
 
-        public async Task<ActionResult> Details(int? id, int? DeckID)
+        public async Task<ActionResult> Details(int? id, int? deckId)
         {
             if (id == null)
             {
-                if (DeckID == null)
+                if (deckId == null)
                 {
                     return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                 }
                 else
                 {
-                    return View(new Card { DeckID = DeckID.Value, ID = -1 });
+                    var deck = await db.Decks.FindAsync(deckId);
+                    return View(new Card { Deck = deck, ID = -1 });
                 }
             }
             else
