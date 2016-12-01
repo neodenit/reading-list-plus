@@ -10,7 +10,7 @@
 {
     @Html.AntiForgeryToken()
 
-    <h4>Card</h4>
+    <h4 class="text-capitalize">@(Resources.Resources.Item)</h4>
     <hr />
 
     @Html.HiddenFor(model => model.NextAction)
