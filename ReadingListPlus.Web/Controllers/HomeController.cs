@@ -10,7 +10,7 @@ namespace ReadingListPlus.Web.Controllers
     {
         public ActionResult Index()
         {
-            ViewBag.Message = "Reading List Plus";
+            ViewBag.Message = Resources.Resources.ApplicationName;
 
             if (User.Identity.IsAuthenticated)
             {
@@ -24,14 +24,14 @@ namespace ReadingListPlus.Web.Controllers
 
         public ActionResult About()
         {
-            ViewBag.Message = "Reading List Plus";
+            ViewBag.Message = Resources.Resources.ApplicationName;
 
             return View();
         }
 
         public ActionResult Contact()
         {
-            ViewBag.Message = "Reading List Plus";
+            ViewBag.Message = Resources.Resources.ApplicationName;
 
             return View();
         }

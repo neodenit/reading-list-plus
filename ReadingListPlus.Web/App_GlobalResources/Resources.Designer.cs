@@ -61,7 +61,16 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to item.
+        ///   Looks up a localized string similar to Reading List Plus.
+        /// </summary>
+        internal static string ApplicationName {
+            get {
+                return ResourceManager.GetString("ApplicationName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Item.
         /// </summary>
         internal static string Item {
             get {
@@ -70,7 +79,25 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to items.
+        ///   Looks up a localized string similar to Topic.
+        /// </summary>
+        internal static string ItemCollection {
+            get {
+                return ResourceManager.GetString("ItemCollection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Topics.
+        /// </summary>
+        internal static string ItemCollectionPlural {
+            get {
+                return ResourceManager.GetString("ItemCollectionPlural", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Items.
         /// </summary>
         internal static string ItemPlural {
             get {
