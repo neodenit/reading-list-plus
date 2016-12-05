@@ -61,7 +61,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reading List Plus.
+        ///   Looks up a localized string similar to Knowledge Organizer.
         /// </summary>
         internal static string ApplicationName {
             get {
@@ -70,7 +70,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Item.
+        ///   Looks up a localized string similar to Note.
         /// </summary>
         internal static string Item {
             get {
@@ -97,7 +97,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Items.
+        ///   Looks up a localized string similar to Notes.
         /// </summary>
         internal static string ItemPlural {
             get {
