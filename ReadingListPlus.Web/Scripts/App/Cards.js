@@ -109,9 +109,9 @@
         if ($(window).scrollTop() >= headerHeight) {
             $('.actions').css('position', 'fixed');
             $('.actions').css('top', topBarHeight);
-        }
-        else {
+        } else {
             $('.actions').css('position', 'relative');
+            $('.actions').css('top', 0);
         };
     });
 
