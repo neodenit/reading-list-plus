@@ -61,7 +61,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Knowledge Organizer.
+        ///   Looks up a localized string similar to Knowledge Manager.
         /// </summary>
         internal static string ApplicationName {
             get {
