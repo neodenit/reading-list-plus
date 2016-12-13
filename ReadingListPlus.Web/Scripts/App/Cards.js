@@ -1,5 +1,5 @@
 ﻿$(function () {
-    var actionsHeight = $('.actions').outerHeight(true);
+    var actionsHeight = $('#mainPanel').outerHeight(true);
     var topBar = $('#top-bar');
     var topBarHeight = topBar.height();
     var headerHeight = $('#scrollArea').offset().top;
@@ -107,23 +107,23 @@
 
     var throttledScroll = $.throttle(100, function () {
         if ($(window).scrollTop() >= headerHeight) {
-            $('.actions').css('position', 'fixed');
-            $('.actions').css('top', topBarHeight);
+            $('#mainPanel').css('position', 'fixed');
+            $('#mainPanel').css('top', topBarHeight);
         } else {
-            $('.actions').css('position', 'relative');
-            $('.actions').css('top', 0);
+            $('#mainPanel').css('position', 'relative');
+            $('#mainPanel').css('top', 0);
         };
     });
 
     $(window).scroll(throttledScroll);
 
     if ($('.bookmark').length) {
-        $('.actions').css('position', 'fixed');
-        $('.actions').css('top', topBarHeight);
+        $('#mainPanel').css('position', 'fixed');
+        $('#mainPanel').css('top', topBarHeight);
 
         var position = $('.bookmark').offset().top - topBarHeight - actionsHeight;
 
-        $('.actions').css('position', 'relative');
+        $('#mainPanel').css('position', 'relative');
 
         $('html, body').animate({
             scrollTop: position

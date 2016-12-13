@@ -24,7 +24,7 @@
 
         @if (Model.ID == -1)
         {
-            <div class="topactions">
+            <div id="topPanel" class="actions">
                 @Html.ActionLink($"Add {Resources.Resources.Item}", "Create", new { DeckID = Model.Deck.ID })
             </div>
             <hr />
@@ -37,14 +37,14 @@
         else
         {
             <p>
-                <div class="topactions">
+                <div id="topPanel" class="actions">
                     @Html.ActionLink($"Add {Resources.Resources.Item}", "Create", new { DeckID = Model.DeckID }) |
                     @Html.ActionLink($"Edit {Resources.Resources.Item}", "Edit", new { id = Model.ID }) |
                     @Html.ActionLink("Index", "Index", new { DeckID = Model.DeckID })
                 </div>
                 <hr />
                 <div id="scrollArea">
-                    <div class="actions">
+                    <div id="mainPanel" class="actions">
                         <a href="#" id="Extract" class="act">Extract</a> |
                         <a href="#" id="Bookmark" class="act">Bookmark</a> |
                         <a href="#" id="Highlight" class="act">Highlight</a> |
@@ -71,7 +71,7 @@
 
             <hr />
             
-            <div id="bottomPanel">
+            <div id="bottomPanel" class="actions">
                 @Html.ActionLink($"Delete {Resources.Resources.Item}", "Delete", new { id = Model.ID })
             </div>
         }
