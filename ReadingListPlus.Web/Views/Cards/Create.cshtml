@@ -34,7 +34,7 @@
 
     <div class="form-group">
         @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
+        <div class="col-md-8">
             @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
             @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
         </div>
@@ -42,7 +42,7 @@
 
     <div class="form-group">
         @Html.LabelFor(model => model.Text, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
+        <div class="col-md-8">
             @Html.EditorFor(model => model.Text, new { htmlAttributes = new { @class = "form-control focused", rows = 10 } })
             @Html.ValidationMessageFor(model => model.Text, "", new { @class = "text-danger" })
         </div>
@@ -50,7 +50,7 @@
 
     <div class="form-group">
         @Html.LabelFor(model => model.Url, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
+        <div class="col-md-8">
             @Html.EditorFor(model => model.Url, new { htmlAttributes = new { @class = "form-control" } })
             @Html.ValidationMessageFor(model => model.Url, "", new { @class = "text-danger" })
         </div>
@@ -58,7 +58,7 @@
 
     <div class="form-group">
         @Html.LabelFor(model => model.Priority, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
+        <div class="col-md-8">
             @Html.DropDownListFor(model => model.Priority, Model.PriorityList, string.Empty, new { @class = "form-control" })
             @Html.ValidationMessageFor(model => model.Priority, "", new { @class = "text-danger" })
         </div>
