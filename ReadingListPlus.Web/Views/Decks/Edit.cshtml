@@ -13,7 +13,9 @@
 
     <div class="form-horizontal">
         <h4>@(Resources.Resources.ItemCollection)</h4>
+
         <hr />
+
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.ID)
 
@@ -26,8 +28,11 @@
         </div>
 
         <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+            <div class="col-md-offset-2 col-md-1">
+                <input type="submit" value="Save" class="btn btn-success btn-block" />
+            </div>
+            <div class="col-md-offset-4 col-md-1">
+                @Html.ActionLink("Delete", "Delete", new { id = Model.ID }, new { @Class = "btn btn-danger" })
             </div>
         </div>
     </div>
