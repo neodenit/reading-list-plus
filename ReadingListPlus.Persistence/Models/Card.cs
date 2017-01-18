@@ -8,6 +8,13 @@ using System.Web.Mvc;
 
 namespace ReadingListPlus.Persistence.Models
 {
+    public enum CardType
+    {
+        Common,
+        Article,
+        Extract,
+    }
+
     public class Card : ICard
     {
         public int ID { get; set; }
@@ -15,6 +22,8 @@ namespace ReadingListPlus.Persistence.Models
         public int DeckID { get; set; }
 
         public virtual Deck Deck { get; set; }
+
+        public CardType Type { get; set; }
 
         public string Title { get; set; }
 

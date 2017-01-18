@@ -123,7 +123,7 @@ namespace ReadingListPlus.Web.Controllers
 
                 var priorities = GetFullPriorityList();
 
-                var card = new CreateCardViewModel { Text = text, PriorityList = priorities };
+                var card = new CreateCardViewModel { Text = text, PriorityList = priorities, Type = CardType.Common };
 
                 return View(card);
             }
@@ -131,7 +131,7 @@ namespace ReadingListPlus.Web.Controllers
             {
                 var priorities = GetFullPriorityList();
 
-                var card = new CreateCardViewModel { DeckID = DeckID.Value, Text = text, PriorityList = priorities };
+                var card = new CreateCardViewModel { DeckID = DeckID.Value, Text = text, PriorityList = priorities, Type = CardType.Common };
 
                 return View(card);
             }
@@ -153,7 +153,7 @@ namespace ReadingListPlus.Web.Controllers
             var formattedText = text.Replace("\n", Environment.NewLine + Environment.NewLine);
             var priorities = GetFullPriorityList();
 
-            var card = new CreateCardViewModel { Text = formattedText, Url = url, PriorityList = priorities };
+            var card = new CreateCardViewModel { Text = formattedText, Url = url, PriorityList = priorities, Type = CardType.Article };
 
             return View("Create", card);
         }
@@ -161,7 +161,7 @@ namespace ReadingListPlus.Web.Controllers
         // POST: Cards/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "DeckID, Title, Text, Url, Priority")] CreateCardViewModel card)
+        public async Task<ActionResult> Create([Bind(Include = "DeckID, Title, Text, Url, Priority, CardType")] CreateCardViewModel card)
         {
             if (ModelState.IsValid)
             {
@@ -173,6 +173,7 @@ namespace ReadingListPlus.Web.Controllers
                     Title = card.Title,
                     Text = card.Text.Trim(),
                     Url = card.Url,
+                    Type = card.Type,
                     Discriminator = string.Empty,
                 };
 
@@ -345,7 +346,7 @@ namespace ReadingListPlus.Web.Controllers
 
                 var priorities = GetShortPriorityList();
 
-                var newCard = new CreateCardViewModel { DeckID = card.DeckID, Url = card.Url, ParentCardID = card.ID, Text = selection, PriorityList = priorities };
+                var newCard = new CreateCardViewModel { DeckID = card.DeckID, Url = card.Url, ParentCardID = card.ID, Text = selection, PriorityList = priorities, Type = CardType.Extract };
 
                 return View("Create", newCard);
             }
