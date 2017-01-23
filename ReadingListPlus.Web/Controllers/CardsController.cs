@@ -161,7 +161,7 @@ namespace ReadingListPlus.Web.Controllers
         // POST: Cards/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "DeckID, Title, Text, Url, Priority, CardType")] CreateCardViewModel card)
+        public async Task<ActionResult> Create([Bind(Include = "DeckID, Title, Text, Url, Priority, Type")] CreateCardViewModel card)
         {
             if (ModelState.IsValid)
             {
@@ -227,7 +227,7 @@ namespace ReadingListPlus.Web.Controllers
         // POST: Cards/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "ID,Title,Text,Url")] Card card)
+        public async Task<ActionResult> Edit([Bind(Include = "ID, Title, Text, Url, Type")] Card card)
         {
             if (ModelState.IsValid)
             {
@@ -242,6 +242,7 @@ namespace ReadingListPlus.Web.Controllers
                     dbCard.Title = card.Title;
                     dbCard.Text = card.Text;
                     dbCard.Url = card.Url;
+                    dbCard.Type = card.Type;
 
                     await db.SaveChangesAsync();
 
