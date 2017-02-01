@@ -371,7 +371,11 @@ namespace ReadingListPlus.Web.Controllers
 
                 await db.SaveChangesAsync();
 
-                return RedirectToDeckDetails(card.DeckID);
+                ViewBag.Markup = TextConverter.GetHtml(card.Text);
+
+                card.IsBookmarked = true;
+
+                return View("Details", card);
             }
         }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Security.Principal;
 using System.Web;
@@ -35,6 +36,9 @@ namespace ReadingListPlus.Persistence.Models
 
         [DataType(DataType.Url)]
         public string Url { get; set; }
+
+        [NotMapped]
+        public bool IsBookmarked { get; set; }
 
         public bool IsNew { get; set; }
 
