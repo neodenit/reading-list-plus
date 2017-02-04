@@ -87,7 +87,7 @@ namespace ReadingListPlus.Web.Controllers
                 }
                 else
                 {
-                    ViewBag.Markup = TextConverter.GetHtml(card.Text);
+                    card.HtmlText = TextConverter.GetHtml(card.Text);
 
                     return View(card);
                 }
@@ -371,7 +371,7 @@ namespace ReadingListPlus.Web.Controllers
 
                 await db.SaveChangesAsync();
 
-                ViewBag.Markup = TextConverter.GetHtml(card.Text);
+                card.HtmlText = TextConverter.GetHtml(card.Text);
 
                 card.IsBookmarked = true;
 

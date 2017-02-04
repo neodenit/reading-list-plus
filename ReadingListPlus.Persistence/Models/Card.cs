@@ -32,6 +32,9 @@ namespace ReadingListPlus.Persistence.Models
         [DataType(DataType.MultilineText)]
         public string Text { get; set; }
 
+        [NotMapped]
+        public string HtmlText { get; set; }
+
         public int Position { get; set; }
 
         [DataType(DataType.Url)]
