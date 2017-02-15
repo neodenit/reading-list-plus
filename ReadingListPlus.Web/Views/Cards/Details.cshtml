@@ -48,12 +48,30 @@
                         <a href="#" id="Cloze" class="act">Cloze</a> |
                         <a href="#" id="DeleteRegion" class="act">Drop</a> |
                         <span>New priority:</span>
-                        @Html.ActionLink("High", "Postpone", new { ID = Model.ID, Priority = "High" }) |
-                        @Html.ActionLink("Medium", "Postpone", new { ID = Model.ID, Priority = "Medium" }) |
-                        @Html.ActionLink("Low", "Postpone", new { ID = Model.ID, Priority = "Low" })
+                        <a href="#" id="PostponeHigh" class="act">High</a> |
+                        <a href="#" id="PostponeMedium" class="act">Medium</a> |
+                        <a href="#" id="PostponeLow" class="act">Low</a>
                     </div>
                 </div>
             </p>
+
+            <div id="ModalDialog" class="modal fade" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">Confirmation</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>Are you sure you want to evaluate the note without bookmarking it first?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="YesButton" type="button" class="btn btn-primary">Yes</button>
+                            <button id="NoButton" type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <h2>
                 @Html.DisplayFor(model => model.Title)

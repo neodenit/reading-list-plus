@@ -105,6 +105,34 @@
         }
     });
 
+    var postpone = function (priority) {
+        var cardId = $('#ID').val();
+        var newLocation = '/Cards/Postpone/' + cardId + '?Priority=' + priority;
+        var isBookmarked = $('#IsBookmarked').val();
+
+        if (isBookmarked === 'True') {
+            window.location = newLocation;
+        } else if (isBookmarked === 'False') {
+            $('#ModalDialog').modal();
+
+            $('#YesButton').unbind('click').click(function () {
+                window.location = newLocation;
+            });
+        }
+    };
+
+    $('#PostponeHigh').click(function () {
+        postpone('High');
+    });
+
+    $('#PostponeMedium').click(function () {
+        postpone('Medium');
+    });
+
+    $('#PostponeLow').click(function () {
+        postpone('Low');
+    });
+
     var throttledScroll = $.throttle(100, function () {
         if ($(window).scrollTop() >= headerHeight) {
             $('#mainPanel').css('position', 'fixed');
