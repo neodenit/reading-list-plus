@@ -246,6 +246,7 @@
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\App\Cards.js" />
     <Content Include="Scripts\App\Common.js" />
+    <Content Include="Scripts\App\Enums.js" />
     <Content Include="Scripts\App\TextConverter.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

@@ -109,8 +109,9 @@
         var cardId = $('#ID').val();
         var newLocation = '/Cards/Postpone/' + cardId + '?Priority=' + priority;
         var isBookmarked = $('#IsBookmarked').val();
+        var cardType = parseInt($('#Type').val());
 
-        if (isBookmarked === 'True') {
+        if (cardType !== Enums.CardType.Article || isBookmarked === 'True') {
             window.location = newLocation;
         } else if (isBookmarked === 'False') {
             $('#ModalDialog').modal();

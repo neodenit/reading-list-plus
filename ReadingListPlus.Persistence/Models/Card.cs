@@ -11,9 +11,9 @@ namespace ReadingListPlus.Persistence.Models
 {
     public enum CardType
     {
-        Common,
-        Article,
-        Extract,
+        Common = 0,
+        Article = 1,
+        Extract = 2,
     }
 
     public class Card : ICard
