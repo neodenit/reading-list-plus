@@ -125,7 +125,7 @@ namespace ReadingListPlus.Web.Controllers
         // POST: Decks/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "ID,Title,StartDelay,Coeff")] Deck deck)
+        public async Task<ActionResult> Edit([Bind(Include = "ID,Title,StartDelay,Coeff,Type")] Deck deck)
         {
             if (ModelState.IsValid)
             {
@@ -143,6 +143,7 @@ namespace ReadingListPlus.Web.Controllers
                 dbDeck.Title = deck.Title;
                 dbDeck.StartDelay = deck.StartDelay;
                 dbDeck.Coeff = deck.Coeff;
+                dbDeck.Type = deck.Type;
 
                 await db.SaveChangesAsync();
 

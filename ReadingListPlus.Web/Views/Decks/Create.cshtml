@@ -23,12 +23,14 @@
             </div>
         </div>
 
-        <div class="col-md-offset-2" id="DeckType">
-            <div>
-                @Html.RadioButtonFor(model => model.Type, "Predictable")<span>Predictable</span>
-            </div>
-            <div>
-                @Html.RadioButtonFor(model => model.Type, "Randomized")<span>Randomized</span>
+        <div class="form-group">
+            <div class="col-md-offset-2" id="DeckType">
+                <div>
+                    @Html.RadioButtonFor(model => model.Type, "Predictable")<span>Predictable</span>
+                </div>
+                <div>
+                    @Html.RadioButtonFor(model => model.Type, "Randomized")<span>Randomized</span>
+                </div>
             </div>
         </div>
 
