@@ -115,9 +115,9 @@ namespace ReadingListPlus.Web.Controllers
         }
 
         // GET: Cards/Create/5
-        public ActionResult Create(int? DeckID, string text)
+        public async Task<ActionResult> Create(int? deckID, string text)
         {
-            if (DeckID == null)
+            if (deckID == null)
             {
                 ViewBag.DeckID = new SelectList(db.GetUserDecks(User), "ID", "Title");
 
@@ -129,9 +129,10 @@ namespace ReadingListPlus.Web.Controllers
             }
             else
             {
+                var deck = await db.Decks.FindAsync(deckID);
                 var priorities = GetFullPriorityList();
 
-                var card = new CreateCardViewModel { DeckID = DeckID.Value, Text = text, PriorityList = priorities, Type = CardType.Common };
+                var card = new CreateCardViewModel { DeckID = deck.ID, Deck = deck, Text = text, PriorityList = priorities, Type = CardType.Common };
 
                 return View(card);
             }
@@ -347,7 +348,7 @@ namespace ReadingListPlus.Web.Controllers
 
                 var priorities = GetShortPriorityList();
 
-                var newCard = new CreateCardViewModel { DeckID = card.DeckID, Url = card.Url, ParentCardID = card.ID, Text = selection, PriorityList = priorities, Type = CardType.Extract };
+                var newCard = new CreateCardViewModel { DeckID = card.DeckID, Deck = card.Deck, Url = card.Url, ParentCardID = card.ID, Text = selection, PriorityList = priorities, Type = CardType.Extract };
 
                 return View("Create", newCard);
             }
