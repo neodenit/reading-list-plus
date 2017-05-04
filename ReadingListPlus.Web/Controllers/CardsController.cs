@@ -119,7 +119,9 @@ namespace ReadingListPlus.Web.Controllers
         {
             if (deckID == null)
             {
-                ViewBag.DeckID = new SelectList(db.GetUserDecks(User), "ID", "Title");
+                ViewBag.DeckIds = db.GetUserDecks(User)
+                                    .OrderBy(d => d.Title)
+                                    .Select(d => new SelectListItem { Value = d.ID.ToString(), Text = d.Title });
 
                 var priorities = GetFullPriorityList();
 
@@ -140,7 +142,9 @@ namespace ReadingListPlus.Web.Controllers
 
         public async Task<ActionResult> CreateFromUrl(string url)
         {
-            ViewBag.DeckID = new SelectList(db.GetUserDecks(User), "ID", "Title");
+            ViewBag.DeckIds = db.GetUserDecks(User)
+                                .OrderBy(d => d.Title)
+                                .Select(d => new SelectListItem { Value = d.ID.ToString(), Text = d.Title });
 
             var urlParameter = Uri.EscapeDataString(url);
             var fullUrl = $"https://boilerpipe-web.appspot.com/extract?url={urlParameter}&output=text";
