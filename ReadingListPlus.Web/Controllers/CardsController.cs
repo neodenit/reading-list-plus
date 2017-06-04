@@ -119,13 +119,17 @@ namespace ReadingListPlus.Web.Controllers
         {
             if (deckID == null)
             {
+
                 ViewBag.DeckIds = db.GetUserDecks(User)
                                     .OrderBy(d => d.Title)
                                     .Select(d => new SelectListItem { Value = d.ID.ToString(), Text = d.Title });
 
                 var priorities = GetFullPriorityList();
 
-                var card = new CreateCardViewModel { Text = text, PriorityList = priorities, Type = CardType.Common };
+                var user = db.Users.Single(u => u.UserName == User.Identity.Name);
+                var lastDeck = user.LastDeck;
+
+                var card = new CreateCardViewModel { DeckID = lastDeck.GetValueOrDefault(), Text = text, PriorityList = priorities, Type = CardType.Common };
 
                 return View(card);
             }
@@ -158,7 +162,10 @@ namespace ReadingListPlus.Web.Controllers
             var formattedText = text.Replace("\n", Environment.NewLine + Environment.NewLine);
             var priorities = GetFullPriorityList();
 
-            var card = new CreateCardViewModel { Text = formattedText, Url = url, PriorityList = priorities, Type = CardType.Article };
+            var user = db.Users.Single(u => u.UserName == User.Identity.Name);
+            var lastDeck = user.LastDeck;
+
+            var card = new CreateCardViewModel { DeckID = lastDeck.GetValueOrDefault(), Text = formattedText, Url = url, PriorityList = priorities, Type = CardType.Article };
 
             return View("Create", card);
         }
@@ -193,6 +200,9 @@ namespace ReadingListPlus.Web.Controllers
                     Scheduler.PrepareForAdding(deck, deck.Cards, newCard, priority);
 
                     db.Cards.Add(newCard);
+
+                    var user = db.Users.Single(u => u.UserName == User.Identity.Name);
+                    user.LastDeck = newCard.DeckID;
 
                     await db.SaveChangesAsync();
 

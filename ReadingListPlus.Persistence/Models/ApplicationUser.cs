@@ -15,5 +15,7 @@ namespace ReadingListPlus.Persistence.Models
             var userIdentity = await manager.CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);
             return userIdentity;
         }
+
+        public int? LastDeck { get; set; }
     }
 }
