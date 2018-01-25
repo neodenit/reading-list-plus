@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Data;
 using System.Data.Entity;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
-using Ionic.Zip;
-using Microsoft.AspNet.Identity;
-using ReadingListPlus.Web.Models;
 using ReadingListPlus.Persistence.Models;
 
 namespace ReadingListPlus.Web.Controllers
@@ -31,11 +24,11 @@ namespace ReadingListPlus.Web.Controllers
             return View(await items.ToListAsync());
         }
 
-        public ActionResult Export()
+        public async Task<ActionResult> Export()
         {
-            var decks = db.GetUserDecks(User);
+            var decks = await db.GetUserDecks(User).ToListAsync();
 
-            return new JsonResult { Data = decks, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+            return Json(decks, JsonRequestBehavior.AllowGet);
         }
 
         // GET: Decks/Details/5

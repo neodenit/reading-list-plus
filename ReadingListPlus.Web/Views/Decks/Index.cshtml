@@ -1,5 +1,7 @@
 ﻿@model IEnumerable<ReadingListPlus.Persistence.Models.Deck>
 
+@using ReadingListPlus.Web.Controllers
+
 @{
     ViewBag.Title = Resources.Resources.ItemCollectionPlural;
 }
@@ -41,3 +43,7 @@
         </tr>
     }
 </table>
+<hr />
+<p>
+    @Html.ActionLink("Export Knowledge Base", nameof(DecksController.Export))
+</p>

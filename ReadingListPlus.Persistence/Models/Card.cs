@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
 using System.Security.Principal;
-using System.Web;
-using System.Web.Mvc;
+using System.Web.Script.Serialization;
 
 namespace ReadingListPlus.Persistence.Models
 {
@@ -22,6 +18,7 @@ namespace ReadingListPlus.Persistence.Models
 
         public int DeckID { get; set; }
 
+        [ScriptIgnore(ApplyToOverrides = true)]
         public virtual Deck Deck { get; set; }
 
         public CardType Type { get; set; }
