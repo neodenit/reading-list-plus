@@ -27,8 +27,14 @@ namespace ReadingListPlus.Web.Controllers
         public async Task<ActionResult> Export()
         {
             var decks = await db.GetUserDecks(User).ToListAsync();
+            var jsonResult = new JsonResult
+            {
+                Data = decks,
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                MaxJsonLength = int.MaxValue
+            };
 
-            return Json(decks, JsonRequestBehavior.AllowGet);
+            return jsonResult;
         }
 
         // GET: Decks/Details/5
