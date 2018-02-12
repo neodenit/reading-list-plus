@@ -234,6 +234,7 @@
     <Compile Include="Startup.cs">
       <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
     </Compile>
+    <Compile Include="ViewModels\ImportViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />
@@ -247,6 +248,7 @@
     <Content Include="Scripts\App\Cards.js" />
     <Content Include="Scripts\App\Common.js" />
     <Content Include="Scripts\App\Enums.js" />
+    <Content Include="Scripts\App\Import.js" />
     <Content Include="Scripts\App\TextConverter.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -327,10 +329,10 @@
     <Content Include="Views\Cards\Details.cshtml" />
     <Content Include="Views\Decks\Edit.cshtml" />
     <Content Include="Views\Decks\Index.cshtml" />
+    <Content Include="Views\Decks\Import.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="ViewModels\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">

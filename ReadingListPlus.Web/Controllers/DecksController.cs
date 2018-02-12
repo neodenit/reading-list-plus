@@ -1,10 +1,12 @@
 ﻿using System.Data;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using ReadingListPlus.Persistence.Models;
+using ReadingListPlus.Web.ViewModels;
 
 namespace ReadingListPlus.Web.Controllers
 {
@@ -35,6 +37,24 @@ namespace ReadingListPlus.Web.Controllers
             };
 
             return jsonResult;
+        }
+
+        public ActionResult Import()
+        {
+            return View(new ImportViewModel());
+        }
+
+        [HttpPost]
+        public ActionResult Import(ImportViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                return View();
+            }
         }
 
         // GET: Decks/Details/5
