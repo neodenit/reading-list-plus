@@ -1,10 +1,12 @@
-﻿using System.Data;
+﻿using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using System.Web.Script.Serialization;
 using ReadingListPlus.Persistence.Models;
 using ReadingListPlus.Web.ViewModels;
 
@@ -17,6 +19,7 @@ namespace ReadingListPlus.Web.Controllers
     public class DecksController : Controller
     {
         private ReadingListPlusContext db = new ReadingListPlusContext();
+        private const int MaxFileLength = int.MaxValue;
 
         // GET: Decks
         public async Task<ActionResult> Index()
@@ -33,7 +36,7 @@ namespace ReadingListPlus.Web.Controllers
             {
                 Data = decks,
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet,
-                MaxJsonLength = int.MaxValue
+                MaxJsonLength = MaxFileLength
             };
 
             return jsonResult;
@@ -45,10 +48,28 @@ namespace ReadingListPlus.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult Import(ImportViewModel model)
+        public async Task<ActionResult> Import(ImportViewModel model)
         {
             if (ModelState.IsValid)
             {
+                using (var streamReader = new StreamReader(model.File.InputStream))
+                {
+                    var jsonString = await streamReader.ReadToEndAsync();
+                    var javaScriptSerializer = new JavaScriptSerializer { MaxJsonLength = MaxFileLength };
+                    var newDecks = javaScriptSerializer.Deserialize<IEnumerable<Deck>>(jsonString);
+
+                    foreach (var deck in newDecks)
+                    {
+                        deck.OwnerID = User.Identity.Name;
+                    }
+
+                    var userDecks = db.GetUserDecks(User);
+                    db.Decks.RemoveRange(userDecks);
+                    db.Decks.AddRange(newDecks);
+
+                    await db.SaveChangesAsync();
+                }
+
                 return RedirectToAction(nameof(Index));
             }
             else
