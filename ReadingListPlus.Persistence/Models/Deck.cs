@@ -19,8 +19,6 @@ namespace ReadingListPlus.Persistence.Models
 
         public virtual ICollection<Card> Cards { get; set; }
 
-        public DeckType Type { get; set; }
-
         public int StartDelay { get; set; }
 
         public double Coeff { get; set; }

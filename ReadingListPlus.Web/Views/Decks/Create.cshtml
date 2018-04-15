@@ -22,18 +22,6 @@
                 @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
             </div>
         </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2" id="DeckType">
-                <div>
-                    @Html.RadioButtonFor(model => model.Type, "Predictable")<span>Predictable</span>
-                </div>
-                <div>
-                    @Html.RadioButtonFor(model => model.Type, "Randomized")<span>Randomized</span>
-                </div>
-            </div>
-        </div>
-
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Create" class="btn btn-default" />

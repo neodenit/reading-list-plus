@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ReadingListPlus
 {
@@ -29,10 +26,7 @@ namespace ReadingListPlus
         public static void PrepareForAdding(IDeck deck, IEnumerable<ICard> cards, ICard card, Priority priority)
         {
             var maxNewPosition = GetMaxNewPosition(cards);
-
-            var position = deck.Type == DeckType.Predictable ?
-                GetStaticPosition(priority, maxNewPosition) :
-                GetRandomPosition(priority, maxNewPosition);
+            var position = GetStaticPosition(priority, maxNewPosition);
 
             PrepareForAdding(cards, card, position);
         }
@@ -52,87 +46,9 @@ namespace ReadingListPlus
         public static void ChangeFirstCardPosition(IDeck deck, IEnumerable<ICard> cards, ICard card, Priority priority)
         {
             var maxPosition = GetMaxPosition(cards);
-
-            var position = deck.Type == DeckType.Predictable ?
-                GetStaticPosition(priority, maxPosition) :
-                GetRandomPosition(priority, maxPosition);
+            var position = GetStaticPosition(priority, maxPosition);
 
             ChangeFirstCardPosition(cards, card, position);
-        }
-
-        /// <summary>
-        /// Generates position in a range 1..max based on priority. Returns 0 if max is 0.
-        /// </summary>
-        /// <param name="priority">Priority of the card.</param>
-        /// <param name="max">Max position to return.</param>
-        /// <returns>Position of the card.</returns>
-        public static int GetRandomPosition(Priority priority, int max, bool verbose = false)
-        {
-            if (priority == Priority.Highest)
-            {
-                return 0;
-            }
-            else if (max == 0)
-            {
-                return 0;
-            }
-            else if (max == 1)
-            {
-                return 1;
-            }
-            else if (max == 2)
-            {
-                switch (priority)
-                {
-                    case Priority.Low:
-                        return 2;
-                    case Priority.Medium:
-                        return Random.Next(1, 2);
-                    case Priority.High:
-                        return 1;
-                    default:
-                        return -1;
-                }
-            }
-            else
-            {
-                var split1 = 1.0 / 3.0;
-                var split2 = 2.0 / 3.0;
-
-                Func<double, int> op = Utils.Round;
-
-                var hiMin = 1;
-                var hiMax = op(max * split1);
-                var medMin = hiMax + 1;
-                var medMax = op(max * split2);
-                var lowMin = medMax + 1;
-                var lowMax = max;
-
-                if (verbose)
-                {
-                    Console.WriteLine("{0} - {1}", hiMin, hiMax);
-                    Console.WriteLine("{0} - {1}", medMin, medMax);
-                    Console.WriteLine("{0} - {1}", lowMin, lowMax);
-                    Console.WriteLine("---");
-
-                    Console.WriteLine(hiMax - hiMin);
-                    Console.WriteLine(medMax - medMin);
-                    Console.WriteLine(lowMax - lowMin);
-                    Console.WriteLine("---");
-                }
-
-                switch (priority)
-                {
-                    case Priority.Low:
-                        return Random.Next(lowMin, lowMax);
-                    case Priority.Medium:
-                        return Random.Next(medMin, medMax);
-                    case Priority.High:
-                        return Random.Next(hiMin, hiMax);
-                    default:
-                        return -1;
-                }
-            }
         }
 
         /// <summary>

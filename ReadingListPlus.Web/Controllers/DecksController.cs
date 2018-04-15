@@ -183,7 +183,6 @@ namespace ReadingListPlus.Web.Controllers
                 dbDeck.Title = deck.Title;
                 dbDeck.StartDelay = deck.StartDelay;
                 dbDeck.Coeff = deck.Coeff;
-                dbDeck.Type = deck.Type;
 
                 await db.SaveChangesAsync();
 
