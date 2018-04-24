@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
-using ReadingListPlus.Web.Models;
-using Boilerpipe.Net.Extractors;
-using System.IO;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using ReadingListPlus.Persistence.Models;
+using ReadingListPlus.Web.Models;
+using ReadingListPlus.Web.Services.ArticleExtractor;
 
 namespace ReadingListPlus.Web.Controllers
 {
@@ -23,6 +20,7 @@ namespace ReadingListPlus.Web.Controllers
     public class CardsController : Controller
     {
         private ReadingListPlusContext db = new ReadingListPlusContext();
+        private IArticleExtractor articleExtractor = new CombinedExtractor();
 
         // GET: Cards
         public async Task<ActionResult> Index(int? DeckID)
@@ -150,16 +148,9 @@ namespace ReadingListPlus.Web.Controllers
                                 .OrderBy(d => d.Title)
                                 .Select(d => new SelectListItem { Value = d.ID.ToString(), Text = d.Title });
 
-            var urlParameter = Uri.EscapeDataString(url);
-            var fullUrl = $"https://boilerpipe-web.appspot.com/extract?url={urlParameter}&output=text";
+            var articleText = await articleExtractor.GetArticleText(url);
+            var formattedText = articleText.Replace("\n", Environment.NewLine + Environment.NewLine);
 
-            var request = WebRequest.Create(fullUrl);
-            var responce = await request.GetResponseAsync();
-            var responseStream = responce.GetResponseStream();
-            var streamReader = new StreamReader(responseStream);
-
-            var text = await streamReader.ReadToEndAsync();
-            var formattedText = text.Replace("\n", Environment.NewLine + Environment.NewLine);
             var priorities = GetFullPriorityList();
 
             var user = db.Users.Single(u => u.UserName == User.Identity.Name);
