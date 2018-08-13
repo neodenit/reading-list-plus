@@ -11,6 +11,7 @@ using ReadingListPlus.Web.Models;
 namespace ReadingListPlus.Web.Controllers
 {
     [Authorize]
+    [RequireHttps]
     public class ManageController : Controller
     {
         private ApplicationSignInManager _signInManager;

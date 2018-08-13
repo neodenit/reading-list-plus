@@ -14,9 +14,7 @@ using ReadingListPlus.Web.Services.ArticleExtractor;
 namespace ReadingListPlus.Web.Controllers
 {
     [Authorize]
-#if !DEBUG
-[RequireHttps]
-#endif
+    [RequireHttps]
     public class CardsController : Controller
     {
         private ReadingListPlusContext db = new ReadingListPlusContext();

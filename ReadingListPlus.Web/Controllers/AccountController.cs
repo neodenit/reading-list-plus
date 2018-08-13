@@ -14,6 +14,7 @@ using ReadingListPlus.Persistence.Models;
 namespace ReadingListPlus.Web.Controllers
 {
     [Authorize]
+    [RequireHttps]
     public class AccountController : Controller
     {
         private ApplicationSignInManager _signInManager;
