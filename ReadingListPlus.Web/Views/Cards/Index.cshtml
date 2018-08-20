@@ -14,13 +14,7 @@
             @Html.DisplayNameFor(model => model.Position)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Title)
-        </th>
-        <th>
             @Html.DisplayNameFor(model => model.Text)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Url)
         </th>
         <th></th>
     </tr>
@@ -32,13 +26,7 @@
                 @Html.DisplayFor(modelItem => item.Position)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
                 @(item.Text.Substring(0, Math.Min(128, item.Text.Length)) + (item.Text.Length > 128 ? "..." : string.Empty))
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Url)
             </td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
