@@ -69,3 +69,7 @@
 .mainPanelPlaceholder {
     height: 30px;
 }
+
+.w-10 {
+    width: 10%;
+}
