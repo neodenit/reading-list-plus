@@ -73,3 +73,8 @@
 .w-10 {
     width: 10%;
 }
+
+.notes-table td:last-child {
+    text-align: right;
+    white-space: nowrap;
+}
