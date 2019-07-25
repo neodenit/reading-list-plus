@@ -172,7 +172,7 @@ namespace ReadingListPlus.Web.Controllers
                 {
                     DeckID = card.DeckID,
                     Title = card.Title,
-                    Text = card.Text.Trim(),
+                    Text = card.Text,
                     Url = card.Url,
                     Type = card.Type,
                     Discriminator = string.Empty,
