@@ -40,19 +40,16 @@ namespace ReadingListPlus.Persistence.Models
         [NotMapped]
         public bool IsBookmarked { get; set; }
 
-        public bool IsNew { get; set; }
-
+        [NotMapped]
         public string Selection { get; set; }
 
+        [NotMapped]
         public string NextAction { get; set; }
 
-        public int ParentCardID { get; set; }
+        public int? ParentCardID { get; set; }
 
-        public int LastDelay { get; set; }
-
-        public double Coeff { get; set; }
-
-        public string Discriminator { get; set; }
+        [ScriptIgnore(ApplyToOverrides = true)]
+        public virtual Card ParentCard { get; set; }
 
         public bool IsAuthorized(IPrincipal user)
         {

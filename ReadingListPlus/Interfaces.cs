@@ -7,7 +7,5 @@
     public interface ICard
     {
         int Position { get; set; }
-
-        bool IsNew { get; set; }
     }
 }

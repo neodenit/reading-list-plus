@@ -36,13 +36,6 @@ namespace ReadingListPlus
             ExcludePosition(cards, card.Position);
         }
 
-        public static void ShuffleNewCards(IEnumerable<ICard> cards)
-        {
-            var newCards = from item in cards where item.IsNew select item;
-
-            ShuffleCards(newCards);
-        }
-
         public static void ChangeFirstCardPosition(IDeck deck, IEnumerable<ICard> cards, ICard card, Priority priority)
         {
             var maxPosition = GetMaxPosition(cards);
@@ -96,8 +89,6 @@ namespace ReadingListPlus
             ReservePosition(cards, position);
 
             card.Position = position;
-
-            card.IsNew = true;
         }
 
         private static void PrepareForDeletion(IEnumerable<ICard> cards, ICard card, int position)

@@ -162,7 +162,7 @@ namespace ReadingListPlus.Web.Controllers
         // POST: Cards/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "DeckID, Title, Text, Url, Priority, Type")] CreateCardViewModel card)
+        public async Task<ActionResult> Create([Bind(Include = "DeckID, Title, Text, Url, Priority, Type, ParentCardID")] CreateCardViewModel card)
         {
             if (ModelState.IsValid)
             {
@@ -175,7 +175,7 @@ namespace ReadingListPlus.Web.Controllers
                     Text = card.Text,
                     Url = card.Url,
                     Type = card.Type,
-                    Discriminator = string.Empty,
+                    ParentCardID = card.ParentCardID,
                 };
 
                 var deck = db.Decks.Find(newCard.DeckID);

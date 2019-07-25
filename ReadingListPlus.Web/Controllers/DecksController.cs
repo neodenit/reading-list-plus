@@ -110,7 +110,7 @@ namespace ReadingListPlus.Web.Controllers
         // GET: Decks/Create
         public ActionResult Create()
         {
-            var deck = new Deck { Coeff = Settings.Default.Coeff, StartDelay = Settings.Default.StartDelay };
+            var deck = new Deck();
 
             return View(deck);
         }
@@ -118,7 +118,7 @@ namespace ReadingListPlus.Web.Controllers
         // POST: Decks/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "Title,Type,StartDelay,Coeff")] Deck deck)
+        public async Task<ActionResult> Create([Bind(Include = "Title")] Deck deck)
         {
             if (ModelState.IsValid)
             {
@@ -163,7 +163,7 @@ namespace ReadingListPlus.Web.Controllers
         // POST: Decks/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "ID,Title,StartDelay,Coeff,Type")] Deck deck)
+        public async Task<ActionResult> Edit([Bind(Include = "ID, Title")] Deck deck)
         {
             if (ModelState.IsValid)
             {
@@ -179,8 +179,6 @@ namespace ReadingListPlus.Web.Controllers
                 }
 
                 dbDeck.Title = deck.Title;
-                dbDeck.StartDelay = deck.StartDelay;
-                dbDeck.Coeff = deck.Coeff;
 
                 await db.SaveChangesAsync();
 
