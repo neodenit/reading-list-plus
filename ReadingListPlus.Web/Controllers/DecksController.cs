@@ -56,15 +56,17 @@ namespace ReadingListPlus.Web.Controllers
                     var javaScriptSerializer = new JavaScriptSerializer { MaxJsonLength = MaxFileLength };
                     var newDecks = javaScriptSerializer.Deserialize<IEnumerable<Deck>>(jsonString);
 
+                    var userName = User.Identity.Name;
+
                     foreach (var deck in newDecks)
                     {
-                        deck.OwnerID = User.Identity.Name;
+                        deck.OwnerID = userName;
                     }
 
                     var userDecks = db.GetUserDecks(User);
+
                     db.Decks.RemoveRange(userDecks);
                     db.Decks.AddRange(newDecks);
-
                     await db.SaveChangesAsync();
                 }
 
@@ -118,11 +120,15 @@ namespace ReadingListPlus.Web.Controllers
         // POST: Decks/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "Title")] Deck deck)
+        public async Task<ActionResult> Create(DeckViewModel deckViewModel)
         {
             if (ModelState.IsValid)
             {
-                deck.OwnerID = User.Identity.Name;
+                var deck = new Deck
+                {
+                    Title = deckViewModel.Title,
+                    OwnerID = User.Identity.Name
+                };
 
                 db.Decks.Add(deck);
 
@@ -132,7 +138,7 @@ namespace ReadingListPlus.Web.Controllers
             }
             else
             {
-                return View(deck);
+                return View(deckViewModel);
             }
         }
 

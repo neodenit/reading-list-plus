@@ -238,6 +238,7 @@
     <Compile Include="Startup.cs">
       <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
     </Compile>
+    <Compile Include="ViewModels\DeckViewModel.cs" />
     <Compile Include="ViewModels\ImportViewModel.cs" />
   </ItemGroup>
   <ItemGroup>

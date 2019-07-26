@@ -345,8 +345,6 @@ namespace ReadingListPlus.Web.Controllers
 
                 await db.SaveChangesAsync();
 
-                var cards = card.Deck.Cards;
-
                 var selection = TextConverter.GetSelection(text);
 
                 var priorities = GetShortPriorityList();

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Principal;
 using System.Web.Script.Serialization;
@@ -50,6 +51,9 @@ namespace ReadingListPlus.Persistence.Models
 
         [ScriptIgnore(ApplyToOverrides = true)]
         public virtual Card ParentCard { get; set; }
+
+        [ScriptIgnore(ApplyToOverrides = true)]
+        public virtual ICollection<Card> ChildCards { get; set; }
 
         public bool IsAuthorized(IPrincipal user)
         {
