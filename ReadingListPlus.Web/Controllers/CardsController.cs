@@ -37,7 +37,7 @@ namespace ReadingListPlus.Web.Controllers
                 }
                 else
                 {
-                    return View(deck.Cards.OrderBy(c => c.Position).ToList());
+                    return View(deck.ConnectedCards.OrderBy(c => c.Position).ToList());
                 }
             }
         }
@@ -46,13 +46,13 @@ namespace ReadingListPlus.Web.Controllers
         {
             var deck = db.Decks.Find(DeckID);
 
-            var cards = deck.Cards.OrderBy(item => item.Position).ToList();
+            var cards = deck.ConnectedCards.OrderBy(item => item.Position).ToList();
 
-            Enumerable.Range(0, cards.Count).Zip(cards, (i, item) => new { i = i, card = item }).ToList().ForEach(item => item.card.Position = item.i);
+            Enumerable.Range(Constants.FirstCardPosition, cards.Count).Zip(cards, (i, item) => new { i = i, card = item }).ToList().ForEach(item => item.card.Position = item.i);
 
             db.SaveChanges();
 
-            return View("Index", deck.Cards);
+            return View("Index", cards);
         }
 
         public async Task<ActionResult> Details(int? id, int? deckId)
@@ -186,7 +186,7 @@ namespace ReadingListPlus.Web.Controllers
                 }
                 else
                 {
-                    Scheduler.PrepareForAdding(deck, deck.Cards, newCard, priority);
+                    Scheduler.PrepareForAdding(deck, deck.ConnectedCards, newCard, priority);
 
                     db.Cards.Add(newCard);
 
@@ -268,14 +268,14 @@ namespace ReadingListPlus.Web.Controllers
             {
                 return new HttpUnauthorizedResult();
             }
-            else if (card.Position != 0)
+            else if (card.Position != Constants.FirstCardPosition)
             {
                 return RedirectToDeckDetails(card.DeckID);
             }
             else
             {
                 var deck = card.Deck;
-                var deckCards = deck.Cards;
+                var deckCards = deck.ConnectedCards;
 
                 var priority = Scheduler.ParsePriority(Priority);
 
@@ -422,7 +422,13 @@ namespace ReadingListPlus.Web.Controllers
             }
             else
             {
-                return View(card);
+                Scheduler.PrepareForDeletion(card.Deck.ConnectedCards, card);
+
+                card.Position = Constants.DisconnectedCardPosition;
+
+                await db.SaveChangesAsync();
+
+                return RedirectToDeckDetails(card.DeckID);
             }
         }
 
@@ -437,16 +443,18 @@ namespace ReadingListPlus.Web.Controllers
             {
                 return new HttpUnauthorizedResult();
             }
+            else if (card.Position != Constants.DisconnectedCardPosition)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            else
+            {
+                db.Cards.Remove(card);
 
-            var cards = card.Deck.Cards;
+                await db.SaveChangesAsync();
 
-            Scheduler.PrepareForDeletion(cards, card);
-
-            db.Cards.Remove(card);
-
-            await db.SaveChangesAsync();
-
-            return RedirectToDeckDetails(card.DeckID);
+                return RedirectToDeckDetails(card.DeckID);
+            }
         }
 
         private ActionResult RedirectToDeckDetails(int deckID)

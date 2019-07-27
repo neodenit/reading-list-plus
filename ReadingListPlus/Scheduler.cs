@@ -78,9 +78,9 @@ namespace ReadingListPlus
                 case Priority.High:
                     return hi;
                 case Priority.Highest:
-                    return 0;
+                    return Constants.FirstCardPosition;
                 default:
-                    return -1;
+                    return Constants.DisconnectedCardPosition;
             }
         }
 
@@ -95,7 +95,7 @@ namespace ReadingListPlus
         {
             ExcludePosition(cards, position);
 
-            card.Position = -1;
+            card.Position = Constants.DisconnectedCardPosition;
         }
 
         private static void ShuffleCards(IEnumerable<ICard> cards)
@@ -169,7 +169,7 @@ namespace ReadingListPlus
             }
             else
             {
-                return 0;
+                return Constants.FirstCardPosition;
             }
         }
 
@@ -182,7 +182,7 @@ namespace ReadingListPlus
             }
             else
             {
-                return 0;
+                return Constants.FirstCardPosition;
             }
         }
 

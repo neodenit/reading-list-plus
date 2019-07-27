@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Security.Principal;
 
 namespace ReadingListPlus.Persistence.Models
@@ -15,6 +16,8 @@ namespace ReadingListPlus.Persistence.Models
         public string OwnerID { get; set; }
 
         public virtual ICollection<Card> Cards { get; set; }
+
+        public IEnumerable<Card> ConnectedCards => Cards.Where(c => c.Position != Constants.DisconnectedCardPosition);
 
         public bool IsAuthorized(IPrincipal user)
         {

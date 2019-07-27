@@ -29,7 +29,7 @@
                 @Html.ActionLink(item.Title, "Details", new { id = item.ID })
             </td>
             <td>
-                @(item.Cards.Count)
+                @(item.ConnectedCards.Count())
             </td>
             <td>
                 @Html.ActionLink("Options", "Edit", new { id = item.ID })

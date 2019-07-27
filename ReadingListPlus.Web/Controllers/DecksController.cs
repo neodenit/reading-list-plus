@@ -97,9 +97,11 @@ namespace ReadingListPlus.Web.Controllers
                 return new HttpUnauthorizedResult();
             }
 
-            if (deck.Cards.Any())
+            var cards = deck.ConnectedCards;
+
+            if (cards.Any())
             {
-                var card = deck.Cards.GetMinElement(c => c.Position);
+                var card = cards.GetMinElement(c => c.Position);
 
                 return RedirectToAction("Details", "Cards", new { id = card.ID });
             }
