@@ -1,4 +1,6 @@
-﻿@model ReadingListPlus.Web.Models.CreateCardViewModel
+﻿@using ReadingListPlus.App_GlobalResources
+
+@model ReadingListPlus.Web.Models.CreateCardViewModel
 
 @{
     ViewBag.Title = "Create";
@@ -10,7 +12,7 @@
 {
     @Html.AntiForgeryToken()
 
-    <h4>@(Resources.Resources.Item)</h4>
+    <h4>@(Resources.Item)</h4>
     <hr />
 
     @Html.HiddenFor(model => model.NextAction)
@@ -22,7 +24,7 @@
     if (ViewBag.DeckIds != null)
     {
         <div class="form-group">
-            @Html.LabelFor(model => model.DeckID, Resources.Resources.ItemCollection, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.DeckID, Resources.ItemCollection, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-8">
                 @Html.DropDownListFor(model => model.DeckID, ViewBag.DeckIds as IEnumerable<SelectListItem>, htmlAttributes: new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.DeckID, "", new { @class = "text-danger" })
@@ -34,7 +36,7 @@
         @Html.HiddenFor(model => model.DeckID)
 
         <div class="form-group">
-            <label class="control-label col-md-2">@(Resources.Resources.ItemCollection)</label>
+            <label class="control-label col-md-2">@(Resources.ItemCollection)</label>
             <div class="col-md-8">
                 <p class="form-control-static">@Html.DisplayFor(model => model.Deck.Title)</p>
             </div>

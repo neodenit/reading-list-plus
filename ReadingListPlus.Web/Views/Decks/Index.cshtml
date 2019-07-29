@@ -1,12 +1,13 @@
-﻿@model IEnumerable<ReadingListPlus.Persistence.Models.Deck>
-
+﻿@using ReadingListPlus.App_GlobalResources
 @using ReadingListPlus.Web.Controllers
 
+@model IEnumerable<ReadingListPlus.Persistence.Models.Deck>
+
 @{
-    ViewBag.Title = Resources.Resources.ItemCollectionPlural;
+    ViewBag.Title = Resources.ItemCollections;
 }
 
-<h2>@(Resources.Resources.ItemCollectionPlural)</h2>
+<h2>@(Resources.ItemCollections)</h2>
 
 <p>
     @Html.ActionLink("Add New", "Create")
@@ -17,7 +18,7 @@
             @Html.DisplayNameFor(model => model.Title)
         </th>
         <th>
-            @(Resources.Resources.ItemPlural)
+            @(Resources.Items)
         </th>
         <th></th>
     </tr>

@@ -1,9 +1,11 @@
-﻿@{
-    ViewBag.Title = Resources.Resources.ApplicationName;
+﻿@using ReadingListPlus.App_GlobalResources
+
+@{
+    ViewBag.Title = Resources.ApplicationName;
 }
 
 <div class="jumbotron">
-    <h1>@(Resources.Resources.ApplicationName)</h1>
+    <h1>@(Resources.ApplicationName)</h1>
     <p class="lead">Please log in.</p>
 </div>
 
@@ -11,7 +13,7 @@
     <div class="col-md-12">
         <h2>Getting started</h2>
         <p>
-            @(Resources.Resources.ApplicationName)
+            @(Resources.ApplicationName)
         </p>
     </div>
 </div>

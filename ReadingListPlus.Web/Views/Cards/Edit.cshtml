@@ -1,4 +1,6 @@
-﻿@model ReadingListPlus.Persistence.Models.Card
+﻿@using ReadingListPlus.App_GlobalResources
+
+@model ReadingListPlus.Persistence.Models.Card
 
 @{
     ViewBag.Title = "Edit";
@@ -12,7 +14,7 @@
     @Html.AntiForgeryToken()
 
     <div class="form-horizontal">
-        <h4>@(Resources.Resources.Item)</h4>
+        <h4>@(Resources.Item)</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.ID)

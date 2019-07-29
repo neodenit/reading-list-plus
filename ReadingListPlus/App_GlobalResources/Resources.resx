@@ -123,10 +123,10 @@
   <data name="ItemCollection" xml:space="preserve">
     <value>Topic</value>
   </data>
-  <data name="ItemCollectionPlural" xml:space="preserve">
+  <data name="ItemCollections" xml:space="preserve">
     <value>Topics</value>
   </data>
-  <data name="ItemPlural" xml:space="preserve">
+  <data name="Items" xml:space="preserve">
     <value>Notes</value>
   </data>
   <data name="ApplicationName" xml:space="preserve">

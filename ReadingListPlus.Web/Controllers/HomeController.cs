@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
+using ReadingListPlus.App_GlobalResources;
 
 namespace ReadingListPlus.Web.Controllers
 {
@@ -10,7 +7,7 @@ namespace ReadingListPlus.Web.Controllers
     {
         public ActionResult Index()
         {
-            ViewBag.Message = Resources.Resources.ApplicationName;
+            ViewBag.Message = Resources.ApplicationName;
 
             if (User.Identity.IsAuthenticated)
             {
@@ -24,14 +21,14 @@ namespace ReadingListPlus.Web.Controllers
 
         public ActionResult About()
         {
-            ViewBag.Message = Resources.Resources.ApplicationName;
+            ViewBag.Message = Resources.ApplicationName;
 
             return View();
         }
 
         public ActionResult Contact()
         {
-            ViewBag.Message = Resources.Resources.ApplicationName;
+            ViewBag.Message = Resources.ApplicationName;
 
             return View();
         }

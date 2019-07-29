@@ -1,12 +1,14 @@
-﻿@model ReadingListPlus.Persistence.Models.Card
+﻿@using ReadingListPlus.App_GlobalResources
+
+@model ReadingListPlus.Persistence.Models.Card
 
 @{
     ViewBag.Title = $"{Model.Deck.Title} - Review";
 }
 
 @section scripts {
-<script src="~/Scripts/App/TextConverter.js"></script>
-<script src="~/Scripts/App/Cards.js"></script>
+    <script src="~/Scripts/App/TextConverter.js"></script>
+    <script src="~/Scripts/App/Cards.js"></script>
 }
 
 @using (Html.BeginForm("Details", "Cards", FormMethod.Post, new { id = "myForm" }))
@@ -22,7 +24,7 @@
         @if (Model.ID == -1)
         {
             <div id="topPanel" class="actions">
-                @Html.ActionLink($"Add {Resources.Resources.Item}", "Create", new { DeckID = Model.Deck.ID })
+                @Html.ActionLink($"Add {Resources.Item}", "Create", new { DeckID = Model.Deck.ID })
             </div>
             <hr />
             <div id="scrollArea">
@@ -35,8 +37,8 @@
         {
             <p>
                 <div id="topPanel" class="actions">
-                    @Html.ActionLink($"Add {Resources.Resources.Item}", "Create", new { DeckID = Model.DeckID }) |
-                    @Html.ActionLink($"Edit {Resources.Resources.Item}", "Edit", new { id = Model.ID }) |
+                    @Html.ActionLink($"Add {Resources.Item}", "Create", new { DeckID = Model.DeckID }) |
+                    @Html.ActionLink($"Edit {Resources.Item}", "Edit", new { id = Model.ID }) |
                     @Html.ActionLink("Index", "Index", new { DeckID = Model.DeckID })
                 </div>
                 <hr />
@@ -89,9 +91,9 @@
             </p>
 
             <hr />
-            
+
             <div id="bottomPanel" class="actions">
-                @Html.ActionLink($"Delete {Resources.Resources.Item}", "Delete", new { id = Model.ID })
+                @Html.ActionLink($"Delete {Resources.Item}", "Delete", new { id = Model.ID })
             </div>
         }
 

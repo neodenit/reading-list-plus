@@ -1,4 +1,6 @@
-﻿@model ReadingListPlus.Persistence.Models.Card
+﻿@using ReadingListPlus.App_GlobalResources
+
+@model ReadingListPlus.Persistence.Models.Card
 
 @{
     ViewBag.Title = "Delete";
@@ -6,12 +8,12 @@
 
 <h2>Delete</h2>
 
-<h3>Are you sure you want to delete this @(Resources.Resources.Item.ToLower())?</h3>
+<h3>Are you sure you want to delete this @(Resources.Item.ToLower())?</h3>
 <div>
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @(Resources.Resources.ItemCollection)
+            @(Resources.ItemCollection)
         </dt>
 
         <dd>

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.25914.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29102.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{DA5D5C92-2525-4DCA-9B77-6235D2E288D1}"
 	ProjectSection(SolutionItems) = preProject
@@ -17,6 +17,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadingListPlus.Web", "ReadingListPlus.Web\ReadingListPlus.Web.csproj", "{1C82468E-77F8-44FA-BE30-DC56BE50B3CF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadingListPlus.Persistence", "ReadingListPlus.Persistence\ReadingListPlus.Persistence.csproj", "{357B2001-C26E-4CB7-AB4A-344F9DF27738}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadingListPlus.Services", "ReadingListPlus.Services\ReadingListPlus.Services.csproj", "{E28DAA11-0CFF-4843-BA28-54C4D3E8757F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadingListPlus.Repositories", "ReadingListPlus.Repositories\ReadingListPlus.Repositories.csproj", "{0A6289C5-7FC5-4850-B1F7-44A30E7E1B90}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadingListPlus.Web.Core", "ReadingListPlus.Web.Core\ReadingListPlus.Web.Core.csproj", "{8FD8AE24-A340-4946-9354-CD701AED78ED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,8 +46,23 @@ Global
 		{357B2001-C26E-4CB7-AB4A-344F9DF27738}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{357B2001-C26E-4CB7-AB4A-344F9DF27738}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{357B2001-C26E-4CB7-AB4A-344F9DF27738}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E28DAA11-0CFF-4843-BA28-54C4D3E8757F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E28DAA11-0CFF-4843-BA28-54C4D3E8757F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E28DAA11-0CFF-4843-BA28-54C4D3E8757F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E28DAA11-0CFF-4843-BA28-54C4D3E8757F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A6289C5-7FC5-4850-B1F7-44A30E7E1B90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A6289C5-7FC5-4850-B1F7-44A30E7E1B90}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A6289C5-7FC5-4850-B1F7-44A30E7E1B90}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A6289C5-7FC5-4850-B1F7-44A30E7E1B90}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8FD8AE24-A340-4946-9354-CD701AED78ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8FD8AE24-A340-4946-9354-CD701AED78ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8FD8AE24-A340-4946-9354-CD701AED78ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8FD8AE24-A340-4946-9354-CD701AED78ED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {72C499AF-73BC-4687-B8BC-63E2E38E0309}
 	EndGlobalSection
 EndGlobal

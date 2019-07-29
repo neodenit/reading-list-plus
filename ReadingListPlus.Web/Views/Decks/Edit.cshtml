@@ -1,4 +1,6 @@
-﻿@model ReadingListPlus.Persistence.Models.Deck
+﻿@using ReadingListPlus.App_GlobalResources
+
+@model ReadingListPlus.Persistence.Models.Deck
 
 @{
     ViewBag.Title = "Edit";
@@ -12,7 +14,7 @@
     @Html.AntiForgeryToken()
 
     <div class="form-horizontal">
-        <h4>@(Resources.Resources.ItemCollection)</h4>
+        <h4>@(Resources.ItemCollection)</h4>
 
         <hr />
 
