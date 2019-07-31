@@ -18,11 +18,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadingListPlus.Web", "Read
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadingListPlus.Persistence", "ReadingListPlus.Persistence\ReadingListPlus.Persistence.csproj", "{357B2001-C26E-4CB7-AB4A-344F9DF27738}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadingListPlus.Services", "ReadingListPlus.Services\ReadingListPlus.Services.csproj", "{E28DAA11-0CFF-4843-BA28-54C4D3E8757F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadingListPlus.Services", "ReadingListPlus.Services\ReadingListPlus.Services.csproj", "{E28DAA11-0CFF-4843-BA28-54C4D3E8757F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadingListPlus.Repositories", "ReadingListPlus.Repositories\ReadingListPlus.Repositories.csproj", "{0A6289C5-7FC5-4850-B1F7-44A30E7E1B90}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadingListPlus.Repositories", "ReadingListPlus.Repositories\ReadingListPlus.Repositories.csproj", "{0A6289C5-7FC5-4850-B1F7-44A30E7E1B90}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadingListPlus.Web.Core", "ReadingListPlus.Web.Core\ReadingListPlus.Web.Core.csproj", "{8FD8AE24-A340-4946-9354-CD701AED78ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadingListPlus.Web.Core", "ReadingListPlus.Web.Core\ReadingListPlus.Web.Core.csproj", "{8FD8AE24-A340-4946-9354-CD701AED78ED}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadingListPlus.DataAccess", "ReadingListPlus.DataAccess\ReadingListPlus.DataAccess.csproj", "{D9184BC3-1AC7-4D71-91A5-11E3D7EFDF3E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -58,6 +60,10 @@ Global
 		{8FD8AE24-A340-4946-9354-CD701AED78ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8FD8AE24-A340-4946-9354-CD701AED78ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8FD8AE24-A340-4946-9354-CD701AED78ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9184BC3-1AC7-4D71-91A5-11E3D7EFDF3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9184BC3-1AC7-4D71-91A5-11E3D7EFDF3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9184BC3-1AC7-4D71-91A5-11E3D7EFDF3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9184BC3-1AC7-4D71-91A5-11E3D7EFDF3E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

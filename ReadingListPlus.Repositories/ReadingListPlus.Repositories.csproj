@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ReadingListPlus.Persistence\ReadingListPlus.Persistence.csproj" />
+    <ProjectReference Include="..\ReadingListPlus.Persistence.Standard\ReadingListPlus.DataAccess.csproj" />
   </ItemGroup>
 
 </Project>
