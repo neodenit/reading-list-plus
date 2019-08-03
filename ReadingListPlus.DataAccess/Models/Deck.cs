@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Security.Principal;
 
@@ -15,8 +16,9 @@ namespace ReadingListPlus.DataAccess.Models
         [Required]
         public string OwnerID { get; set; }
 
-        public virtual ICollection<Card> Cards { get; set; }
+        public ICollection<Card> Cards { get; set; }
 
+        [NotMapped]
         public IEnumerable<Card> ConnectedCards => Cards.Where(c => c.Position != Constants.DisconnectedCardPosition);
 
         public bool IsAuthorized(IPrincipal user)

@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Principal;
-using System.Web.Script.Serialization;
+using Newtonsoft.Json;
 
 namespace ReadingListPlus.DataAccess.Models
 {
@@ -19,8 +19,9 @@ namespace ReadingListPlus.DataAccess.Models
 
         public int DeckID { get; set; }
 
-        [ScriptIgnore(ApplyToOverrides = true)]
-        public virtual Deck Deck { get; set; }
+        [JsonIgnore]
+        [NotMapped]
+        public Deck Deck { get; set; }
 
         public CardType Type { get; set; }
 
@@ -49,11 +50,12 @@ namespace ReadingListPlus.DataAccess.Models
 
         public int? ParentCardID { get; set; }
 
-        [ScriptIgnore(ApplyToOverrides = true)]
-        public virtual Card ParentCard { get; set; }
+        [JsonIgnore]
+        [NotMapped]
+        public Card ParentCard { get; set; }
 
-        [ScriptIgnore(ApplyToOverrides = true)]
-        public virtual ICollection<Card> ChildCards { get; set; }
+        [JsonIgnore]
+        public ICollection<Card> ChildCards { get; set; }
 
         public bool IsAuthorized(IPrincipal user)
         {
