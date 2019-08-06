@@ -1,0 +1,101 @@
+﻿@using ReadingListPlus.App_GlobalResources
+
+@model ReadingListPlus.DataAccess.Models.Card
+
+@{
+    ViewBag.Title = $"{Model.Deck.Title} - Review";
+}
+
+@section scripts {
+    <script src="~/Scripts/App/TextConverter.js"></script>
+    <script src="~/Scripts/App/Cards.js"></script>
+}
+
+@using (Html.BeginForm("Details", "Cards", FormMethod.Post, new { id = "myForm" }))
+{
+    <fieldset>
+        @Html.HiddenFor(model => model.ID)
+        @Html.HiddenFor(model => model.Selection)
+        @Html.HiddenFor(model => model.NextAction)
+        @Html.HiddenFor(model => model.DeckID)
+        @Html.HiddenFor(model => model.IsBookmarked)
+        @Html.HiddenFor(model => model.Type, new { @Value = (int)Model.Type })
+
+        @if (Model.ID == -1)
+        {
+            <div id="topPanel" class="actions">
+                @Html.ActionLink($"Add {Resources.Item}", "Create", new { DeckID = Model.Deck.ID })
+            </div>
+            <hr />
+            <div id="scrollArea">
+                <p>
+                    It's lonely here.
+                </p>
+            </div>
+        }
+        else
+        {
+            <p>
+                <div id="topPanel" class="actions">
+                    @Html.ActionLink($"Add {Resources.Item}", "Create", new { DeckID = Model.DeckID }) |
+                    @Html.ActionLink($"Edit {Resources.Item}", "Edit", new { id = Model.ID }) |
+                    @Html.ActionLink("Index", "Index", new { DeckID = Model.DeckID })
+                </div>
+                <hr />
+                <div id="scrollArea" class="mainPanelPlaceholder">
+                    <div id="mainPanel" class="actions">
+                        <a href="#" id="Extract" class="act">Extract</a> |
+                        <a href="#" id="Bookmark" class="act">Bookmark</a> |
+                        <a href="#" id="Highlight" class="act">Highlight</a> |
+                        <a href="#" id="Cloze" class="act">Cloze</a> |
+                        <a href="#" id="DeleteRegion" class="act">Drop</a> |
+                        <span>New priority:</span>
+                        <a href="#" id="PostponeHigh" class="act">High</a> |
+                        <a href="#" id="PostponeMedium" class="act">Medium</a> |
+                        <a href="#" id="PostponeLow" class="act">Low</a>
+                    </div>
+                </div>
+            </p>
+
+            <div id="ModalDialog" class="modal fade" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">Confirmation</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>Are you sure you want to evaluate the note without bookmarking it first?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="YesButton" type="button" class="btn btn-primary">Yes</button>
+                            <button id="NoButton" type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h2>
+                @Html.DisplayFor(model => model.Title)
+            </h2>
+
+            if (!string.IsNullOrEmpty(Model.Url))
+            {
+                @Html.DisplayFor(model => model.Url)
+            }
+
+            <p>
+                <div id="article">
+                    @Html.Raw(Model.HtmlText)
+                </div>
+            </p>
+
+            <hr />
+
+            <div id="bottomPanel" class="actions">
+                @Html.ActionLink($"Delete {Resources.Item}", "Delete", new { id = Model.ID })
+            </div>
+        }
+
+    </fieldset>
+}

@@ -19,7 +19,7 @@ namespace ReadingListPlus.DataAccess.Models
         public ICollection<Card> Cards { get; set; }
 
         [NotMapped]
-        public IEnumerable<Card> ConnectedCards => Cards.Where(c => c.Position != Constants.DisconnectedCardPosition);
+        public IEnumerable<Card> ConnectedCards => Cards?.Where(c => c.Position != Constants.DisconnectedCardPosition);
 
         public bool IsAuthorized(IPrincipal user)
         {

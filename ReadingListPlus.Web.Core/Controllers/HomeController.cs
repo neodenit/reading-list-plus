@@ -8,7 +8,14 @@ namespace ReadingListPlus.Web.Core.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Decks");
+            }
+            else
+            {
+                return View();
+            }
         }
 
         public IActionResult About()

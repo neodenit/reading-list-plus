@@ -1,0 +1,23 @@
+﻿@model ReadingListPlus.Web.Core.ViewModels.ImportViewModel
+
+@using ReadingListPlus.Web.Core.Controllers
+
+@{
+    ViewBag.Title = "Import/Export";
+}
+
+@section scripts {
+    <script src="~/js/App/Import.js"></script>
+}
+
+<h2>Import/Export</h2>
+
+<p>
+    @Html.ActionLink("Export Knowledge Base", nameof(DecksController.Export))
+</p>
+
+@using (Html.BeginForm(nameof(DecksController.Import), "Decks", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.TextBoxFor(m => m.File, new { type = "file" })
+    @Html.ValidationMessageFor(m => m.File)
+}
