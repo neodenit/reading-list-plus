@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System;
+using Microsoft.AspNetCore.Identity;
 
 namespace ReadingListPlus.DataAccess
 {
     public class ApplicationUser : IdentityUser
     {
-        public int? LastDeck { get; set; }
+        public Guid? LastDeck { get; set; }
     }
 }

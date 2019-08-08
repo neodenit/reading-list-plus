@@ -10,8 +10,8 @@ using ReadingListPlus.DataAccess;
 namespace ReadingListPlus.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20190803174534_initial")]
-    partial class initial
+    [Migration("20190808192323_Initialize")]
+    partial class Initialize
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -146,7 +146,7 @@ namespace ReadingListPlus.DataAccess.Migrations
 
                     b.Property<bool>("EmailConfirmed");
 
-                    b.Property<int?>("LastDeck");
+                    b.Property<Guid?>("LastDeck");
 
                     b.Property<bool>("LockoutEnabled");
 
@@ -186,15 +186,11 @@ namespace ReadingListPlus.DataAccess.Migrations
 
             modelBuilder.Entity("ReadingListPlus.DataAccess.Models.Card", b =>
                 {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<Guid>("ID");
 
-                    b.Property<int?>("CardID");
+                    b.Property<Guid?>("DeckID");
 
-                    b.Property<int>("DeckID");
-
-                    b.Property<int?>("ParentCardID");
+                    b.Property<Guid?>("ParentCardID");
 
                     b.Property<int>("Position");
 
@@ -209,18 +205,16 @@ namespace ReadingListPlus.DataAccess.Migrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("CardID");
-
                     b.HasIndex("DeckID");
+
+                    b.HasIndex("ParentCardID");
 
                     b.ToTable("Cards");
                 });
 
             modelBuilder.Entity("ReadingListPlus.DataAccess.Models.Deck", b =>
                 {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<Guid>("ID");
 
                     b.Property<string>("OwnerID")
                         .IsRequired();
@@ -280,14 +274,13 @@ namespace ReadingListPlus.DataAccess.Migrations
 
             modelBuilder.Entity("ReadingListPlus.DataAccess.Models.Card", b =>
                 {
-                    b.HasOne("ReadingListPlus.DataAccess.Models.Card")
-                        .WithMany("ChildCards")
-                        .HasForeignKey("CardID");
-
-                    b.HasOne("ReadingListPlus.DataAccess.Models.Deck")
+                    b.HasOne("ReadingListPlus.DataAccess.Models.Deck", "Deck")
                         .WithMany("Cards")
-                        .HasForeignKey("DeckID")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("DeckID");
+
+                    b.HasOne("ReadingListPlus.DataAccess.Models.Card", "ParentCard")
+                        .WithMany("ChildCards")
+                        .HasForeignKey("ParentCardID");
                 });
 #pragma warning restore 612, 618
         }

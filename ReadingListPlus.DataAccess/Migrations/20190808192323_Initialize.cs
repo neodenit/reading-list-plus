@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ReadingListPlus.DataAccess.Migrations
 {
-    public partial class initial : Migration
+    public partial class Initialize : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -41,7 +41,7 @@ namespace ReadingListPlus.DataAccess.Migrations
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     AccessFailedCount = table.Column<int>(nullable: false),
-                    LastDeck = table.Column<int>(nullable: true)
+                    LastDeck = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -52,8 +52,7 @@ namespace ReadingListPlus.DataAccess.Migrations
                 name: "Decks",
                 columns: table => new
                 {
-                    ID = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    ID = table.Column<Guid>(nullable: false),
                     Title = table.Column<string>(nullable: false),
                     OwnerID = table.Column<string>(nullable: false)
                 },
@@ -172,32 +171,30 @@ namespace ReadingListPlus.DataAccess.Migrations
                 name: "Cards",
                 columns: table => new
                 {
-                    ID = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    DeckID = table.Column<int>(nullable: false),
+                    ID = table.Column<Guid>(nullable: false),
+                    DeckID = table.Column<Guid>(nullable: true),
                     Type = table.Column<int>(nullable: false),
                     Title = table.Column<string>(nullable: true),
                     Text = table.Column<string>(nullable: false),
                     Position = table.Column<int>(nullable: false),
                     Url = table.Column<string>(nullable: true),
-                    ParentCardID = table.Column<int>(nullable: true),
-                    CardID = table.Column<int>(nullable: true)
+                    ParentCardID = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Cards", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Cards_Cards_CardID",
-                        column: x => x.CardID,
-                        principalTable: "Cards",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
                         name: "FK_Cards_Decks_DeckID",
                         column: x => x.DeckID,
                         principalTable: "Decks",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Cards_Cards_ParentCardID",
+                        column: x => x.ParentCardID,
+                        principalTable: "Cards",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -240,14 +237,14 @@ namespace ReadingListPlus.DataAccess.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Cards_CardID",
-                table: "Cards",
-                column: "CardID");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Cards_DeckID",
                 table: "Cards",
                 column: "DeckID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Cards_ParentCardID",
+                table: "Cards",
+                column: "ParentCardID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

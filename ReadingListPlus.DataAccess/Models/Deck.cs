@@ -1,14 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Security.Principal;
+using Newtonsoft.Json;
 
 namespace ReadingListPlus.DataAccess.Models
 {
     public class Deck : IDeck
     {
-        public int ID { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [JsonIgnore]
+        public Guid ID { get; set; }
 
         [Required]
         public string Title { get; set; }

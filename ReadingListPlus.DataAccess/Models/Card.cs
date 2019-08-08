@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Principal;
@@ -15,12 +16,15 @@ namespace ReadingListPlus.DataAccess.Models
 
     public class Card : ICard
     {
-        public int ID { get; set; }
-
-        public int DeckID { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [JsonIgnore]
+        public Guid ID { get; set; }
 
         [JsonIgnore]
-        [NotMapped]
+        public Guid? DeckID { get; set; }
+
+        [JsonIgnore]
         public Deck Deck { get; set; }
 
         public CardType Type { get; set; }
@@ -48,13 +52,16 @@ namespace ReadingListPlus.DataAccess.Models
         [NotMapped]
         public string NextAction { get; set; }
 
-        public int? ParentCardID { get; set; }
+        [ForeignKey(nameof(Card))]
+        [JsonIgnore]
+        public Guid? ParentCardID { get; set; }
 
         [JsonIgnore]
-        [NotMapped]
+        [ForeignKey(nameof(ParentCardID))]
         public Card ParentCard { get; set; }
 
         [JsonIgnore]
+        [ForeignKey(nameof(ParentCardID))]
         public ICollection<Card> ChildCards { get; set; }
 
         public bool IsAuthorized(IPrincipal user)

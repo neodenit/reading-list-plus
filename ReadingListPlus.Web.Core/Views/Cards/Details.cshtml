@@ -21,7 +21,7 @@
         @Html.HiddenFor(model => model.IsBookmarked)
         @Html.HiddenFor(model => model.Type, new { @Value = (int)Model.Type })
 
-        @if (Model.ID == -1)
+        @if (Model.ID == Guid.Empty)
         {
             <div id="topPanel" class="actions">
                 @Html.ActionLink($"Add {Resources.Item}", "Create", new { DeckID = Model.Deck.ID })

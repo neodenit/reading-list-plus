@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -56,10 +57,16 @@ namespace ReadingListPlus.Web.Core.Controllers
                     var newDecks = jsonSerializer.Deserialize<IEnumerable<Deck>>(jsonReader);
 
                     var userName = User.Identity.Name;
-
                     foreach (var deck in newDecks)
                     {
                         deck.OwnerID = userName;
+
+                        deck.ID = Guid.NewGuid();
+
+                        foreach (var card in deck.Cards)
+                        {
+                            card.ID = Guid.NewGuid();
+                        }
                     }
 
                     var userDecks = db.GetUserDecks(User);
@@ -80,7 +87,7 @@ namespace ReadingListPlus.Web.Core.Controllers
         }
 
         // GET: Decks/Details/5
-        public async Task<ActionResult> Details(int? id)
+        public async Task<ActionResult> Details(Guid? id)
         {
             if (id == null)
             {
@@ -129,6 +136,7 @@ namespace ReadingListPlus.Web.Core.Controllers
             {
                 var deck = new Deck
                 {
+                    ID = Guid.NewGuid(),
                     Title = deckViewModel.Title,
                     OwnerID = User.Identity.Name
                 };

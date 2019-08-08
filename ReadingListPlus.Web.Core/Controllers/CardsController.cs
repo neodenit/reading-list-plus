@@ -61,7 +61,7 @@ namespace ReadingListPlus.Web.Core.Controllers
             return View("Index", cards);
         }
 
-        public async Task<ActionResult> Details(int? id, int? deckId)
+        public async Task<ActionResult> Details(Guid? id, int? deckId)
         {
             if (id == null)
             {
@@ -72,7 +72,7 @@ namespace ReadingListPlus.Web.Core.Controllers
                 else
                 {
                     var deck = await db.Decks.FindAsync(deckId);
-                    return View(new Card { Deck = deck, ID = -1 });
+                    return View(new Card { Deck = deck, ID = Guid.Empty });
                 }
             }
             else
@@ -176,6 +176,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
                 var newCard = new Card
                 {
+                    ID = Guid.NewGuid(),
                     DeckID = card.DeckID,
                     Title = card.Title,
                     Text = card.Text,
@@ -293,7 +294,7 @@ namespace ReadingListPlus.Web.Core.Controllers
             }
         }
 
-        public async Task<ActionResult> Highlight(int ID, string text)
+        public async Task<ActionResult> Highlight(Guid ID, string text)
         {
             var card = await db.Cards.FindAsync(ID);
 
@@ -313,7 +314,7 @@ namespace ReadingListPlus.Web.Core.Controllers
             }
         }
 
-        public async Task<ActionResult> Cloze(int ID, string text)
+        public async Task<ActionResult> Cloze(Guid ID, string text)
         {
             var card = await db.Cards.FindAsync(ID);
 
@@ -333,7 +334,7 @@ namespace ReadingListPlus.Web.Core.Controllers
             }
         }
 
-        public async Task<ActionResult> Extract(int ID, string text)
+        public async Task<ActionResult> Extract(Guid ID, string text)
         {
             var card = await db.Cards.FindAsync(ID);
 
@@ -361,7 +362,7 @@ namespace ReadingListPlus.Web.Core.Controllers
             }
         }
 
-        public async Task<ActionResult> Bookmark(int ID, string text)
+        public async Task<ActionResult> Bookmark(Guid ID, string text)
         {
             var card = await db.Cards.FindAsync(ID);
 
@@ -387,7 +388,7 @@ namespace ReadingListPlus.Web.Core.Controllers
             }
         }
 
-        public async Task<ActionResult> DeleteRegion(int ID, string text)
+        public async Task<ActionResult> DeleteRegion(Guid ID, string text)
         {
             var card = await db.Cards.FindAsync(ID);
 
@@ -441,7 +442,7 @@ namespace ReadingListPlus.Web.Core.Controllers
         // POST: Cards/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(int id)
+        public async Task<ActionResult> DeleteConfirmed(Guid id)
         {
             var card = await db.Cards.Include(c => c.Deck.Cards).SingleAsync(c => c.ID == id);
 
@@ -463,7 +464,7 @@ namespace ReadingListPlus.Web.Core.Controllers
             }
         }
 
-        private ActionResult RedirectToDeckDetails(int deckID)
+        private ActionResult RedirectToDeckDetails(Guid? deckID)
         {
             return RedirectToAction("Details", "Decks", new { id = deckID });
         }
