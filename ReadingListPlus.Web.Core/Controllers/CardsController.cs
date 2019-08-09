@@ -27,7 +27,7 @@ namespace ReadingListPlus.Web.Core.Controllers
         }
 
         // GET: Cards
-        public async Task<ActionResult> Index(int? DeckID)
+        public async Task<ActionResult> Index(Guid? DeckID)
         {
             if (DeckID == null)
             {
@@ -35,7 +35,7 @@ namespace ReadingListPlus.Web.Core.Controllers
             }
             else
             {
-                var deck = await db.Decks.FindAsync(DeckID);
+                var deck = await db.GetDeckAsync(DeckID.Value);
 
                 if (!deck.IsAuthorized(User))
                 {
@@ -48,9 +48,9 @@ namespace ReadingListPlus.Web.Core.Controllers
             }
         }
 
-        public ActionResult Fix(int DeckID)
+        public async Task<ActionResult> Fix(Guid DeckID)
         {
-            var deck = db.Decks.Find(DeckID);
+            var deck = await db.GetDeckAsync(DeckID);
 
             var cards = deck.ConnectedCards.OrderBy(item => item.Position).ToList();
 
@@ -61,7 +61,7 @@ namespace ReadingListPlus.Web.Core.Controllers
             return View("Index", cards);
         }
 
-        public async Task<ActionResult> Details(Guid? id, int? deckId)
+        public async Task<ActionResult> Details(Guid? id, Guid? deckId)
         {
             if (id == null)
             {
@@ -71,13 +71,13 @@ namespace ReadingListPlus.Web.Core.Controllers
                 }
                 else
                 {
-                    var deck = await db.Decks.FindAsync(deckId);
+                    var deck = await db.GetDeckAsync(deckId.Value);
                     return View(new Card { Deck = deck, ID = Guid.Empty });
                 }
             }
             else
             {
-                var card = await db.Cards.FindAsync(id);
+                var card = await db.GetCardAsync(id.Value);
 
                 if (card == null)
                 {
@@ -117,7 +117,7 @@ namespace ReadingListPlus.Web.Core.Controllers
         }
 
         // GET: Cards/Create/5
-        public async Task<ActionResult> Create(int? deckID, string text)
+        public async Task<ActionResult> Create(Guid? deckID, string text)
         {
             if (deckID == null)
             {
@@ -137,7 +137,7 @@ namespace ReadingListPlus.Web.Core.Controllers
             }
             else
             {
-                var deck = await db.Decks.FindAsync(deckID);
+                var deck = await db.GetDeckAsync(deckID.Value);
                 var priorities = GetFullPriorityList();
 
                 var card = new CreateCardViewModel { DeckID = deck.ID, Deck = deck, Text = text, PriorityList = priorities, Type = CardType.Common };
@@ -185,7 +185,7 @@ namespace ReadingListPlus.Web.Core.Controllers
                     ParentCardID = card.ParentCardID,
                 };
 
-                var deck = db.Decks.Find(newCard.DeckID);
+                var deck = await db.GetDeckAsync(newCard.DeckID.Value);
 
                 if (!deck.IsAuthorized(User))
                 {
@@ -212,14 +212,14 @@ namespace ReadingListPlus.Web.Core.Controllers
         }
 
         // GET: Cards/Edit/5
-        public async Task<ActionResult> Edit(int? id)
+        public async Task<ActionResult> Edit(Guid? id)
         {
             if (id == null)
             {
                 return BadRequest();
             }
 
-            var card = await db.Cards.FindAsync(id);
+            var card = await db.GetCardAsync(id.Value);
 
             if (card == null)
             {
@@ -242,7 +242,7 @@ namespace ReadingListPlus.Web.Core.Controllers
         {
             if (ModelState.IsValid)
             {
-                var dbCard = await db.Cards.FindAsync(card.ID);
+                var dbCard = await db.GetCardAsync(card.ID);
 
                 if (!dbCard.IsAuthorized(User))
                 {
@@ -267,9 +267,9 @@ namespace ReadingListPlus.Web.Core.Controllers
         }
 
         #region Actions
-        public async Task<ActionResult> Postpone(int ID, string Priority)
+        public async Task<ActionResult> Postpone(Guid ID, string Priority)
         {
-            var card = await db.Cards.FindAsync(ID);
+            var card = await db.GetCardAsync(ID);
 
             if (!card.IsAuthorized(User))
             {
@@ -296,7 +296,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
         public async Task<ActionResult> Highlight(Guid ID, string text)
         {
-            var card = await db.Cards.FindAsync(ID);
+            var card = await db.GetCardAsync(ID);
 
             if (!card.IsAuthorized(User))
             {
@@ -316,7 +316,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
         public async Task<ActionResult> Cloze(Guid ID, string text)
         {
-            var card = await db.Cards.FindAsync(ID);
+            var card = await db.GetCardAsync(ID);
 
             if (!card.IsAuthorized(User))
             {
@@ -336,7 +336,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
         public async Task<ActionResult> Extract(Guid ID, string text)
         {
-            var card = await db.Cards.FindAsync(ID);
+            var card = await db.GetCardAsync(ID);
 
             if (!card.IsAuthorized(User))
             {
@@ -364,7 +364,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
         public async Task<ActionResult> Bookmark(Guid ID, string text)
         {
-            var card = await db.Cards.FindAsync(ID);
+            var card = await db.GetCardAsync(ID);
 
             if (!card.IsAuthorized(User))
             {
@@ -390,7 +390,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
         public async Task<ActionResult> DeleteRegion(Guid ID, string text)
         {
-            var card = await db.Cards.FindAsync(ID);
+            var card = await db.GetCardAsync(ID);
 
             if (!card.IsAuthorized(User))
             {
@@ -410,14 +410,14 @@ namespace ReadingListPlus.Web.Core.Controllers
         #endregion
 
         // GET: Cards/Delete/5
-        public async Task<ActionResult> Delete(int? id)
+        public async Task<ActionResult> Delete(Guid? id)
         {
             if (id == null)
             {
                 return BadRequest();
             }
 
-            var card = await db.Cards.FindAsync(id);
+            var card = await db.GetCardAsync(id.Value);
 
             if (card == null)
             {
@@ -444,7 +444,7 @@ namespace ReadingListPlus.Web.Core.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(Guid id)
         {
-            var card = await db.Cards.Include(c => c.Deck.Cards).SingleAsync(c => c.ID == id);
+            var card = await db.GetCardAsync(id);
 
             if (!card.IsAuthorized(User))
             {

@@ -94,7 +94,7 @@ namespace ReadingListPlus.Web.Core.Controllers
                 return BadRequest();
             }
 
-            var deck = await db.Decks.FindAsync(id);
+            var deck = await db.GetDeckAsync(id.Value);
 
             if (deck == null)
             {
@@ -154,14 +154,14 @@ namespace ReadingListPlus.Web.Core.Controllers
         }
 
         // GET: Decks/Edit/5
-        public async Task<ActionResult> Edit(int? id)
+        public async Task<ActionResult> Edit(Guid? id)
         {
             if (id == null)
             {
                 return BadRequest();
             }
 
-            var deck = await db.Decks.FindAsync(id);
+            var deck = await db.GetDeckAsync(id.Value);
 
             if (deck == null)
             {
@@ -184,7 +184,7 @@ namespace ReadingListPlus.Web.Core.Controllers
         {
             if (ModelState.IsValid)
             {
-                var dbDeck = await db.Decks.FindAsync(deck.ID);
+                var dbDeck = await db.GetDeckAsync(deck.ID);
 
                 if (deck == null)
                 {
@@ -207,14 +207,14 @@ namespace ReadingListPlus.Web.Core.Controllers
             }
         }
 
-        public async Task<ActionResult> Delete(int? id)
+        public async Task<ActionResult> Delete(Guid? id)
         {
             if (id == null)
             {
                 return BadRequest();
             }
 
-            var deck = await db.Decks.FindAsync(id);
+            var deck = await db.GetDeckAsync(id.Value);
 
             if (deck == null)
             {
@@ -233,9 +233,9 @@ namespace ReadingListPlus.Web.Core.Controllers
         // POST: Decks/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(int id)
+        public async Task<ActionResult> DeleteConfirmed(Guid id)
         {
-            var deck = await db.Decks.FindAsync(id);
+            var deck = await db.GetDeckAsync(id);
 
             if (!deck.IsAuthorized(User))
             {
