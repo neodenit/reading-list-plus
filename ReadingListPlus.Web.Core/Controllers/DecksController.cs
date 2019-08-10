@@ -32,20 +32,23 @@ namespace ReadingListPlus.Web.Core.Controllers
             return View(await items.ToListAsync());
         }
 
+        [Authorize(Policy = Constants.BackupPolicy)]
         public async Task<ActionResult> Export()
         {
-            var decks = await db.GetUserDecks(User).ToListAsync();
+            var decks = await db.Decks.Include(d => d.Cards).ToListAsync();
             var jsonResult = new JsonResult(decks);
 
             return jsonResult;
         }
 
+        [Authorize(Policy = Constants.BackupPolicy)]
         public ActionResult Import()
         {
             return View();
         }
 
         [HttpPost]
+        [Authorize(Policy = Constants.BackupPolicy)]
         public async Task<ActionResult> Import(ImportViewModel model)
         {
             if (ModelState.IsValid)
@@ -56,22 +59,19 @@ namespace ReadingListPlus.Web.Core.Controllers
                     var jsonReader = new JsonTextReader(streamReader);
                     var newDecks = jsonSerializer.Deserialize<IEnumerable<Deck>>(jsonReader);
 
-                    var userName = User.Identity.Name;
                     foreach (var deck in newDecks)
                     {
-                        deck.OwnerID = userName;
-
                         deck.ID = Guid.NewGuid();
 
                         foreach (var card in deck.Cards)
                         {
                             card.ID = Guid.NewGuid();
+                            card.ParentCardID = null;
                         }
                     }
 
-                    var userDecks = db.GetUserDecks(User);
-
-                    db.Decks.RemoveRange(userDecks);
+                    db.Cards.RemoveRange(db.Cards);
+                    db.Decks.RemoveRange(db.Decks);
                     await db.SaveChangesAsync();
 
                     db.Decks.AddRange(newDecks);

@@ -3,21 +3,22 @@
 @using ReadingListPlus.Web.Core.Controllers
 
 @{
-    ViewBag.Title = "Import/Export";
+    ViewBag.Title = "Backup/Restore";
 }
 
 @section scripts {
     <script src="~/js/App/Import.js"></script>
 }
 
-<h2>Import/Export</h2>
+<h2>Backup</h2>
 
 <p>
-    @Html.ActionLink("Export Knowledge Base", nameof(DecksController.Export))
+    <a asp-action="@nameof(DecksController.Export)">Backup Knowledge Base</a>
 </p>
 
-@using (Html.BeginForm(nameof(DecksController.Import), "Decks", FormMethod.Post, new { enctype = "multipart/form-data" }))
-{
-    @Html.TextBoxFor(m => m.File, new { type = "file" })
-    @Html.ValidationMessageFor(m => m.File)
-}
+<h2>Restore</h2>
+
+<form asp-controller="Decks" asp-action="@nameof(DecksController.Import)" method="post" enctype = "multipart/form-data">
+    <input asp-for="File" />
+    <span asp-validation-for="File" />
+</form>

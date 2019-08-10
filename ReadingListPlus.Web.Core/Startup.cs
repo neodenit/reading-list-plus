@@ -46,6 +46,11 @@ namespace ReadingListPlus.Web.Core
                 options.Password.RequireUppercase = false;
             });
 
+            services.AddAuthorization(options =>
+                options.AddPolicy(
+                    Constants.BackupPolicy,
+                    policy => policy.RequireClaim(Constants.BackupClaim, Constants.BackupClaim)));
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 

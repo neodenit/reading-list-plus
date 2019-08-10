@@ -1,4 +1,5 @@
-﻿@using ReadingListPlus.App_GlobalResources
+﻿@using ReadingListPlus
+@using ReadingListPlus.App_GlobalResources
 @using ReadingListPlus.Web.Core.Controllers
 
 @model IEnumerable<ReadingListPlus.DataAccess.Models.Deck>
@@ -38,7 +39,11 @@
         </tr>
     }
 </table>
-<hr />
-<p>
-    @Html.ActionLink("Import/Export", nameof(DecksController.Import))
-</p>
+
+@if (User.HasClaim(Constants.BackupClaim, Constants.BackupClaim))
+{
+    <hr />
+    <p>
+        <a asp-action="@nameof(DecksController.Import)">Backup/Restore</a>
+    </p>
+}
