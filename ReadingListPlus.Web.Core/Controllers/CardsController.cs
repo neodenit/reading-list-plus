@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+using ReadingListPlus.Common;
 using ReadingListPlus.DataAccess;
 using ReadingListPlus.DataAccess.Models;
 using ReadingListPlus.Services.ArticleExtractorService;

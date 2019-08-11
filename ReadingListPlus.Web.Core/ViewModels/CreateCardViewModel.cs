@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using ReadingListPlus.Common;
 using ReadingListPlus.DataAccess.Models;
 
 namespace ReadingListPlus.Web.Core.ViewModels

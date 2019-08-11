@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ReadingListPlus.Common;
 using ReadingListPlus.DataAccess;
 
 namespace ReadingListPlus.Web.Core

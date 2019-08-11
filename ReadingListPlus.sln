@@ -26,6 +26,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadingListPlus.Web.Core", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadingListPlus.DataAccess", "ReadingListPlus.DataAccess\ReadingListPlus.DataAccess.csproj", "{D9184BC3-1AC7-4D71-91A5-11E3D7EFDF3E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadingListPlus.Common", "ReadingListPlus.Common\ReadingListPlus.Common.csproj", "{00B7CB7D-1AAB-44A3-8F33-A818FCBBDE43}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -64,6 +66,10 @@ Global
 		{D9184BC3-1AC7-4D71-91A5-11E3D7EFDF3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D9184BC3-1AC7-4D71-91A5-11E3D7EFDF3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D9184BC3-1AC7-4D71-91A5-11E3D7EFDF3E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00B7CB7D-1AAB-44A3-8F33-A818FCBBDE43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00B7CB7D-1AAB-44A3-8F33-A818FCBBDE43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00B7CB7D-1AAB-44A3-8F33-A818FCBBDE43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00B7CB7D-1AAB-44A3-8F33-A818FCBBDE43}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
