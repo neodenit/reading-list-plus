@@ -15,7 +15,6 @@ using ReadingListPlus.Web.Core.ViewModels;
 namespace ReadingListPlus.Web.Core.Controllers
 {
     [Authorize]
-    [RequireHttps]
     public class CardsController : Controller
     {
         private ApplicationContext db;
