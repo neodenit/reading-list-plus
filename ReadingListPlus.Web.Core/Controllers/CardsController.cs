@@ -18,11 +18,13 @@ namespace ReadingListPlus.Web.Core.Controllers
     public class CardsController : Controller
     {
         private ApplicationContext db;
+        private readonly ISettings settings;
         private IArticleExtractorService articleExtractor = new CombinedExtractor();
 
-        public CardsController(ApplicationContext db)
+        public CardsController(ApplicationContext db, ISettings settings)
         {
-            this.db = db;
+            this.db = db ?? throw new ArgumentException(nameof(db));
+            this.settings = settings ?? throw new ArgumentException(nameof(settings));
         }
 
         // GET: Cards
@@ -120,7 +122,6 @@ namespace ReadingListPlus.Web.Core.Controllers
         {
             if (deckID == null)
             {
-
                 ViewBag.DeckIds = db.GetUserDecks(User)
                                     .OrderBy(d => d.Title)
                                     .Select(d => new SelectListItem { Value = d.ID.ToString(), Text = d.Title });
@@ -130,7 +131,13 @@ namespace ReadingListPlus.Web.Core.Controllers
                 var user = db.Users.Single(u => u.UserName == User.Identity.Name);
                 var lastDeck = user.LastDeck;
 
-                var card = new CreateCardViewModel { DeckID = lastDeck.GetValueOrDefault(), Text = text, PriorityList = priorities, Type = CardType.Common };
+                var card = new CreateCardViewModel
+                {
+                    DeckID = lastDeck.GetValueOrDefault(),
+                    Text = text,
+                    PriorityList = priorities,
+                    Type = CardType.Common
+                };
 
                 return View(card);
             }
@@ -139,7 +146,14 @@ namespace ReadingListPlus.Web.Core.Controllers
                 var deck = await db.GetDeckAsync(deckID.Value);
                 var priorities = GetFullPriorityList();
 
-                var card = new CreateCardViewModel { DeckID = deck.ID, Deck = deck, Text = text, PriorityList = priorities, Type = CardType.Common };
+                var card = new CreateCardViewModel
+                {
+                    DeckID = deck.ID,
+                    DeckTitle = deck.Title,
+                    Text = text,
+                    PriorityList = priorities,
+                    Type = CardType.Common
+                };
 
                 return View(card);
             }
@@ -159,7 +173,14 @@ namespace ReadingListPlus.Web.Core.Controllers
             var user = db.Users.Single(u => u.UserName == User.Identity.Name);
             var lastDeck = user.LastDeck;
 
-            var card = new CreateCardViewModel { DeckID = lastDeck.GetValueOrDefault(), Text = formattedText, Url = url, PriorityList = priorities, Type = CardType.Article };
+            var card = new CreateCardViewModel
+            {
+                DeckID = lastDeck.GetValueOrDefault(),
+                Text = formattedText,
+                Url = url,
+                PriorityList = priorities,
+                Type = CardType.Article
+            };
 
             return View("Create", card);
         }
@@ -355,7 +376,23 @@ namespace ReadingListPlus.Web.Core.Controllers
 
                 var priorities = GetShortPriorityList();
 
-                var newCard = new CreateCardViewModel { DeckID = card.DeckID, Deck = card.Deck, Url = card.Url, ParentCardID = card.ID, Text = selection, PriorityList = priorities, Type = CardType.Extract };
+                var newCard = new CreateCardViewModel
+                {
+                    DeckID = card.DeckID,
+                    Url = card.Url,
+                    ParentCardID = card.ID,
+                    Text = selection,
+                    PriorityList = priorities,
+                    Type = CardType.Extract
+                };
+
+                if (settings.AllowDeckSelection)
+                {
+                    ViewBag.DeckIds = db
+                        .GetUserDecks(User)                                        
+                        .OrderBy(d => d.Title)
+                        .Select(d => new SelectListItem { Value = d.ID.ToString(), Text = d.Title });
+                }
 
                 return View("Create", newCard);
             }

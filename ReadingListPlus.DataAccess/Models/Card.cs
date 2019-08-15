@@ -33,7 +33,6 @@ namespace ReadingListPlus.DataAccess.Models
         public string Title { get; set; }
 
         [Required]
-        [DataType(DataType.MultilineText)]
         public string Text { get; set; }
 
         [NotMapped]
@@ -41,7 +40,6 @@ namespace ReadingListPlus.DataAccess.Models
 
         public int Position { get; set; }
 
-        [DataType(DataType.Url)]
         public string Url { get; set; }
 
         [NotMapped]
