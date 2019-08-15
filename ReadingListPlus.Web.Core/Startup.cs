@@ -23,6 +23,8 @@ namespace ReadingListPlus.Web.Core
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            AddSettings(services);
+
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -53,6 +55,14 @@ namespace ReadingListPlus.Web.Core
                     policy => policy.RequireClaim(Constants.BackupClaim, Constants.BackupClaim)));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+        }
+
+        private void AddSettings(IServiceCollection services)
+        {
+            var settings = new Settings();
+            Configuration.GetSection("Settings").Bind(settings);
+
+            services.AddSingleton<ISettings>(settings);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
