@@ -20,7 +20,7 @@ namespace ReadingListPlus.DataAccess
             Decks.Include(d => d.Cards).SingleOrDefaultAsync(d => d.ID == id);
 
         public Task<Card> GetCardAsync(Guid id) =>
-            Cards.Include(c => c.Deck).SingleOrDefaultAsync(c => c.ID == id);
+            Cards.Include(c => c.Deck.Cards).SingleOrDefaultAsync(c => c.ID == id);
 
         public IQueryable<Deck> GetUserDecks(IPrincipal user)
         {
