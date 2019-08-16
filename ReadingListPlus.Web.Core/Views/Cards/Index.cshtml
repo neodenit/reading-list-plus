@@ -1,10 +1,10 @@
-﻿@model IEnumerable<ReadingListPlus.DataAccess.Models.Card>
+﻿@model IEnumerable<ReadingListPlus.Web.Core.ViewModels.CardViewModel>
 
 @{
-    ViewBag.Title = Model.First().Deck.Title;
+    ViewBag.Title = Model.First().DeckTitle;
 }
 
-<h2>@(Model.First().Deck.Title)</h2>
+<h2>@(Model.First().DeckTitle)</h2>
 
 @Html.ActionLink("Back", "Details", "Decks", new { id = Model.First().DeckID }, null)
 

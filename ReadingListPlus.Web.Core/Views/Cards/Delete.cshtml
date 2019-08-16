@@ -1,6 +1,6 @@
 ﻿@using ReadingListPlus.Common.App_GlobalResources
 
-@model ReadingListPlus.DataAccess.Models.Card
+@model ReadingListPlus.Web.Core.ViewModels.EditCardViewModel
 
 @{
     ViewBag.Title = "Delete";
@@ -17,7 +17,7 @@
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Deck.Title)
+            @Html.DisplayFor(model => model.DeckTitle)
         </dd>
 
         @if (!string.IsNullOrEmpty(Model.Title))
@@ -50,13 +50,6 @@
             </dd>
         }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Position)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Position)
-        </dd>
     </dl>
 
     @using (Html.BeginForm())

@@ -7,6 +7,5 @@ namespace ReadingListPlus.Web.Core.ViewModels
     {
         [Required]
         public IFormFile File { get; set; }
-
     }
 }

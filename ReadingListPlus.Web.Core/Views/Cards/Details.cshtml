@@ -1,9 +1,9 @@
 ﻿@using ReadingListPlus.Common.App_GlobalResources
 
-@model ReadingListPlus.DataAccess.Models.Card
+@model ReadingListPlus.Web.Core.ViewModels.CardViewModel
 
 @{
-    ViewBag.Title = $"{Model.Deck.Title} - Review";
+    ViewBag.Title = $"{Model.DeckTitle} - Review";
 }
 
 @section scripts {
@@ -24,7 +24,7 @@
         @if (Model.ID == Guid.Empty)
         {
             <div id="topPanel" class="actions">
-                @Html.ActionLink($"Add {Resources.Item}", "Create", new { DeckID = Model.Deck.ID })
+                @Html.ActionLink($"Add {Resources.Item}", "Create", new { DeckID = Model.DeckID })
             </div>
             <hr />
             <div id="scrollArea">

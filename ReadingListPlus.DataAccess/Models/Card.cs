@@ -35,21 +35,9 @@ namespace ReadingListPlus.DataAccess.Models
         [Required]
         public string Text { get; set; }
 
-        [NotMapped]
-        public string HtmlText { get; set; }
-
         public int Position { get; set; }
 
         public string Url { get; set; }
-
-        [NotMapped]
-        public bool IsBookmarked { get; set; }
-
-        [NotMapped]
-        public string Selection { get; set; }
-
-        [NotMapped]
-        public string NextAction { get; set; }
 
         [ForeignKey(nameof(Card))]
         [JsonIgnore]

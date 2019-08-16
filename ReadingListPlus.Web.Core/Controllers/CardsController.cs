@@ -44,7 +44,7 @@ namespace ReadingListPlus.Web.Core.Controllers
                 }
                 else
                 {
-                    return View(deck.ConnectedCards.OrderBy(c => c.Position).ToList());
+                    return View(deck.ConnectedCards.OrderBy(c => c.Position).Select(c => MapCardToViewModel(c)).ToList());
                 }
             }
         }
@@ -59,7 +59,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
             db.SaveChanges();
 
-            return View("Index", cards);
+            return View("Index", cards.Select(c => MapCardToViewModel(c)));
         }
 
         public async Task<ActionResult> Details(Guid? id, Guid? deckId)
@@ -72,8 +72,7 @@ namespace ReadingListPlus.Web.Core.Controllers
                 }
                 else
                 {
-                    var deck = await db.GetDeckAsync(deckId.Value);
-                    return View(new Card { Deck = deck, ID = Guid.Empty });
+                    return View(new CardViewModel { DeckID = deckId, ID = Guid.Empty });
                 }
             }
             else
@@ -90,15 +89,15 @@ namespace ReadingListPlus.Web.Core.Controllers
                 }
                 else
                 {
-                    card.HtmlText = TextConverter.GetHtml(card.Text);
+                    var viewModel = MapCardToViewModel(card);
 
-                    return View(card);
+                    return View(viewModel);
                 }
             }
         }
 
         [HttpPost]
-        public Task<ActionResult> Details([Bind("ID", "NextAction", "Selection")] Card card)
+        public Task<ActionResult> Details([Bind("ID", "NextAction", "Selection")] CardViewModel card)
         {
             switch (card.NextAction)
             {
@@ -251,14 +250,15 @@ namespace ReadingListPlus.Web.Core.Controllers
             }
             else
             {
-                return View(card);
+                var viewModel = MapCardToEditViewModel(card);
+                return View(viewModel);
             }
         }
 
         // POST: Cards/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind("ID", "Title", "Text", "Url", "Type")] Card card)
+        public async Task<ActionResult> Edit([Bind("ID", "Title", "Text", "Url", "Type")] EditCardViewModel card)
         {
             if (ModelState.IsValid)
             {
@@ -416,11 +416,11 @@ namespace ReadingListPlus.Web.Core.Controllers
 
                 await db.SaveChangesAsync();
 
-                card.HtmlText = TextConverter.GetHtml(card.Text);
+                var viewModel = MapCardToViewModel(card);
 
-                card.IsBookmarked = true;
+                viewModel.IsBookmarked = true;
 
-                return View("Details", card);
+                return View("Details", viewModel);
             }
         }
 
@@ -539,14 +539,41 @@ namespace ReadingListPlus.Web.Core.Controllers
                 Text = displayName != null ? displayName.GetName() : x.ToString()
             };
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
+        private CardViewModel MapCardToViewModel(Card card) =>
+            new CardViewModel
             {
-                db.Dispose();
-            }
+                ID = card.ID,
+                DeckID = card.DeckID,
+                DeckTitle = card.Deck.Title,
+                Type = card.Type,
+                Title = card.Title,
+                Text = card.Text,
+                HtmlText = TextConverter.GetHtml(card.Text),
+                Url = card.Url,
+                Position = card.Position
+            };
 
-            base.Dispose(disposing);
-        }
+        private CreateCardViewModel MapCardToCreateViewModel(Card card) =>
+            new CreateCardViewModel
+            {
+                DeckID = card.DeckID,
+                DeckTitle = card.Deck.Title,
+                Type = card.Type,
+                Title = card.Title,
+                Text = card.Text,
+                Url = card.Url
+            };
+
+        private EditCardViewModel MapCardToEditViewModel(Card card) =>
+            new EditCardViewModel
+            {
+                ID = card.ID,
+                DeckID = card.DeckID,
+                DeckTitle = card.Deck.Title,
+                Type = card.Type,
+                Title = card.Title,
+                Text = card.Text,
+                Url = card.Url
+            };
     }
 }
