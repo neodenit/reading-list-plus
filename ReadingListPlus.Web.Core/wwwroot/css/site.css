@@ -35,3 +35,57 @@ body {
         display: none;
     }
 }
+
+.extract {
+    color: black;
+    background-color: cyan;
+}
+
+.extractselected {
+    color: black;
+    background-color: lime;
+}
+
+.cloze {
+    color: black;
+    background-color: black;
+    display: inline-block;
+    text-align: center;
+}
+
+.clozeselected {
+    color: black;
+    background-color: lime;
+    display: inline-block;
+    text-align: center;
+}
+
+.bookmark {
+    color: black;
+    background-color: orange;
+}
+
+.bookmarkselected {
+    color: black;
+    background-color: lime;
+}
+
+.highlight {
+    color: black;
+    background-color: yellow;
+}
+
+.highlightselected {
+    color: black;
+    background-color: lime;
+}
+
+.actions {
+    background-color: white;
+    padding: 5px;
+    width: 100%;
+}
+
+.w-80 {
+    width: 80%;
+}
