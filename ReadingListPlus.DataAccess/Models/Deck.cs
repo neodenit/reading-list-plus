@@ -16,6 +16,13 @@ namespace ReadingListPlus.DataAccess.Models
         [JsonIgnore]
         public Guid ID { get; set; }
 
+        [ForeignKey(nameof(Deck))]
+        [JsonIgnore]
+        public Guid? DependentDeckID { get; set; }
+
+        [ForeignKey(nameof(DependentDeckID))]
+        public Deck DependentDeck { get; set; }
+
         [Required]
         public string Title { get; set; }
 

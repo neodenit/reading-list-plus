@@ -121,7 +121,7 @@ namespace ReadingListPlus.Web.Core.Controllers
         {
             if (deckID == null)
             {
-                ViewBag.DeckIds = db.GetUserDecks(User)
+                var deckListItems = db.GetUserDecks(User)
                                     .OrderBy(d => d.Title)
                                     .Select(d => new SelectListItem { Value = d.ID.ToString(), Text = d.Title });
 
@@ -132,6 +132,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
                 var card = new CreateCardViewModel
                 {
+                    DeckListItems = deckListItems,
                     DeckID = lastDeck.GetValueOrDefault(),
                     Text = text,
                     PriorityList = priorities,
@@ -160,7 +161,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
         public async Task<ActionResult> CreateFromUrl(string url)
         {
-            ViewBag.DeckIds = db.GetUserDecks(User)
+            var deckListItems = db.GetUserDecks(User)
                                 .OrderBy(d => d.Title)
                                 .Select(d => new SelectListItem { Value = d.ID.ToString(), Text = d.Title });
 
@@ -174,6 +175,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
             var card = new CreateCardViewModel
             {
+                DeckListItems = deckListItems,
                 DeckID = lastDeck.GetValueOrDefault(),
                 Text = formattedText,
                 Url = url,
@@ -187,41 +189,51 @@ namespace ReadingListPlus.Web.Core.Controllers
         // POST: Cards/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind("DeckID", "Title", "Text", "Url", "Priority", "Type", "ParentCardID")] CreateCardViewModel card)
+        public async Task<ActionResult> Create([Bind("DeckID", "OldDeckID", "Title", "Text", "Url", "Priority", "Type", "ParentCardID")] CreateCardViewModel card)
         {
             if (ModelState.IsValid)
             {
-                var priority = card.Priority.Value;
-
-                var newCard = new Card
-                {
-                    ID = Guid.NewGuid(),
-                    DeckID = card.DeckID,
-                    Title = card.Title,
-                    Text = card.Text,
-                    Url = card.Url,
-                    Type = card.Type,
-                    ParentCardID = card.ParentCardID,
-                };
-
-                var deck = await db.GetDeckAsync(newCard.DeckID.Value);
+                var deck = await db.GetDeckAsync(card.DeckID.Value);
+                var oldDeck = card.OldDeckID.HasValue ? await db.GetDeckAsync(card.OldDeckID.Value) : null;
 
                 if (!deck.IsAuthorized(User))
                 {
                     return Unauthorized();
                 }
+                else if (oldDeck?.IsAuthorized(User) == false)
+                {
+                    return Unauthorized();
+                }
                 else
                 {
+                    var priority = card.Priority.Value;
+
+                    var newCard = new Card
+                    {
+                        ID = Guid.NewGuid(),
+                        DeckID = card.DeckID,
+                        Title = card.Title,
+                        Text = card.Text,
+                        Url = card.Url,
+                        Type = card.Type,
+                        ParentCardID = card.ParentCardID,
+                    };
+
                     Scheduler.PrepareForAdding(deck, deck.ConnectedCards, newCard, priority);
 
                     db.Cards.Add(newCard);
+
+                    if (oldDeck != null)
+                    {
+                        oldDeck.DependentDeckID = newCard.DeckID;
+                    }
 
                     var user = db.Users.Single(u => u.UserName == User.Identity.Name);
                     user.LastDeck = newCard.DeckID;
 
                     await db.SaveChangesAsync();
 
-                    return RedirectToDeckDetails(newCard.DeckID);
+                    return RedirectToDeckDetails(card.OldDeckID ?? newCard.DeckID);
                 }
             }
             else
@@ -378,7 +390,6 @@ namespace ReadingListPlus.Web.Core.Controllers
 
                 var newCard = new CreateCardViewModel
                 {
-                    DeckID = card.DeckID,
                     Url = card.Url,
                     ParentCardID = card.ID,
                     Text = selection,
@@ -388,10 +399,25 @@ namespace ReadingListPlus.Web.Core.Controllers
 
                 if (settings.AllowDeckSelection)
                 {
-                    ViewBag.DeckIds = db
-                        .GetUserDecks(User)                                        
-                        .OrderBy(d => d.Title)
-                        .Select(d => new SelectListItem { Value = d.ID.ToString(), Text = d.Title });
+                    var userDecks = db.GetUserDecks(User)
+                            .OrderBy(d => d.Title)
+                            .Select(d => new SelectListItem { Value = d.ID.ToString(), Text = d.Title });
+
+                    newCard.OldDeckID = card.DeckID;
+
+                    if (card.Deck.DependentDeckID.HasValue)
+                    {
+                        newCard.DeckID = card.Deck.DependentDeckID;
+                        newCard.DeckListItems = userDecks;
+                    }
+                    else
+                    {
+                        newCard.DeckListItems = new SelectListItem(string.Empty, string.Empty, true).Concat(userDecks);
+                    }
+                }
+                else
+                {
+                    newCard.DeckID = card.DeckID;
                 }
 
                 return View("Create", newCard);
