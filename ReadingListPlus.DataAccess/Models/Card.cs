@@ -19,10 +19,8 @@ namespace ReadingListPlus.DataAccess.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        [JsonIgnore]
         public Guid ID { get; set; }
 
-        [JsonIgnore]
         public Guid? DeckID { get; set; }
 
         [JsonIgnore]
@@ -40,7 +38,6 @@ namespace ReadingListPlus.DataAccess.Models
         public string Url { get; set; }
 
         [ForeignKey(nameof(Card))]
-        [JsonIgnore]
         public Guid? ParentCardID { get; set; }
 
         [JsonIgnore]

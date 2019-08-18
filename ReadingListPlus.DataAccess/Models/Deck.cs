@@ -13,13 +13,12 @@ namespace ReadingListPlus.DataAccess.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        [JsonIgnore]
         public Guid ID { get; set; }
 
         [ForeignKey(nameof(Deck))]
-        [JsonIgnore]
         public Guid? DependentDeckID { get; set; }
 
+        [JsonIgnore]
         [ForeignKey(nameof(DependentDeckID))]
         public Deck DependentDeck { get; set; }
 
@@ -31,6 +30,7 @@ namespace ReadingListPlus.DataAccess.Models
 
         public ICollection<Card> Cards { get; set; }
 
+        [JsonIgnore]
         [NotMapped]
         public IEnumerable<Card> ConnectedCards => Cards?.Where(c => c.Position != Constants.DisconnectedCardPosition);
 
