@@ -70,6 +70,15 @@ namespace ReadingListPlus.Common.App_GlobalResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to KM.
+        /// </summary>
+        public static string ApplicationNameShort {
+            get {
+                return ResourceManager.GetString("ApplicationNameShort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Note.
         /// </summary>
         public static string Item {

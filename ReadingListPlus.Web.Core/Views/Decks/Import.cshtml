@@ -13,7 +13,7 @@
 <h2>Backup</h2>
 
 <p>
-    <a asp-action="@nameof(DecksController.Export)">Backup Knowledge Base</a>
+    <a asp-action="@nameof(DecksController.Export)" asp-route-id="@($"KM-BACKUP-{DateTime.UtcNow.ToString("yyyy-MM-dd-hh-mm-ss")}")">Backup Knowledge Base</a>
 </p>
 
 <h2>Restore</h2>

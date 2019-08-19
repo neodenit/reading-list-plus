@@ -18,10 +18,12 @@ namespace ReadingListPlus.Web.Core.Controllers
     public class DecksController : Controller
     {
         private ApplicationContext db;
+        private readonly ISettings settings;
 
-        public DecksController(ApplicationContext db)
+        public DecksController(ApplicationContext db, ISettings settings)
         {
             this.db = db;
+            this.settings = settings;
         }
 
         // GET: Decks
