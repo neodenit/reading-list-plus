@@ -33,7 +33,7 @@ namespace ReadingListPlus.Web.Core.Controllers
         }
 
         [Authorize(Policy = Constants.BackupPolicy)]
-        public async Task<ActionResult> Export()
+        public async Task<ActionResult> Export(string id)
         {
             var decks = await db.Decks.Include(d => d.Cards).ToListAsync();
             var jsonResult = new JsonResult(decks);
@@ -59,14 +59,17 @@ namespace ReadingListPlus.Web.Core.Controllers
                     var jsonReader = new JsonTextReader(streamReader);
                     var newDecks = jsonSerializer.Deserialize<IEnumerable<Deck>>(jsonReader);
 
-                    foreach (var deck in newDecks)
+                    if (settings.ResetKeysOnImport)
                     {
-                        deck.ID = Guid.NewGuid();
-
-                        foreach (var card in deck.Cards)
+                        foreach (var deck in newDecks)
                         {
-                            card.ID = Guid.NewGuid();
-                            card.ParentCardID = null;
+                            deck.ID = Guid.NewGuid();
+
+                            foreach (var card in deck.Cards)
+                            {
+                                card.ID = Guid.NewGuid();
+                                card.ParentCardID = null;
+                            }
                         }
                     }
 
