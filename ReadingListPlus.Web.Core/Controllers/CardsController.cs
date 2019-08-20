@@ -189,18 +189,23 @@ namespace ReadingListPlus.Web.Core.Controllers
         // POST: Cards/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind("DeckID", "OldDeckID", "Title", "Text", "Url", "Priority", "Type", "ParentCardID")] CreateCardViewModel card)
+        public async Task<ActionResult> Create([Bind("DeckID", "OldDeckID", "Title", "Text", "Url", "Priority", "Type", "ParentCardID", "ParentCardUpdatedText")] CreateCardViewModel card)
         {
             if (ModelState.IsValid)
             {
                 var deck = await db.GetDeckAsync(card.DeckID.Value);
                 var oldDeck = card.OldDeckID.HasValue ? await db.GetDeckAsync(card.OldDeckID.Value) : null;
+                var parentCard = card.ParentCardID.HasValue ? await db.GetCardAsync(card.ParentCardID.Value) : null;
 
                 if (!deck.IsAuthorized(User))
                 {
                     return Unauthorized();
                 }
                 else if (oldDeck?.IsAuthorized(User) == false)
+                {
+                    return Unauthorized();
+                }
+                else if (parentCard?.IsAuthorized(User) == false)
                 {
                     return Unauthorized();
                 }
@@ -228,6 +233,11 @@ namespace ReadingListPlus.Web.Core.Controllers
                         oldDeck.DependentDeckID = newCard.DeckID;
                     }
 
+                    if (parentCard != null)
+                    {
+                        parentCard.Text = card.ParentCardUpdatedText;
+                    }
+
                     var user = db.Users.Single(u => u.UserName == User.Identity.Name);
                     user.LastDeck = newCard.DeckID;
 
@@ -238,6 +248,17 @@ namespace ReadingListPlus.Web.Core.Controllers
             }
             else
             {
+                var userDecks = db
+                    .GetUserDecks(User)
+                    .OrderBy(d => d.Title)
+                    .Select(d => new SelectListItem { Value = d.ID.ToString(), Text = d.Title });
+
+                card.DeckListItems = card.DeckID.HasValue ?
+                    userDecks :
+                    new SelectListItem(string.Empty, string.Empty, true).Concat(userDecks);
+
+                card.PriorityList = card.Priority.HasValue ? GetShortPriorityList() : GetFullPriorityList();
+
                 return View(card);
             }
         }
@@ -378,11 +399,7 @@ namespace ReadingListPlus.Web.Core.Controllers
             {
                 ModelState.Clear();
 
-                var newText = TextConverter.ReplaceTag(text, "selection", "extract");
-
-                card.Text = newText;
-
-                await db.SaveChangesAsync();
+                var parentCardUpdatedText = TextConverter.ReplaceTag(text, "selection", "extract");
 
                 var selection = TextConverter.GetSelection(text);
 
@@ -393,6 +410,7 @@ namespace ReadingListPlus.Web.Core.Controllers
                     Url = card.Url,
                     ParentCardID = card.ID,
                     Text = selection,
+                    ParentCardUpdatedText = parentCardUpdatedText,
                     PriorityList = priorities,
                     Type = CardType.Extract
                 };

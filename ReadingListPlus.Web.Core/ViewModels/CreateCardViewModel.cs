@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ReadingListPlus.Common;
+using ReadingListPlus.Common.App_GlobalResources;
 using ReadingListPlus.DataAccess.Models;
 
 namespace ReadingListPlus.Web.Core.ViewModels
@@ -16,6 +16,7 @@ namespace ReadingListPlus.Web.Core.ViewModels
         public IEnumerable<SelectListItem> PriorityList { get; set; }
 
         [Required]
+        [Display(ResourceType = typeof(Resources), Name = nameof(Resources.ItemCollection))]
         public Guid? DeckID { get; set; }
 
         public IEnumerable<SelectListItem> DeckListItems { get; set; }
@@ -33,6 +34,8 @@ namespace ReadingListPlus.Web.Core.ViewModels
         public string Url { get; set; }
 
         public Guid? ParentCardID { get; set; }
+
+        public string ParentCardUpdatedText { get; set; }
 
         public Guid? OldDeckID { get; set; }
     }

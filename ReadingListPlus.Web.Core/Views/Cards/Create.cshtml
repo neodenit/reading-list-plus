@@ -8,80 +8,92 @@
 
 <h2>Create</h2>
 
-@using (Html.BeginForm("Create", "Cards", FormMethod.Post, new { @class = "form-horizontal" }))
-{
-    @Html.AntiForgeryToken()
-
-    <h4>@(Resources.Item)</h4>
-    <hr />
+<form asp-controller="Cards" asp-action="Create" method="post" class="form-horizontal">
+    <h4>@Resources.Item</h4>
+    <hr/>
 
     <input type="hidden" asp-for="Type"/>
     <input type="hidden" asp-for="ParentCardID"/>
+    <input type="hidden" asp-for="ParentCardUpdatedText"/>
     <input type="hidden" asp-for="OldDeckID"/>
 
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-    if (Model.DeckListItems != null)
+    @if (Model.DeckListItems != null)
     {
-        <div class="form-group">
-            @Html.LabelFor(model => model.DeckID, Resources.ItemCollection, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="form-group">
+        <div class="row">
+            <label asp-for="DeckID" class="control-label col-md-2"></label>
             <div class="col-md-8">
-                @Html.DropDownListFor(model => model.DeckID, Model.DeckListItems, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.DeckID, "", new { @class = "text-danger" })
+                <select asp-for="DeckID" asp-items="Model.DeckListItems" class="form-control"></select>
+                <span asp-validation-for="DeckID" class="text-danger"></span>
             </div>
         </div>
+    </div>
     }
     else
     {
-        @Html.HiddenFor(model => model.DeckID)
+    <input type="hidden" asp-for="OldDeckID"/>
 
-        <div class="form-group">
-            <label class="control-label col-md-2">@(Resources.ItemCollection)</label>
+    <div class="form-group">
+        <div class="row">
+            <label class="control-label col-md-2">@Resources.ItemCollection</label>
             <div class="col-md-8">
-                <p class="form-control-static">@Html.DisplayFor(model => model.DeckTitle)</p>
+                <p class="form-control-static">@Model.DeckTitle</p>
             </div>
         </div>
+    </div>
     }
 
     <div class="form-group">
-        @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-8">
-            @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+        <div class="row">
+            <label asp-for="Title" class="control-label col-md-2"></label>
+            <div class="col-md-8">
+                <input asp-for="Title" class="form-control"/>
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
         </div>
     </div>
 
     <div class="form-group">
-        @Html.LabelFor(model => model.Text, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-8">
-            @Html.EditorFor(model => model.Text, new { htmlAttributes = new { @class = "form-control focused", rows = 10 } })
-            @Html.ValidationMessageFor(model => model.Text, "", new { @class = "text-danger" })
+        <div class="row">
+            <label asp-for="Text" class="control-label col-md-2"></label>
+            <div class="col-md-8">
+                <textarea asp-for="Text" class="form-control focused" rows=10></textarea>
+                <span asp-validation-for="Text" class="text-danger"></span>
+            </div>
         </div>
     </div>
 
     <div class="form-group">
-        @Html.LabelFor(model => model.Url, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-8">
-            @Html.EditorFor(model => model.Url, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.Url, "", new { @class = "text-danger" })
+        <div class="row">
+            <label asp-for="Url" class="control-label col-md-2"></label>
+            <div class="col-md-8">
+                <input asp-for="Url" class="form-control"/>
+                <span asp-validation-for="Url" class="text-danger"></span>
+            </div>
         </div>
     </div>
 
     <div class="form-group">
-        @Html.LabelFor(model => model.Priority, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-8">
-            @Html.DropDownListFor(model => model.Priority, Model.PriorityList, string.Empty, new { @class = "form-control" })
-            @Html.ValidationMessageFor(model => model.Priority, "", new { @class = "text-danger" })
+        <div class="row">
+            <label asp-for="Priority" class="control-label col-md-2"></label>
+            <div class="col-md-8">
+                <select asp-for="Priority" asp-items="Model.PriorityList" class="form-control"></select>
+                <span asp-validation-for="Priority" class="text-danger"></span>
+            </div>
         </div>
     </div>
 
     <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Create" class="btn btn-default" />
+        <div class="row">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default"/>
+            </div>
         </div>
     </div>
-}
+</form>
 
 <div>
-    @Html.ActionLink("Back", "Details", "Decks", new { id = Model.DeckID }, null)
+    <a asp-controller="Decks" asp-action="Details" asp-route-id="@Model.DeckID">Back</a>
 </div>
