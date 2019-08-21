@@ -8,6 +8,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ReadingListPlus.Common;
 using ReadingListPlus.DataAccess;
+using ReadingListPlus.Services;
+using ReadingListPlus.Services.ArticleExtractorService;
 
 namespace ReadingListPlus.Web.Core
 {
@@ -55,14 +57,8 @@ namespace ReadingListPlus.Web.Core
                     policy => policy.RequireClaim(Constants.BackupClaim, Constants.BackupClaim)));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-        }
 
-        private void AddSettings(IServiceCollection services)
-        {
-            var settings = new Settings();
-            Configuration.GetSection("Settings").Bind(settings);
-
-            services.AddSingleton<ISettings>(settings);
+            AddServices(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -92,6 +88,21 @@ namespace ReadingListPlus.Web.Core
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+        }
+
+        private void AddSettings(IServiceCollection services)
+        {
+            var settings = new Settings();
+            Configuration.GetSection("Settings").Bind(settings);
+
+            services.AddSingleton<ISettings>(settings);
+        }
+
+        private static void AddServices(IServiceCollection services)
+        {
+            services.AddTransient<IArticleExtractorService, CombinedExtractor>();
+            services.AddTransient<ISchedulerService, SchedulerService>();
+            services.AddTransient<ITextConverterService, TextConverterService>();
         }
     }
 }

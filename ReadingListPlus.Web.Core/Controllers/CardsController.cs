@@ -7,8 +7,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ReadingListPlus.Common;
+using ReadingListPlus.Common.Enums;
 using ReadingListPlus.DataAccess;
 using ReadingListPlus.DataAccess.Models;
+using ReadingListPlus.Services;
 using ReadingListPlus.Services.ArticleExtractorService;
 using ReadingListPlus.Web.Core.ViewModels;
 
@@ -17,14 +19,19 @@ namespace ReadingListPlus.Web.Core.Controllers
     [Authorize]
     public class CardsController : Controller
     {
-        private ApplicationContext db;
+        private readonly ApplicationContext db;
         private readonly ISettings settings;
-        private IArticleExtractorService articleExtractor = new CombinedExtractor();
+        private readonly IArticleExtractorService articleExtractor;
+        private readonly ISchedulerService schedulerService;
+        private readonly ITextConverterService textConverterService;
 
-        public CardsController(ApplicationContext db, ISettings settings)
+        public CardsController(ApplicationContext db, ISettings settings, IArticleExtractorService articleExtractor, ISchedulerService schedulerService, ITextConverterService textConverterService)
         {
             this.db = db ?? throw new ArgumentException(nameof(db));
             this.settings = settings ?? throw new ArgumentException(nameof(settings));
+            this.articleExtractor = articleExtractor ?? throw new ArgumentException(nameof(articleExtractor));
+            this.schedulerService = schedulerService ?? throw new ArgumentException(nameof(schedulerService));
+            this.textConverterService = textConverterService ?? throw new ArgumentException(nameof(textConverterService));
         }
 
         // GET: Cards
@@ -224,7 +231,7 @@ namespace ReadingListPlus.Web.Core.Controllers
                         ParentCardID = card.ParentCardID,
                     };
 
-                    Scheduler.PrepareForAdding(deck, deck.ConnectedCards, newCard, priority);
+                    schedulerService.PrepareForAdding(deck, deck.ConnectedCards, newCard, priority);
 
                     db.Cards.Add(newCard);
 
@@ -337,9 +344,9 @@ namespace ReadingListPlus.Web.Core.Controllers
                 var deck = card.Deck;
                 var deckCards = deck.ConnectedCards;
 
-                var priority = Scheduler.ParsePriority(Priority);
+                var priority = schedulerService.ParsePriority(Priority);
 
-                Scheduler.ChangeFirstCardPosition(deck, deckCards, card, priority);
+                schedulerService.ChangeFirstCardPosition(deck, deckCards, card, priority);
 
                 await db.SaveChangesAsync();
 
@@ -357,7 +364,7 @@ namespace ReadingListPlus.Web.Core.Controllers
             }
             else
             {
-                var newText = TextConverter.AddHighlight(card.Text, text);
+                var newText = textConverterService.AddHighlight(card.Text, text);
 
                 card.Text = newText;
 
@@ -377,7 +384,7 @@ namespace ReadingListPlus.Web.Core.Controllers
             }
             else
             {
-                var newText = TextConverter.AddCloze(card.Text, text);
+                var newText = textConverterService.AddCloze(card.Text, text);
 
                 card.Text = newText;
 
@@ -399,9 +406,9 @@ namespace ReadingListPlus.Web.Core.Controllers
             {
                 ModelState.Clear();
 
-                var parentCardUpdatedText = TextConverter.ReplaceTag(text, "selection", "extract");
+                var parentCardUpdatedText = textConverterService.ReplaceTag(text, "selection", "extract");
 
-                var selection = TextConverter.GetSelection(text);
+                var selection = textConverterService.GetSelection(text);
 
                 var priorities = GetShortPriorityList();
 
@@ -452,9 +459,9 @@ namespace ReadingListPlus.Web.Core.Controllers
             }
             else
             {
-                var textWithoutBookmarks = TextConverter.DeleteTagByName(text, "bookmark");
+                var textWithoutBookmarks = textConverterService.DeleteTagByName(text, "bookmark");
 
-                var newText = TextConverter.ReplaceTag(textWithoutBookmarks, "selection", "bookmark");
+                var newText = textConverterService.ReplaceTag(textWithoutBookmarks, "selection", "bookmark");
 
                 card.Text = newText;
 
@@ -478,7 +485,7 @@ namespace ReadingListPlus.Web.Core.Controllers
             }
             else
             {
-                var newText = TextConverter.DeleteTagByText(card.Text, text);
+                var newText = textConverterService.DeleteTagByText(card.Text, text);
 
                 card.Text = newText;
 
@@ -509,7 +516,7 @@ namespace ReadingListPlus.Web.Core.Controllers
             }
             else
             {
-                Scheduler.PrepareForDeletion(card.Deck.ConnectedCards, card);
+                schedulerService.PrepareForDeletion(card.Deck.ConnectedCards, card);
 
                 card.Position = Constants.DisconnectedCardPosition;
 
@@ -592,7 +599,7 @@ namespace ReadingListPlus.Web.Core.Controllers
                 Type = card.Type,
                 Title = card.Title,
                 Text = card.Text,
-                HtmlText = TextConverter.GetHtml(card.Text),
+                HtmlText = textConverterService.GetHtml(card.Text),
                 Url = card.Url,
                 Position = card.Position
             };

@@ -3,33 +3,55 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace ReadingListPlus.Common
+namespace ReadingListPlus.Services
 {
-    public static class TextConverter
+    public class TextConverterService : ITextConverterService
     {
-        public static string AddHighlight(string initialText, string htmlSelection)
+        public string AddHighlight(string initialText, string htmlSelection)
         {
             return GetReplacement(initialText, htmlSelection, "highlight");
         }
 
-        public static string AddExtract(string initialText, string htmlSelection)
-        {
-            return GetReplacement(initialText, htmlSelection, "extract");
-        }
-
-        public static string AddCloze(string initialText, string htmlSelection)
+        public string AddCloze(string initialText, string htmlSelection)
         {
             return GetReplacement(initialText, htmlSelection, "cloze");
         }
 
-        public static string GetHtml(string text)
+        public string GetHtml(string text)
         {
             var html = TextToHtml(text);
 
             return html;
         }
 
-        public static string GetReplacement(string initialText, string htmlSelection, string tag)
+        public string GetSelection(string text)
+        {
+            var result = Regex.Match(text, @"{{selection::(?s)(.+?)}}").Groups[1].Value;
+
+            return result;
+        }
+
+        public string ReplaceTag(string text, string oldTag, string newTag) =>
+            Regex.Replace(text, $"{{{{{oldTag}::(?s)(.+?)}}}}", $"{{{{{newTag}::$1}}}}");
+
+        public string DeleteTagByText(string initialText, string htmlSelection)
+        {
+            var pattern = @"{{\w+::(" + htmlSelection + ")}}";
+
+            var result = Regex.Replace(initialText, pattern, "$1", RegexOptions.IgnoreCase);
+
+            return result;
+        }
+
+        public string DeleteTagByName(string initialText, string tagName) =>
+            Regex.Replace(initialText, $"{{{{{tagName}::(?s)(.+?)}}}}", "$1", RegexOptions.IgnoreCase);
+
+        private string AddExtract(string initialText, string htmlSelection)
+        {
+            return GetReplacement(initialText, htmlSelection, "extract");
+        }
+
+        private string GetReplacement(string initialText, string htmlSelection, string tag)
         {
             var isValid = Validate(htmlSelection);
 
@@ -55,46 +77,24 @@ namespace ReadingListPlus.Common
             }
         }
 
-        public static string GetSelection(string text)
-        {
-            var result = Regex.Match(text, @"{{selection::(?s)(.+?)}}").Groups[1].Value;
-
-            return result;
-        }
-
-        public static string ReplaceTag(string text, string oldTag, string newTag) =>
-            Regex.Replace(text, $"{{{{{oldTag}::(?s)(.+?)}}}}", $"{{{{{newTag}::$1}}}}");
-
-        public static string DeleteTagByText(string initialText, string htmlSelection)
-        {
-            var pattern = @"{{\w+::(" + htmlSelection + ")}}";
-
-            var result = Regex.Replace(initialText, pattern, "$1", RegexOptions.IgnoreCase);
-
-            return result;
-        }
-
-        public static string DeleteTagByName(string initialText, string tagName) =>
-            Regex.Replace(initialText, $"{{{{{tagName}::(?s)(.+?)}}}}", "$1", RegexOptions.IgnoreCase);
-
-        public static string GetWords(string text)
+        private string GetWords(string text)
         {
             var result = Regex.Replace(text, @"\W+", @"\W+");
 
             return result;
         }
 
-        public static string Escape(string text)
+        private string Escape(string text)
         {
             return text.Replace("{", @"\{").Replace("}", @"\}");
         }
 
-        public static string UnEscape(string text)
+        private string UnEscape(string text)
         {
             return text.Replace(@"\{", "{").Replace(@"\}", "}");
         }
 
-        private static bool Validate(string text)
+        private bool Validate(string text)
         {
             var letters = Regex.IsMatch(text, @"\w");
 
@@ -103,7 +103,7 @@ namespace ReadingListPlus.Common
             return isValid;
         }
 
-        private static string TextToHtml(string text)
+        private string TextToHtml(string text)
         {
             var htmlText1 = Regex.Replace(text, Environment.NewLine, "<br />");
 
@@ -112,7 +112,7 @@ namespace ReadingListPlus.Common
             return htmlText2;
         }
 
-        private static string HtmlToText(string text)
+        private string HtmlToText(string text)
         {
             var plainText1 = Regex.Replace(text, @"<\s*br\s*/?\s*>", Environment.NewLine, RegexOptions.IgnoreCase);
 
@@ -121,7 +121,7 @@ namespace ReadingListPlus.Common
             return plainText2;
         }
 
-        private static string MatchEvaluator(Match match, IEnumerable<Match> matches, string tag)
+        private string MatchEvaluator(Match match, IEnumerable<Match> matches, string tag)
         {
             var start1 = match.Index;
             var end1 = match.Index + match.Length;
@@ -144,7 +144,7 @@ namespace ReadingListPlus.Common
             return result;
         }
 
-        private static string GetTag(string text, string tag)
+        private string GetTag(string text, string tag)
         {
             return "{{" + tag + "::" + text + "}}";
         }
