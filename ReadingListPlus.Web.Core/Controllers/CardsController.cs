@@ -72,7 +72,7 @@ namespace ReadingListPlus.Web.Core.Controllers
                 }
                 else
                 {
-                    return View(new CardViewModel { DeckID = deckId, ID = Guid.Empty });
+                    return RedirectToAction(nameof(Create), new { deckId });
                 }
             }
             else
