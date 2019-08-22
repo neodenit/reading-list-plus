@@ -27,6 +27,7 @@ namespace ReadingListPlus.Web.Core.ViewModels
 
         public string Title { get; set; }
 
+        [Required]
         [DataType(DataType.MultilineText)]
         public string Text { get; set; }
 
@@ -38,5 +39,7 @@ namespace ReadingListPlus.Web.Core.ViewModels
         public string ParentCardUpdatedText { get; set; }
 
         public Guid? OldDeckID { get; set; }
+
+        public CreationMode CreationMode { get; set; }
     }
 }

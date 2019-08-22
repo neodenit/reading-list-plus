@@ -13,6 +13,7 @@
     <hr/>
 
     <input type="hidden" asp-for="Type"/>
+    <input type="hidden" asp-for="CreationMode"/>
     <input type="hidden" asp-for="ParentCardID"/>
     <input type="hidden" asp-for="ParentCardUpdatedText"/>
     <input type="hidden" asp-for="OldDeckID"/>
@@ -25,7 +26,12 @@
         <div class="row">
             <label asp-for="DeckID" class="control-label col-md-2"></label>
             <div class="col-md-8">
-                <select asp-for="DeckID" asp-items="Model.DeckListItems" class="form-control"></select>
+                <select asp-for="DeckID" asp-items="Model.DeckListItems" class="form-control">
+                    @if (Model.DeckID == null)
+                    {
+                        <option></option>
+                    }
+                </select>
                 <span asp-validation-for="DeckID" class="text-danger"></span>
             </div>
         </div>
@@ -34,6 +40,7 @@
     else
     {
     <input type="hidden" asp-for="DeckID"/>
+    <input type="hidden" asp-for="DeckTitle"/>
 
     <div class="form-group">
         <div class="row">
@@ -79,7 +86,12 @@
         <div class="row">
             <label asp-for="Priority" class="control-label col-md-2"></label>
             <div class="col-md-8">
-                <select asp-for="Priority" asp-items="Model.PriorityList" class="form-control"></select>
+                <select asp-for="Priority" asp-items="Model.PriorityList" class="form-control">
+                    @if (Model.Priority == null)
+                    {
+                        <option></option>
+                    }
+                </select>
                 <span asp-validation-for="Priority" class="text-danger"></span>
             </div>
         </div>
@@ -95,5 +107,12 @@
 </form>
 
 <div>
-    <a asp-controller="Decks" asp-action="Details" asp-route-id="@Model.DeckID">Back</a>
+    @if (Model.DeckID.HasValue)
+    {
+        <a asp-controller="Decks" asp-action="Details" asp-route-id="@Model.DeckID">Back</a>
+    }
+    else
+    {
+        <a asp-controller="Decks" asp-action="Index">Back</a>
+    }
 </div>

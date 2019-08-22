@@ -124,33 +124,16 @@ namespace ReadingListPlus.Web.Core.Controllers
         }
 
         // GET: Cards/Create/5
-        public async Task<ActionResult> Create(Guid? deckID, string text)
+        public async Task<ActionResult> Create(Guid deckID, string text)
         {
-            if (deckID == null)
+            var deck = await db.GetDeckAsync(deckID);
+
+            if (!deck.IsAuthorized(User))
             {
-                var deckListItems = db.GetUserDecks(User)
-                                    .OrderBy(d => d.Title)
-                                    .Select(d => new SelectListItem { Value = d.ID.ToString(), Text = d.Title });
-
-                var priorities = GetFullPriorityList();
-
-                var user = db.Users.Single(u => u.UserName == User.Identity.Name);
-                var lastDeck = user.LastDeck;
-
-                var card = new CreateCardViewModel
-                {
-                    DeckListItems = deckListItems,
-                    DeckID = lastDeck.GetValueOrDefault(),
-                    Text = text,
-                    PriorityList = priorities,
-                    Type = CardType.Common
-                };
-
-                return View(card);
+                return Unauthorized();
             }
             else
             {
-                var deck = await db.GetDeckAsync(deckID.Value);
                 var priorities = GetFullPriorityList();
 
                 var card = new CreateCardViewModel
@@ -159,7 +142,8 @@ namespace ReadingListPlus.Web.Core.Controllers
                     DeckTitle = deck.Title,
                     Text = text,
                     PriorityList = priorities,
-                    Type = CardType.Common
+                    Type = CardType.Common,
+                    CreationMode = CreationMode.Add
                 };
 
                 return View(card);
@@ -187,7 +171,8 @@ namespace ReadingListPlus.Web.Core.Controllers
                 Text = formattedText,
                 Url = url,
                 PriorityList = priorities,
-                Type = CardType.Article
+                Type = CardType.Article,
+                CreationMode = CreationMode.FromUrl
             };
 
             return View("Create", card);
@@ -196,7 +181,7 @@ namespace ReadingListPlus.Web.Core.Controllers
         // POST: Cards/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind("DeckID", "OldDeckID", "Title", "Text", "Url", "Priority", "Type", "ParentCardID", "ParentCardUpdatedText")] CreateCardViewModel card)
+        public async Task<ActionResult> Create([Bind("DeckID", "DeckTitle", "OldDeckID", "Title", "Text", "Url", "Priority", "Type", "ParentCardID", "ParentCardUpdatedText", "CreationMode")] CreateCardViewModel card)
         {
             if (ModelState.IsValid)
             {
@@ -255,16 +240,14 @@ namespace ReadingListPlus.Web.Core.Controllers
             }
             else
             {
-                var userDecks = db
-                    .GetUserDecks(User)
-                    .OrderBy(d => d.Title)
-                    .Select(d => new SelectListItem { Value = d.ID.ToString(), Text = d.Title });
+                card.DeckListItems =
+                    card.CreationMode == CreationMode.Add ?
+                        null :
+                        db.GetUserDecks(User)
+                            .OrderBy(d => d.Title)
+                            .Select(d => new SelectListItem { Value = d.ID.ToString(), Text = d.Title });
 
-                card.DeckListItems = card.DeckID.HasValue ?
-                    userDecks :
-                    new SelectListItem(string.Empty, string.Empty, true).Concat(userDecks);
-
-                card.PriorityList = card.Priority.HasValue ? GetShortPriorityList() : GetFullPriorityList();
+                card.PriorityList = card.CreationMode == CreationMode.Extract ? GetShortPriorityList() : GetFullPriorityList();
 
                 return View(card);
             }
@@ -419,7 +402,8 @@ namespace ReadingListPlus.Web.Core.Controllers
                     Text = selection,
                     ParentCardUpdatedText = parentCardUpdatedText,
                     PriorityList = priorities,
-                    Type = CardType.Extract
+                    Type = CardType.Extract,
+                    CreationMode = CreationMode.Extract
                 };
 
                 if (settings.AllowDeckSelection)
@@ -437,7 +421,7 @@ namespace ReadingListPlus.Web.Core.Controllers
                     }
                     else
                     {
-                        newCard.DeckListItems = new SelectListItem(string.Empty, string.Empty, true).Concat(userDecks);
+                        newCard.DeckListItems = userDecks;
                     }
                 }
                 else
