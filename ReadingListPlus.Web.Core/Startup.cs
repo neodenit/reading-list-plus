@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ReadingListPlus.Common;
 using ReadingListPlus.DataAccess;
+using ReadingListPlus.Repositories;
 using ReadingListPlus.Services;
 using ReadingListPlus.Services.ArticleExtractorService;
 
@@ -58,6 +59,8 @@ namespace ReadingListPlus.Web.Core
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
+            services.AddScoped<IApplicationContext, ApplicationContext>();
+            AddRepositories(services);
             AddServices(services);
         }
 
@@ -100,9 +103,17 @@ namespace ReadingListPlus.Web.Core
 
         private static void AddServices(IServiceCollection services)
         {
+            services.AddTransient<IDeckService, DeckService>();
+            services.AddTransient<ICardService, CardService>();
             services.AddTransient<IArticleExtractorService, CombinedExtractor>();
             services.AddTransient<ISchedulerService, SchedulerService>();
             services.AddTransient<ITextConverterService, TextConverterService>();
+        }
+
+        private static void AddRepositories(IServiceCollection services)
+        {
+            services.AddTransient<IDeckRepository, DeckRepository>();
+            services.AddTransient<ICardRepository, CardRepository>();
         }
     }
 }

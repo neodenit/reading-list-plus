@@ -1,35 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using ReadingListPlus.Common;
-using ReadingListPlus.DataAccess;
 using ReadingListPlus.DataAccess.Models;
+using ReadingListPlus.Services;
 using ReadingListPlus.Web.Core.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ReadingListPlus.Web.Core.Controllers
 {
     [Authorize]
     public class DecksController : Controller
     {
-        private ApplicationContext db;
+        private readonly IDeckService deckService;
+        private readonly ICardService cardService;
         private readonly ISettings settings;
 
-        public DecksController(ApplicationContext db, ISettings settings)
+        public DecksController(IDeckService deckService, ICardService cardService, ISettings settings)
         {
-            this.db = db;
-            this.settings = settings;
+            this.deckService = deckService ?? throw new ArgumentNullException(nameof(deckService));
+            this.cardService = cardService ?? throw new ArgumentNullException(nameof(cardService));
+            this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
         }
 
         // GET: Decks
         public async Task<ActionResult> Index()
         {
-            var items = db.GetUserDecks(User).OrderBy(d => d.Title);
+            var items = deckService.GetUserDecks(User).OrderBy(d => d.Title);
 
             return View(await items.ToListAsync());
         }
@@ -37,7 +39,7 @@ namespace ReadingListPlus.Web.Core.Controllers
         [Authorize(Policy = Constants.BackupPolicy)]
         public async Task<ActionResult> Export(string id)
         {
-            var decks = await db.Decks.Include(d => d.Cards).ToListAsync();
+            var decks = await deckService.Decks.Include(d => d.Cards).ToListAsync();
             var jsonResult = new JsonResult(decks);
 
             return jsonResult;
@@ -75,12 +77,12 @@ namespace ReadingListPlus.Web.Core.Controllers
                         }
                     }
 
-                    db.Cards.RemoveRange(db.Cards);
-                    db.Decks.RemoveRange(db.Decks);
-                    await db.SaveChangesAsync();
+                    cardService.Cards.RemoveRange(cardService.Cards);
+                    deckService.Decks.RemoveRange(deckService.Decks);
+                    await deckService.SaveChangesAsync();
 
-                    db.Decks.AddRange(newDecks);
-                    await db.SaveChangesAsync();
+                    deckService.Decks.AddRange(newDecks);
+                    await deckService.SaveChangesAsync();
                 }
 
                 return RedirectToAction(nameof(Index));
@@ -99,7 +101,7 @@ namespace ReadingListPlus.Web.Core.Controllers
                 return BadRequest();
             }
 
-            var deck = await db.GetDeckAsync(id.Value);
+            var deck = await deckService.GetDeckAsync(id.Value);
 
             if (deck == null)
             {
@@ -146,9 +148,9 @@ namespace ReadingListPlus.Web.Core.Controllers
                     OwnerID = User.Identity.Name
                 };
 
-                db.Decks.Add(deck);
+                deckService.Decks.Add(deck);
 
-                await db.SaveChangesAsync();
+                await deckService.SaveChangesAsync();
 
                 return RedirectToAction("Index");
             }
@@ -166,7 +168,7 @@ namespace ReadingListPlus.Web.Core.Controllers
                 return BadRequest();
             }
 
-            var deck = await db.GetDeckAsync(id.Value);
+            var deck = await deckService.GetDeckAsync(id.Value);
 
             if (deck == null)
             {
@@ -189,7 +191,7 @@ namespace ReadingListPlus.Web.Core.Controllers
         {
             if (ModelState.IsValid)
             {
-                var dbDeck = await db.GetDeckAsync(deck.ID);
+                var dbDeck = await deckService.GetDeckAsync(deck.ID);
 
                 if (deck == null)
                 {
@@ -202,7 +204,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
                 dbDeck.Title = deck.Title;
 
-                await db.SaveChangesAsync();
+                await deckService.SaveChangesAsync();
 
                 return RedirectToAction("Index");
             }
@@ -219,7 +221,7 @@ namespace ReadingListPlus.Web.Core.Controllers
                 return BadRequest();
             }
 
-            var deck = await db.GetDeckAsync(id.Value);
+            var deck = await deckService.GetDeckAsync(id.Value);
 
             if (deck == null)
             {
@@ -240,28 +242,18 @@ namespace ReadingListPlus.Web.Core.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(Guid id)
         {
-            var deck = await db.GetDeckAsync(id);
+            var deck = await deckService.GetDeckAsync(id);
 
             if (!deck.IsAuthorized(User))
             {
                 return Unauthorized();
             }
 
-            db.Decks.Remove(deck);
+            deckService.Decks.Remove(deck);
 
-            await db.SaveChangesAsync();
+            await deckService.SaveChangesAsync();
 
             return RedirectToAction("Index");
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-
-            base.Dispose(disposing);
         }
     }
 }

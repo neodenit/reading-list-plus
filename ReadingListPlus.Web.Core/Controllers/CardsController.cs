@@ -1,37 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ReadingListPlus.Common;
 using ReadingListPlus.Common.Enums;
-using ReadingListPlus.DataAccess;
 using ReadingListPlus.DataAccess.Models;
 using ReadingListPlus.Services;
 using ReadingListPlus.Services.ArticleExtractorService;
 using ReadingListPlus.Web.Core.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ReadingListPlus.Web.Core.Controllers
 {
     [Authorize]
     public class CardsController : Controller
     {
-        private readonly ApplicationContext db;
+        private readonly IDeckService deckService;
+        private readonly ICardService cardService;
         private readonly ISettings settings;
         private readonly IArticleExtractorService articleExtractor;
         private readonly ISchedulerService schedulerService;
         private readonly ITextConverterService textConverterService;
 
-        public CardsController(ApplicationContext db, ISettings settings, IArticleExtractorService articleExtractor, ISchedulerService schedulerService, ITextConverterService textConverterService)
+        public CardsController(IDeckService deckService, ICardService cardService, IArticleExtractorService articleExtractor, ISchedulerService schedulerService, ITextConverterService textConverterService, ISettings settings)
         {
-            this.db = db ?? throw new ArgumentException(nameof(db));
-            this.settings = settings ?? throw new ArgumentException(nameof(settings));
+            this.deckService = deckService ?? throw new ArgumentNullException(nameof(deckService));
+            this.cardService = cardService ?? throw new ArgumentNullException(nameof(cardService));
             this.articleExtractor = articleExtractor ?? throw new ArgumentException(nameof(articleExtractor));
             this.schedulerService = schedulerService ?? throw new ArgumentException(nameof(schedulerService));
             this.textConverterService = textConverterService ?? throw new ArgumentException(nameof(textConverterService));
+            this.settings = settings ?? throw new ArgumentException(nameof(settings));
         }
 
         // GET: Cards
@@ -43,7 +44,7 @@ namespace ReadingListPlus.Web.Core.Controllers
             }
             else
             {
-                var deck = await db.GetDeckAsync(DeckID.Value);
+                var deck = await deckService.GetDeckAsync(DeckID.Value);
 
                 if (!deck.IsAuthorized(User))
                 {
@@ -58,13 +59,13 @@ namespace ReadingListPlus.Web.Core.Controllers
 
         public async Task<ActionResult> Fix(Guid DeckID)
         {
-            var deck = await db.GetDeckAsync(DeckID);
+            var deck = await deckService.GetDeckAsync(DeckID);
 
             var cards = deck.ConnectedCards.OrderBy(item => item.Position).ToList();
 
             Enumerable.Range(Constants.FirstCardPosition, cards.Count).Zip(cards, (i, item) => new { i = i, card = item }).ToList().ForEach(item => item.card.Position = item.i);
 
-            db.SaveChanges();
+            await deckService.SaveChangesAsync();
 
             return View("Index", cards.Select(c => MapCardToViewModel(c)));
         }
@@ -84,7 +85,7 @@ namespace ReadingListPlus.Web.Core.Controllers
             }
             else
             {
-                var card = await db.GetCardAsync(id.Value);
+                var card = await cardService.GetCardAsync(id.Value);
 
                 if (card == null)
                 {
@@ -126,7 +127,7 @@ namespace ReadingListPlus.Web.Core.Controllers
         // GET: Cards/Create/5
         public async Task<ActionResult> Create(Guid deckID, string text)
         {
-            var deck = await db.GetDeckAsync(deckID);
+            var deck = await deckService.GetDeckAsync(deckID);
 
             if (!deck.IsAuthorized(User))
             {
@@ -152,7 +153,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
         public async Task<ActionResult> CreateFromUrl(string url)
         {
-            var deckListItems = db.GetUserDecks(User)
+            var deckListItems = deckService.GetUserDecks(User)
                                 .OrderBy(d => d.Title)
                                 .Select(d => new SelectListItem { Value = d.ID.ToString(), Text = d.Title });
 
@@ -161,7 +162,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
             var priorities = GetFullPriorityList();
 
-            var user = db.Users.Single(u => u.UserName == User.Identity.Name);
+            var user = deckService.Users.Single(u => u.UserName == User.Identity.Name);
             var lastDeck = user.LastDeck;
 
             var card = new CreateCardViewModel
@@ -185,9 +186,9 @@ namespace ReadingListPlus.Web.Core.Controllers
         {
             if (ModelState.IsValid)
             {
-                var deck = await db.GetDeckAsync(card.DeckID.Value);
-                var oldDeck = card.OldDeckID.HasValue ? await db.GetDeckAsync(card.OldDeckID.Value) : null;
-                var parentCard = card.ParentCardID.HasValue ? await db.GetCardAsync(card.ParentCardID.Value) : null;
+                var deck = await deckService.GetDeckAsync(card.DeckID.Value);
+                var oldDeck = card.OldDeckID.HasValue ? await deckService.GetDeckAsync(card.OldDeckID.Value) : null;
+                var parentCard = card.ParentCardID.HasValue ? await cardService.GetCardAsync(card.ParentCardID.Value) : null;
 
                 if (!deck.IsAuthorized(User))
                 {
@@ -218,7 +219,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
                     schedulerService.PrepareForAdding(deck, deck.ConnectedCards, newCard, priority);
 
-                    db.Cards.Add(newCard);
+                    cardService.Cards.Add(newCard);
 
                     if (oldDeck != null)
                     {
@@ -230,10 +231,10 @@ namespace ReadingListPlus.Web.Core.Controllers
                         parentCard.Text = card.ParentCardUpdatedText;
                     }
 
-                    var user = db.Users.Single(u => u.UserName == User.Identity.Name);
+                    var user = deckService.Users.Single(u => u.UserName == User.Identity.Name);
                     user.LastDeck = newCard.DeckID;
 
-                    await db.SaveChangesAsync();
+                    await deckService.SaveChangesAsync();
 
                     return RedirectToDeckDetails(card.OldDeckID ?? newCard.DeckID);
                 }
@@ -243,7 +244,7 @@ namespace ReadingListPlus.Web.Core.Controllers
                 card.DeckListItems =
                     card.CreationMode == CreationMode.Add ?
                         null :
-                        db.GetUserDecks(User)
+                        deckService.GetUserDecks(User)
                             .OrderBy(d => d.Title)
                             .Select(d => new SelectListItem { Value = d.ID.ToString(), Text = d.Title });
 
@@ -261,7 +262,7 @@ namespace ReadingListPlus.Web.Core.Controllers
                 return BadRequest();
             }
 
-            var card = await db.GetCardAsync(id.Value);
+            var card = await cardService.GetCardAsync(id.Value);
 
             if (card == null)
             {
@@ -285,7 +286,7 @@ namespace ReadingListPlus.Web.Core.Controllers
         {
             if (ModelState.IsValid)
             {
-                var dbCard = await db.GetCardAsync(card.ID);
+                var dbCard = await cardService.GetCardAsync(card.ID);
 
                 if (!dbCard.IsAuthorized(User))
                 {
@@ -298,7 +299,7 @@ namespace ReadingListPlus.Web.Core.Controllers
                     dbCard.Url = card.Url;
                     dbCard.Type = card.Type;
 
-                    await db.SaveChangesAsync();
+                    await deckService.SaveChangesAsync();
 
                     return RedirectToAction("Details", "Decks", new { id = dbCard.DeckID });
                 }
@@ -312,7 +313,7 @@ namespace ReadingListPlus.Web.Core.Controllers
         #region Actions
         public async Task<ActionResult> Postpone(Guid ID, string Priority)
         {
-            var card = await db.GetCardAsync(ID);
+            var card = await cardService.GetCardAsync(ID);
 
             if (!card.IsAuthorized(User))
             {
@@ -331,7 +332,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
                 schedulerService.ChangeFirstCardPosition(deck, deckCards, card, priority);
 
-                await db.SaveChangesAsync();
+                await deckService.SaveChangesAsync();
 
                 return RedirectToDeckDetails(card.DeckID);
             }
@@ -339,7 +340,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
         public async Task<ActionResult> Highlight(Guid ID, string text)
         {
-            var card = await db.GetCardAsync(ID);
+            var card = await cardService.GetCardAsync(ID);
 
             if (!card.IsAuthorized(User))
             {
@@ -351,7 +352,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
                 card.Text = newText;
 
-                await db.SaveChangesAsync();
+                await deckService.SaveChangesAsync();
 
                 return RedirectToDeckDetails(card.DeckID);
             }
@@ -359,7 +360,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
         public async Task<ActionResult> Cloze(Guid ID, string text)
         {
-            var card = await db.GetCardAsync(ID);
+            var card = await cardService.GetCardAsync(ID);
 
             if (!card.IsAuthorized(User))
             {
@@ -371,7 +372,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
                 card.Text = newText;
 
-                await db.SaveChangesAsync();
+                await deckService.SaveChangesAsync();
 
                 return RedirectToDeckDetails(card.DeckID);
             }
@@ -379,7 +380,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
         public async Task<ActionResult> Extract(Guid ID, string text)
         {
-            var card = await db.GetCardAsync(ID);
+            var card = await cardService.GetCardAsync(ID);
 
             if (!card.IsAuthorized(User))
             {
@@ -408,7 +409,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
                 if (settings.AllowDeckSelection)
                 {
-                    var userDecks = db.GetUserDecks(User)
+                    var userDecks = deckService.GetUserDecks(User)
                             .OrderBy(d => d.Title)
                             .Select(d => new SelectListItem { Value = d.ID.ToString(), Text = d.Title });
 
@@ -435,7 +436,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
         public async Task<ActionResult> Bookmark(Guid ID, string text)
         {
-            var card = await db.GetCardAsync(ID);
+            var card = await cardService.GetCardAsync(ID);
 
             if (!card.IsAuthorized(User))
             {
@@ -449,7 +450,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
                 card.Text = newText;
 
-                await db.SaveChangesAsync();
+                await deckService.SaveChangesAsync();
 
                 var viewModel = MapCardToViewModel(card);
 
@@ -461,7 +462,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
         public async Task<ActionResult> DeleteRegion(Guid ID, string text)
         {
-            var card = await db.GetCardAsync(ID);
+            var card = await cardService.GetCardAsync(ID);
 
             if (!card.IsAuthorized(User))
             {
@@ -473,7 +474,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
                 card.Text = newText;
 
-                await db.SaveChangesAsync();
+                await deckService.SaveChangesAsync();
 
                 return RedirectToDeckDetails(card.DeckID);
             }
@@ -488,7 +489,7 @@ namespace ReadingListPlus.Web.Core.Controllers
                 return BadRequest();
             }
 
-            var card = await db.GetCardAsync(id.Value);
+            var card = await cardService.GetCardAsync(id.Value);
 
             if (card == null)
             {
@@ -504,7 +505,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
                 card.Position = Constants.DisconnectedCardPosition;
 
-                await db.SaveChangesAsync();
+                await deckService.SaveChangesAsync();
 
                 return RedirectToDeckDetails(card.DeckID);
             }
@@ -515,7 +516,7 @@ namespace ReadingListPlus.Web.Core.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(Guid id)
         {
-            var card = await db.GetCardAsync(id);
+            var card = await cardService.GetCardAsync(id);
 
             if (!card.IsAuthorized(User))
             {
@@ -527,9 +528,9 @@ namespace ReadingListPlus.Web.Core.Controllers
             }
             else
             {
-                db.Cards.Remove(card);
+                cardService.Cards.Remove(card);
 
-                await db.SaveChangesAsync();
+                await deckService.SaveChangesAsync();
 
                 return RedirectToDeckDetails(card.DeckID);
             }
