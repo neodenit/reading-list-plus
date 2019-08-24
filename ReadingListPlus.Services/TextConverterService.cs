@@ -46,11 +46,6 @@ namespace ReadingListPlus.Services
         public string DeleteTagByName(string initialText, string tagName) =>
             Regex.Replace(initialText, $"{{{{{tagName}::(?s)(.+?)}}}}", "$1", RegexOptions.IgnoreCase);
 
-        private string AddExtract(string initialText, string htmlSelection)
-        {
-            return GetReplacement(initialText, htmlSelection, "extract");
-        }
-
         private string GetReplacement(string initialText, string htmlSelection, string tag)
         {
             var isValid = Validate(htmlSelection);
@@ -77,23 +72,6 @@ namespace ReadingListPlus.Services
             }
         }
 
-        private string GetWords(string text)
-        {
-            var result = Regex.Replace(text, @"\W+", @"\W+");
-
-            return result;
-        }
-
-        private string Escape(string text)
-        {
-            return text.Replace("{", @"\{").Replace("}", @"\}");
-        }
-
-        private string UnEscape(string text)
-        {
-            return text.Replace(@"\{", "{").Replace(@"\}", "}");
-        }
-
         private bool Validate(string text)
         {
             var letters = Regex.IsMatch(text, @"\w");
@@ -110,15 +88,6 @@ namespace ReadingListPlus.Services
             var htmlText2 = Regex.Replace(htmlText1, @"{{(\w+)::(.+?)}}", @"<span class=""$1"">$2</span>");
 
             return htmlText2;
-        }
-
-        private string HtmlToText(string text)
-        {
-            var plainText1 = Regex.Replace(text, @"<\s*br\s*/?\s*>", Environment.NewLine, RegexOptions.IgnoreCase);
-
-            var plainText2 = Regex.Replace(plainText1, @"<span class=""(\w+)"">(.+?)</span>", @"{{$1::$2}}");
-
-            return plainText2;
         }
 
         private string MatchEvaluator(Match match, IEnumerable<Match> matches, string tag)

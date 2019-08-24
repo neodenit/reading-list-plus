@@ -63,11 +63,7 @@
 
             surroundSelection(newNode);
 
-            var htmlText1 = $('#article').html();
-
             clean();
-
-            var htmlText2 = $('#article').html();
 
             var selection = getSelectionSpan();
 
@@ -78,7 +74,7 @@
                 var convertedText = HtmlToText(htmlText);
                 var trimmedText = convertedText.trim();
 
-                SubmitSelection(trimmedText, action)
+                SubmitSelection(trimmedText, action);
             }
         } else if (action === 'DeleteRegion') {
             var regionTypes = ['.bookmarkselected', '.highlightselected', '.extractselected', '.clozeselected'];
@@ -189,7 +185,7 @@ function SubmitSelection(selection, action) {
 function getSelectionText() {
     if (window.getSelection) {
         return window.getSelection().toString();
-    } else if (document.selection && document.selection.type != 'Control') {
+    } else if (document.selection && document.selection.type !== 'Control') {
         return document.selection.createRange().text;
     } else {
         return '';
@@ -204,40 +200,6 @@ function getPatternFromTag(selector) {
     var escaped = GetWords(noBR);
 
     return escaped;
-}
-
-function getSelectionText2() {
-    if (window.getSelection) {
-        var sel1 = window.getSelection();
-        var range1 = sel1.getRangeAt(0);
-        var content1 = range1.toString();
-
-        var text1 = sel1.toString();
-
-        var sel2 = getSelection();
-        var range2 = sel2.getRangeAt(0);
-        var content2 = range2.toString();
-
-        var text2 = sel2.toString();
-
-        var r1 = this.Range.valueOf();
-        var r2 = this.Range.toString();
-
-        return content;
-    } else if (document.selection && document.selection.type != 'Control') {
-        return document.selection.createRange().text;
-    } else {
-        return '';
-    }
-}
-function getSelectionText3() {
-    var newNode = document.createElement('span');
-
-    newNode.className = 'highlight';
-
-    surroundSelection(newNode);
-
-    return selectionContents;
 }
 
 function checkSelection() {
@@ -282,8 +244,7 @@ function getSelectionSpan() {
 }
 
 function checkForExistence(element) {
-    var result = element.length ? true : false;
-
+    var result = !!element.length;
     return result;
 }
 
