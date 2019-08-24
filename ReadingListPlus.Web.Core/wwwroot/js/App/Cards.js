@@ -102,18 +102,18 @@
     });
 
     var postpone = function (priority) {
-        var cardId = $('#ID').val();
-        var newLocation = '/Cards/Postpone/' + cardId + '?Priority=' + priority;
+        $('#Priority').val(priority);
+
         var isBookmarked = $('#IsBookmarked').val();
         var cardType = parseInt($('#Type').val());
 
         if (cardType !== Enums.CardType.Article || isBookmarked === 'True') {
-            window.location = newLocation;
+            SubmitSelection("", "Postpone");
         } else if (isBookmarked === 'False') {
             $('#ModalDialog').modal();
 
             $('#YesButton').unbind('click').click(function () {
-                window.location = newLocation;
+                SubmitSelection("", "Postpone");
             });
         }
     };

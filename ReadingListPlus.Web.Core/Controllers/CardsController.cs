@@ -105,7 +105,7 @@ namespace ReadingListPlus.Web.Core.Controllers
         }
 
         [HttpPost]
-        public Task<ActionResult> Details([Bind("ID", "NextAction", "Selection")] CardViewModel card)
+        public Task<ActionResult> Details([Bind("ID", "NextAction", "Selection", "Priority")] CardViewModel card)
         {
             switch (card.NextAction)
             {
@@ -119,6 +119,8 @@ namespace ReadingListPlus.Web.Core.Controllers
                     return Bookmark(card.ID, card.Selection);
                 case "DeleteRegion":
                     return DeleteRegion(card.ID, card.Selection);
+                case "Postpone":
+                    return Postpone(card.ID, card.Priority.ToString());
                 default:
                     throw new Exception();
             }

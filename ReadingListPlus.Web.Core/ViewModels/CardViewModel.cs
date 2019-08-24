@@ -1,4 +1,5 @@
 ﻿using System;
+using ReadingListPlus.Common.Enums;
 using ReadingListPlus.DataAccess.Models;
 
 namespace ReadingListPlus.Web.Core.ViewModels
@@ -28,5 +29,7 @@ namespace ReadingListPlus.Web.Core.ViewModels
         public string Selection { get; set; }
 
         public string NextAction { get; set; }
+
+        public Priority? Priority { get; set; }
     }
 }
