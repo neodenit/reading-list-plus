@@ -15,5 +15,7 @@
         string GetSelection(string text);
 
         string ReplaceTag(string text, string oldTag, string newTag);
+
+        string AddParameter(string text, string tagName, string parameter);
     }
 }

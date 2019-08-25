@@ -1,10 +1,11 @@
-﻿var spanRegex = /<span class="(\w+)">([\s\S]+?)<\/span>/gi;
-
-var brRegex = /<br\s*\/?>/gi;
+﻿var extractRegex = /<span class="extract" data-card-id="([0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12})">([\s\S]+?)<\/span>/g;
+var spanRegex = /<span class="(\w+)">([\s\S]+?)<\/span>/g;
+var brRegex = /<br\/>/g;
 
 function HtmlToText(html) {
-	var noSpans = html.replace(spanRegex, '{{$1::$2}}');
-	var noBR = noSpans.replace(brRegex, '\r\n');
+    var textWithNoExtracts = html.replace(extractRegex, '{{extract::$1::$2}}');
+    var textWithNoSpans = textWithNoExtracts.replace(spanRegex, '{{$1::$2}}');
+    var textWithNoBRs = textWithNoSpans.replace(brRegex, '\r\n');
 
-	return noBR;
+    return textWithNoBRs;
 }

@@ -7,6 +7,8 @@ namespace ReadingListPlus.Services
 {
     public class TextConverterService : ITextConverterService
     {
+        const string GuidRegex = "[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}";
+
         public string AddHighlight(string initialText, string htmlSelection)
         {
             return GetReplacement(initialText, htmlSelection, "highlight");
@@ -56,7 +58,7 @@ namespace ReadingListPlus.Services
             }
             else
             {
-                var matches = from Match match in Regex.Matches(initialText, @"{{\w+::.+?}}", RegexOptions.Singleline) select match;
+                var matches = from Match match in Regex.Matches(initialText, @"{{\w+::.+?}}") select match;
 
                 var trimmedSelection = Regex.Replace(htmlSelection, @"\\W\+(.+)\\W\+", "$1");
 
@@ -83,11 +85,11 @@ namespace ReadingListPlus.Services
 
         private string TextToHtml(string text)
         {
-            var htmlText1 = Regex.Replace(text, Environment.NewLine, "<br />");
+            var htmlText1 = Regex.Replace(text, Environment.NewLine, "<br/>");
+            var htmlText2 = Regex.Replace(htmlText1, $"{{{{extract::({GuidRegex})::(?s)(.+?)}}}}", @"<span class=""extract"" data-card-id=""$1"">$2</span>");
+            var htmlText3 = Regex.Replace(htmlText2, @"{{(\w+)::(?s)(.+?)}}", @"<span class=""$1"">$2</span>");
 
-            var htmlText2 = Regex.Replace(htmlText1, @"{{(\w+)::(.+?)}}", @"<span class=""$1"">$2</span>");
-
-            return htmlText2;
+            return htmlText3;
         }
 
         private string MatchEvaluator(Match match, IEnumerable<Match> matches, string tag)
@@ -117,5 +119,8 @@ namespace ReadingListPlus.Services
         {
             return "{{" + tag + "::" + text + "}}";
         }
+
+        public string AddParameter(string text, string tagName, string parameter) =>
+            Regex.Replace(text, $"{{{{{tagName}::(?s)(.+)}}}}", $"{{{{{tagName}::{parameter}::$1}}}}");
     }
 }

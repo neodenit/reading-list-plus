@@ -230,7 +230,12 @@ namespace ReadingListPlus.Web.Core.Controllers
 
                     if (parentCard != null)
                     {
-                        parentCard.Text = card.ParentCardUpdatedText;
+                        await deckService.SaveChangesAsync();
+
+                        var textWithNewCardID = textConverterService.AddParameter(card.ParentCardUpdatedText, "selection", newCard.ID.ToString());
+                        var textWithoutSelection = textConverterService.ReplaceTag(textWithNewCardID, "selection", "extract");
+
+                        parentCard.Text = textWithoutSelection;
                     }
 
                     var user = deckService.Users.Single(u => u.UserName == User.Identity.Name);
@@ -392,8 +397,6 @@ namespace ReadingListPlus.Web.Core.Controllers
             {
                 ModelState.Clear();
 
-                var parentCardUpdatedText = textConverterService.ReplaceTag(text, "selection", "extract");
-
                 var selection = textConverterService.GetSelection(text);
 
                 var priorities = GetShortPriorityList();
@@ -403,7 +406,7 @@ namespace ReadingListPlus.Web.Core.Controllers
                     Url = card.Url,
                     ParentCardID = card.ID,
                     Text = selection,
-                    ParentCardUpdatedText = parentCardUpdatedText,
+                    ParentCardUpdatedText = text,
                     PriorityList = priorities,
                     Type = CardType.Extract,
                     CreationMode = CreationMode.Extract
