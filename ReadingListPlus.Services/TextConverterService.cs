@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text.RegularExpressions;
 
 namespace ReadingListPlus.Services
@@ -21,8 +22,8 @@ namespace ReadingListPlus.Services
 
         public string GetHtml(string text)
         {
-            var html = TextToHtml(text);
-
+            var encodedText = WebUtility.HtmlEncode(text);
+            var html = ConvertTemplateToHtml(encodedText);
             return html;
         }
 
@@ -83,9 +84,9 @@ namespace ReadingListPlus.Services
             return isValid;
         }
 
-        private string TextToHtml(string text)
+        private string ConvertTemplateToHtml(string template)
         {
-            var htmlText1 = Regex.Replace(text, Environment.NewLine, "<br/>");
+            var htmlText1 = Regex.Replace(template, Environment.NewLine, "<br/>");
             var htmlText2 = Regex.Replace(htmlText1, $"{{{{extract::({GuidRegex})::(?s)(.+?)}}}}", @"<span class=""extract"" data-card-id=""$1"">$2</span>");
             var htmlText3 = Regex.Replace(htmlText2, @"{{(\w+)::(?s)(.+?)}}", @"<span class=""$1"">$2</span>");
 
