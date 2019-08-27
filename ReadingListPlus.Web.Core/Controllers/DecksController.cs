@@ -39,8 +39,10 @@ namespace ReadingListPlus.Web.Core.Controllers
         [Authorize(Policy = Constants.BackupPolicy)]
         public async Task<ActionResult> Export(string id)
         {
+            _ = id;
+
             var decks = await deckService.Decks.Include(d => d.Cards).ToListAsync();
-            var jsonResult = new JsonResult(decks);
+            var jsonResult = new JsonResult(decks, new JsonSerializerSettings { Formatting = Formatting.Indented });
 
             return jsonResult;
         }
