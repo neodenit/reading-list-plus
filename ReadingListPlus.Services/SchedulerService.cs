@@ -3,11 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using ReadingListPlus.Common;
 using ReadingListPlus.Common.Enums;
+using ReadingListPlus.Common.Interfaces;
 
 namespace ReadingListPlus.Services
 {
     public class SchedulerService : ISchedulerService
     {
+        const double HighPriorityCoeff = 1.0 / 3.0;
+        const double MediumPriorityCoeff = 2.0 / 3.0;
+
         public Priority ParsePriority(string text)
         {
             return (Priority)Enum.Parse(typeof(Priority), text, true);
@@ -34,6 +38,12 @@ namespace ReadingListPlus.Services
             ChangeFirstCardPosition(cards, card, position);
         }
 
+        public ICard GetFirstCard(IEnumerable<ICard> cards)
+        {
+            var card = cards.Single(item => item.Position == Constants.FirstCardPosition);
+            return card;
+        }
+
         /// <summary>
         /// Returns position based on priority.
         /// </summary>
@@ -42,35 +52,25 @@ namespace ReadingListPlus.Services
         /// <returns>Position of the card.</returns>
         private int GetStaticPosition(Priority priority, int max, bool verbose = false)
         {
-            var split1 = 1.0 / 3.0;
-            var split2 = 2.0 / 3.0;
-
-            Func<double, int> op = Utils.Round;
-
-            var hi = op(max * split1);
-            var med = op(max * split2);
-            var low = max;
-
-            if (verbose)
+            if (max <= 1)
             {
-                Console.WriteLine("hi: {0}", hi);
-                Console.WriteLine("med: {0}", med);
-                Console.WriteLine("low: {0}", low);
-                Console.WriteLine("---");
+                return max;
             }
-
-            switch (priority)
+            else
             {
-                case Priority.Low:
-                    return low;
-                case Priority.Medium:
-                    return med;
-                case Priority.High:
-                    return hi;
-                case Priority.Highest:
-                    return Constants.FirstCardPosition;
-                default:
-                    return Constants.DisconnectedCardPosition;
+                switch (priority)
+                {
+                    case Priority.Low:
+                        return max;
+                    case Priority.Medium:
+                        return Utils.Round(max * MediumPriorityCoeff);
+                    case Priority.High:
+                        return Utils.Round(max * HighPriorityCoeff);
+                    case Priority.Highest:
+                        return Constants.FirstCardPosition;
+                    default:
+                        return Constants.DisconnectedCardPosition;
+                }
             }
         }
 
@@ -174,12 +174,6 @@ namespace ReadingListPlus.Services
             {
                 return Constants.FirstCardPosition;
             }
-        }
-
-        private ICard GetFirstCard(IEnumerable<ICard> cards)
-        {
-            var card = cards.GetMinElement(item => item.Position);
-            return card;
         }
 
         private void ReservePosition(IEnumerable<ICard> cards, int position)

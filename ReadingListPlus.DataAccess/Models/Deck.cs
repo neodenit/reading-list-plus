@@ -6,6 +6,7 @@ using System.Linq;
 using System.Security.Principal;
 using Newtonsoft.Json;
 using ReadingListPlus.Common;
+using ReadingListPlus.Common.Interfaces;
 
 namespace ReadingListPlus.DataAccess.Models
 {

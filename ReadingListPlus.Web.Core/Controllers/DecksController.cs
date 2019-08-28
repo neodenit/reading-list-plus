@@ -19,12 +19,14 @@ namespace ReadingListPlus.Web.Core.Controllers
     {
         private readonly IDeckService deckService;
         private readonly ICardService cardService;
+        private readonly ISchedulerService schedulerService;
         private readonly ISettings settings;
 
-        public DecksController(IDeckService deckService, ICardService cardService, ISettings settings)
+        public DecksController(IDeckService deckService, ICardService cardService, ISchedulerService schedulerService, ISettings settings)
         {
             this.deckService = deckService ?? throw new ArgumentNullException(nameof(deckService));
             this.cardService = cardService ?? throw new ArgumentNullException(nameof(cardService));
+            this.schedulerService = schedulerService ?? throw new ArgumentNullException(nameof(schedulerService));
             this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
         }
 
@@ -118,7 +120,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
             if (cards.Any())
             {
-                var card = cards.GetMinElement(c => c.Position);
+                var card = schedulerService.GetFirstCard(cards);
 
                 return RedirectToAction("Details", "Cards", new { id = card.ID });
             }

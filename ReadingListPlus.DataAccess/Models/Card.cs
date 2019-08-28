@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Principal;
 using Newtonsoft.Json;
-using ReadingListPlus.Common;
+using ReadingListPlus.Common.Interfaces;
 
 namespace ReadingListPlus.DataAccess.Models
 {
