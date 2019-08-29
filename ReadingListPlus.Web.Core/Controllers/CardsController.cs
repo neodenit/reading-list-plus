@@ -20,10 +20,10 @@ namespace ReadingListPlus.Web.Core.Controllers
     {
         private readonly IDeckService deckService;
         private readonly ICardService cardService;
-        private readonly ISettings settings;
         private readonly IArticleExtractorService articleExtractor;
         private readonly ISchedulerService schedulerService;
         private readonly ITextConverterService textConverterService;
+        private readonly ISettings settings;
 
         public CardsController(IDeckService deckService, ICardService cardService, IArticleExtractorService articleExtractor, ISchedulerService schedulerService, ITextConverterService textConverterService, ISettings settings)
         {
@@ -589,7 +589,12 @@ namespace ReadingListPlus.Web.Core.Controllers
                 Type = card.Type,
                 Title = card.Title,
                 Text = card.Text,
-                HtmlText = textConverterService.GetHtml(card.Text),
+                HtmlText = textConverterService.GetHtml(
+                    card.Text,
+                    Uri.UnescapeDataString(
+                        Url.Action(
+                            nameof(Details),
+                            new { ID = $"${{{Constants.CardIdGroup}}}" }))),
                 Url = card.Url,
                 Position = card.Position
             };

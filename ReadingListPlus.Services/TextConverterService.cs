@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
+using ReadingListPlus.Common;
 
 namespace ReadingListPlus.Services
 {
     public class TextConverterService : ITextConverterService
     {
-        const string GuidRegex = "[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}";
-
         public string AddHighlight(string initialText, string htmlSelection)
         {
             return GetReplacement(initialText, htmlSelection, "highlight");
@@ -20,10 +19,10 @@ namespace ReadingListPlus.Services
             return GetReplacement(initialText, htmlSelection, "cloze");
         }
 
-        public string GetHtml(string text)
+        public string GetHtml(string text, string cardUrlTemplate)
         {
             var encodedText = WebUtility.HtmlEncode(text);
-            var html = ConvertTemplateToHtml(encodedText);
+            var html = ConvertTemplateToHtml(encodedText, cardUrlTemplate);
             return html;
         }
 
@@ -84,10 +83,13 @@ namespace ReadingListPlus.Services
             return isValid;
         }
 
-        private string ConvertTemplateToHtml(string template)
+        private string ConvertTemplateToHtml(string template, string cardUrlTemplate)
         {
             var htmlText1 = Regex.Replace(template, Environment.NewLine, "<br/>");
-            var htmlText2 = Regex.Replace(htmlText1, $"{{{{extract::({GuidRegex})::(?s)(.+?)}}}}", @"<span class=""extract"" data-card-id=""$1"">$2</span>");
+            var htmlText2 = Regex.Replace(htmlText1,
+                $"{{{{extract::(?<{Constants.CardIdGroup}>{Constants.GuidRegex})::(?s)(?<{Constants.TextGroup}>.+?)}}}}",
+                $@"<a href='{cardUrlTemplate}' class=""extract"" data-card-id=""${{{Constants.CardIdGroup}}})"">${{{Constants.TextGroup}}}</a>");
+
             var htmlText3 = Regex.Replace(htmlText2, @"{{(\w+)::(?s)(.+?)}}", @"<span class=""$1"">$2</span>");
 
             return htmlText3;

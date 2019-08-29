@@ -45,7 +45,7 @@
         $(this).removeClass('highlight').addClass('highlightselected');
     });
 
-    $('.extract').click(function () {
+    $('span.extract').click(function () {
         DropSelections();
         $(this).removeClass('extract').addClass('extractselected');
     });

@@ -10,7 +10,7 @@
 
         string DeleteTagByText(string initialText, string htmlSelection);
 
-        string GetHtml(string text);
+        string GetHtml(string text, string cardUrlTemplate);
 
         string GetSelection(string text);
 

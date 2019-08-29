@@ -37,7 +37,7 @@ body {
     }
 }
 
-.extract {
+span.extract {
     color: black;
     background-color: cyan;
 }
