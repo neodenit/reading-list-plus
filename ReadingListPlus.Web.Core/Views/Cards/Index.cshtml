@@ -13,7 +13,7 @@
         <th>
             @Html.DisplayNameFor(model => model.Position)
         </th>
-        <th class="w-80">
+        <th>
             @Html.DisplayNameFor(model => model.Text)
         </th>
         <th></th>
@@ -26,7 +26,7 @@
                 @Html.DisplayFor(modelItem => item.Position)
             </td>
             <td>
-                @(item.Text.Substring(0, Math.Min(256, item.Text.Length)))
+                @item.Text
             </td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |

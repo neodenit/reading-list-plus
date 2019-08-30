@@ -37,6 +37,11 @@ body {
     }
 }
 
+.article {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
 span.extract {
     color: black;
     background-color: cyan;
@@ -83,10 +88,32 @@ span.extract {
 
 .actions {
     background-color: white;
-    padding: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
     width: 100%;
 }
 
-.w-80 {
-    width: 80%;
+.mainPanelPlaceholder {
+    height: 30px;
 }
+
+.notes-table {
+    width: 100%;
+}
+
+    .notes-table tr td:nth-child(1) {
+        width: 1%;
+        white-space: nowrap;
+    }
+
+    .notes-table tr td:nth-child(2) {
+        max-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .notes-table tr td:nth-child(3) {
+        width: 1%;
+        white-space: nowrap;
+    }
