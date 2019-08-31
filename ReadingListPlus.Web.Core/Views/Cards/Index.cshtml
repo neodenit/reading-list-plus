@@ -1,12 +1,14 @@
-﻿@model IEnumerable<ReadingListPlus.Web.Core.ViewModels.CardViewModel>
+﻿@using ReadingListPlus.Web.Core.Controllers
+
+@model IEnumerable<ReadingListPlus.Web.Core.ViewModels.CardViewModel>
 
 @{
     ViewBag.Title = Model.First().DeckTitle;
 }
 
-<h2>@(Model.First().DeckTitle)</h2>
+<h2>@Model.First().DeckTitle</h2>
 
-@Html.ActionLink("Back", "Details", "Decks", new { id = Model.First().DeckID }, null)
+<a asp-action="@nameof(CardsController.Details)" asp-controller="@DecksController.Name" asp-route-id="@Model.First().DeckID">Back</a>
 
 <table class="table notes-table">
     <tr>
@@ -16,7 +18,8 @@
         <th>
             @Html.DisplayNameFor(model => model.Text)
         </th>
-        <th></th>
+        <th>
+        </th>
     </tr>
 
     @foreach (var item in Model)
@@ -29,8 +32,9 @@
                 @item.Text
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
-                @Html.ActionLink("Hide", "Delete", new { id = item.ID })
+                <a asp-action="@nameof(CardsController.Details)" asp-route-id="@item.ID">Read</a> |
+                <a asp-action="@nameof(CardsController.Edit)" asp-route-id="@item.ID">Edit</a> |
+                <a asp-action="@nameof(CardsController.Delete)" asp-route-id="@item.ID">Hide</a>
             </td>
         </tr>
     }
