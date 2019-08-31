@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using ReadingListPlus.Common.Enums;
 using ReadingListPlus.DataAccess.Models;
 
@@ -23,6 +24,9 @@ namespace ReadingListPlus.Web.Core.ViewModels
         public string Url { get; set; }
 
         public int Position { get; set; }
+
+        [Display(Name = "#")]
+        public int UserFriendlyPosition => Position + 1;
 
         public bool IsBookmarked { get; set; }
 

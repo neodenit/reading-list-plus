@@ -18,6 +18,8 @@ namespace ReadingListPlus.Web.Core.Controllers
     [Authorize]
     public class CardsController : Controller
     {
+        public const string Name = "Cards";
+
         private readonly IDeckService deckService;
         private readonly ICardService cardService;
         private readonly IArticleExtractorService articleExtractor;

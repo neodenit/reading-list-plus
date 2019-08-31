@@ -17,6 +17,8 @@ namespace ReadingListPlus.Web.Core.Controllers
     [Authorize]
     public class DecksController : Controller
     {
+        public const string Name = "Decks";
+
         private readonly IDeckService deckService;
         private readonly ICardService cardService;
         private readonly ISchedulerService schedulerService;

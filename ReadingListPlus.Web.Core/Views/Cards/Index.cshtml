@@ -11,7 +11,7 @@
 <table class="table notes-table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Position)
+            @Html.DisplayNameFor(model => model.UserFriendlyPosition)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Text)
@@ -23,14 +23,14 @@
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Position)
+                @Html.DisplayFor(modelItem => item.UserFriendlyPosition)
             </td>
             <td>
                 @item.Text
             </td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.ID })
+                @Html.ActionLink("Hide", "Delete", new { id = item.ID })
             </td>
         </tr>
     }

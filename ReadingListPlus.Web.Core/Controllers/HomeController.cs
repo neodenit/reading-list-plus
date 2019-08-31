@@ -6,6 +6,8 @@ namespace ReadingListPlus.Web.Core.Controllers
 {
     public class HomeController : Controller
     {
+        public const string Name = "Home";
+
         public IActionResult Index()
         {
             if (User.Identity.IsAuthenticated)
