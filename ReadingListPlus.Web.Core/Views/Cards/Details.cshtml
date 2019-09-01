@@ -13,74 +13,70 @@
 }
 
 <form id="myForm" asp-action="@nameof(CardsController.Details)" method="post">
-    <fieldset>
-        <input type="hidden" asp-for="ID" />
-        <input type="hidden" asp-for="Selection" />
-        <input type="hidden" asp-for="NextAction" />
-        <input type="hidden" asp-for="DeckID" />
-        <input type="hidden" asp-for="IsBookmarked" />
-        <input type="hidden" asp-for="Type" value="@Model.Type.ToString("d")" />
-        <input type="hidden" asp-for="Priority" />
+    <input type="hidden" asp-for="ID" />
+    <input type="hidden" asp-for="Selection" />
+    <input type="hidden" asp-for="NextAction" />
+    <input type="hidden" asp-for="DeckID" />
+    <input type="hidden" asp-for="IsBookmarked" />
+    <input type="hidden" asp-for="Type" value="@Model.Type.ToString("d")" />
+    <input type="hidden" asp-for="Priority" />
 
-        <p>
-            <div id="topPanel" class="actions">
-                <a asp-action="@nameof(CardsController.Create)" asp-route-deckID="@Model.DeckID">Add @Resources.Item</a> |
-                <a asp-action="@nameof(CardsController.Edit)" asp-route-id="@Model.ID">Edit @Resources.Item</a> |
-                <a asp-action="@nameof(CardsController.Index)" asp-route-deckID="@Model.DeckID">Index</a> |
-            </div>
-            <hr />
-            <div id="scrollArea" class="mainPanelPlaceholder">
-                <div id="mainPanel" class="actions">
-                    <a href="#" id="Extract" class="act">Extract</a> |
-                    <a href="#" id="Bookmark" class="act">Bookmark</a> |
-                    <a href="#" id="Highlight" class="act">Highlight</a> |
-                    <a href="#" id="Cloze" class="act">Cloze</a> |
-                    <a href="#" id="DeleteRegion" class="act">Drop</a> |
-                    <span>New priority:</span>
-                    <a href="#" id="PostponeHigh" class="act">High</a> |
-                    <a href="#" id="PostponeMedium" class="act">Medium</a> |
-                    <a href="#" id="PostponeLow" class="act">Low</a>
+    <div id="topPanel" class="actions">
+        <a asp-action="@nameof(CardsController.Create)" asp-route-deckID="@Model.DeckID">Add @Resources.Item</a> |
+        <a asp-action="@nameof(CardsController.Edit)" asp-route-id="@Model.ID">Edit @Resources.Item</a> |
+        <a asp-action="@nameof(CardsController.Index)" asp-route-deckID="@Model.DeckID">Index</a>
+    </div>
+
+    <hr />
+
+    <div id="scrollArea" class="mainPanelPlaceholder">
+        <div id="mainPanel" class="actions">
+            <a href="javascript:undefined" id="Extract" class="act">Extract</a> |
+            <a href="javascript:undefined" id="Bookmark" class="act">Bookmark</a> |
+            <a href="javascript:undefined" id="Highlight" class="act">Highlight</a> |
+            <a href="javascript:undefined" id="Cloze" class="act">Cloze</a> |
+            <a href="javascript:undefined" id="DeleteRegion" class="act">Drop</a> |
+            <span>New priority:</span>
+            <a href="javascript:undefined" id="PostponeHigh" class="act">High</a> |
+            <a href="javascript:undefined" id="PostponeMedium" class="act">Medium</a> |
+            <a href="javascript:undefined" id="PostponeLow" class="act">Low</a>
+        </div>
+    </div>
+
+    <div id="ModalDialog" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Confirmation</h4>
                 </div>
-            </div>
-        </p>
-
-        <div id="ModalDialog" class="modal fade" tabindex="-1" role="dialog">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">Confirmation</h4>
-                    </div>
-                    <div class="modal-body">
-                        <p>Are you sure you want to evaluate the note without bookmarking it first?</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button id="YesButton" type="button" class="btn btn-primary">Yes</button>
-                        <button id="NoButton" type="button" class="btn btn-default" data-dismiss="modal">No</button>
-                    </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to evaluate the note without bookmarking it first?</p>
+                </div>
+                <div class="modal-footer">
+                    <button id="YesButton" type="button" class="btn btn-primary">Yes</button>
+                    <button id="NoButton" type="button" class="btn btn-default" data-dismiss="modal">No</button>
                 </div>
             </div>
         </div>
+    </div>
 
-        <h2>
-            @Html.DisplayFor(model => model.Title)
-        </h2>
+    <h2>
+        @Html.DisplayFor(model => model.Title)
+    </h2>
 
-        @if (!string.IsNullOrEmpty(Model.Url))
-        {
+    @if (!string.IsNullOrEmpty(Model.Url))
+    {
         @Html.DisplayFor(model => model.Url)
-        }
+    }
 
-        <p>
-            <div id="article">
-                @Html.Raw(Model.HtmlText)
-            </div>
-        </p>
+    <p class="article" id="article">
+        @Html.Raw(Model.HtmlText)
+    </p>
 
-        <hr />
+    <hr />
 
-        <div id="bottomPanel" class="actions">
-            <a asp-action="@nameof(CardsController.Delete)" asp-route-id="@Model.ID">Finish Reading @Resources.Item</a>
-        </div>
-    </fieldset>
+    <div id="bottomPanel" class="actions">
+        <a asp-action="@nameof(CardsController.Delete)" asp-route-id="@Model.ID">Hide @Resources.Item</a>
+    </div>
 </form>
