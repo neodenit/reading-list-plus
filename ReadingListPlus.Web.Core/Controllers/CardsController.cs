@@ -310,7 +310,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
                     await deckService.SaveChangesAsync();
 
-                    return RedirectToAction("Details", "Decks", new { id = dbCard.DeckID });
+                    return RedirectToAction(nameof(DecksController.Details), DecksController.Name, new { id = dbCard.DeckID });
                 }
             }
             else
@@ -545,7 +545,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
         private ActionResult RedirectToDeckDetails(Guid? deckID)
         {
-            return RedirectToAction("Details", "Decks", new { id = deckID });
+            return RedirectToAction(nameof(DecksController.Details), DecksController.Name, new { id = deckID });
         }
 
         private IEnumerable<SelectListItem> GetFullPriorityList()

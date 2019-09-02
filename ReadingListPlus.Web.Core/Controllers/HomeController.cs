@@ -12,7 +12,7 @@ namespace ReadingListPlus.Web.Core.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("Index", "Decks");
+                return RedirectToAction(nameof(DecksController.Index), DecksController.Name);
             }
             else
             {

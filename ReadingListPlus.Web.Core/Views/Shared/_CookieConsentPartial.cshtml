@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Http.Features
+@using ReadingListPlus.Web.Core.Controllers
 
 @{
     var consentFeature = Context.Features.Get<ITrackingConsentFeature>();
@@ -24,7 +25,7 @@
                     This site uses cookies.
                 </p>
                 <div class="navbar-right">
-                    <a asp-controller="Home" asp-action="Privacy" class="btn btn-info navbar-btn">Learn More</a>
+                    <a asp-controller="@HomeController.Name" asp-action="@nameof(HomeController.Privacy)" class="btn btn-info navbar-btn">Learn More</a>
                     <button type="button" class="btn btn-default navbar-btn" data-cookie-string="@cookieString">Accept</button>
                 </div>
             </div>

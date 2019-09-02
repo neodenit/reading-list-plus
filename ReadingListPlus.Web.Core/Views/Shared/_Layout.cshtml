@@ -1,9 +1,11 @@
-﻿<!DOCTYPE html>
+﻿@using ReadingListPlus.Common.App_GlobalResources
+@using ReadingListPlus.Web.Core.Controllers
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - @ReadingListPlus.Common.App_GlobalResources.Resources.ApplicationName</title>
+    <title>@ViewData["Title"] - @Resources.ApplicationName</title>
 
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
@@ -26,13 +28,13 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">@ReadingListPlus.Common.App_GlobalResources.Resources.ApplicationName</a>
+                <a asp-controller="@HomeController.Name" asp-action="@nameof(HomeController.Index)" class="navbar-brand">@Resources.ApplicationName</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                    <li><a asp-controller="@HomeController.Name" asp-action="@nameof(HomeController.Index)">Home</a></li>
+                    <li><a asp-controller="@HomeController.Name" asp-action="@nameof(HomeController.About)">About</a></li>
+                    <li><a asp-controller="@HomeController.Name" asp-action="@nameof(HomeController.Contact)">Contact</a></li>
                 </ul>
                 <partial name="_LoginPartial" />
             </div>
@@ -45,7 +47,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>@DateTime.Now.Year &ndash; @ReadingListPlus.Common.App_GlobalResources.Resources.ApplicationName</p>
+            <p>@DateTime.Now.Year &ndash; @Resources.ApplicationName</p>
         </footer>
     </div>
 

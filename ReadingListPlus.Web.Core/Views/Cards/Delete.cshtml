@@ -1,4 +1,5 @@
 ﻿@using ReadingListPlus.Common.App_GlobalResources
+@using ReadingListPlus.Web.Core.Controllers
 
 @model ReadingListPlus.Web.Core.ViewModels.EditCardViewModel
 
@@ -52,13 +53,10 @@
 
     </dl>
 
-    @using (Html.BeginForm())
-    {
-        @Html.AntiForgeryToken()
-
+    <form method="post">
         <div class="form-actions no-color">
             <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back", "Details", "Decks", new { id = Model.DeckID }, null)
+            <a asp-controller="@DecksController.Name" asp-action="@nameof(DecksController.Details)" asp-route-id="@Model.DeckID">Back</a>
         </div>
-    }
+    </form>
 </div>

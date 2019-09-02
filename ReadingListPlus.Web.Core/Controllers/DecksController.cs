@@ -124,11 +124,11 @@ namespace ReadingListPlus.Web.Core.Controllers
             {
                 var card = schedulerService.GetFirstCard(cards);
 
-                return RedirectToAction("Details", "Cards", new { id = card.ID });
+                return RedirectToAction(nameof(CardsController.Details), CardsController.Name, new { card.ID });
             }
             else
             {
-                return RedirectToAction("Details", "Cards", new { DeckID = id.Value });
+                return RedirectToAction(nameof(CardsController.Details), CardsController.Name, new { DeckID = id.Value });
             }
         }
 

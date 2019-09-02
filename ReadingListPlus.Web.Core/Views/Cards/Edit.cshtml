@@ -1,4 +1,5 @@
 ﻿@using ReadingListPlus.Common.App_GlobalResources
+@using ReadingListPlus.Web.Core.Controllers
 
 @model ReadingListPlus.Web.Core.ViewModels.EditCardViewModel
 
@@ -59,5 +60,5 @@
 }
 
 <div>
-    @Html.ActionLink("Back", "Details", "Decks", new { id = Model.DeckID }, null)
+    <a asp-controller="@DecksController.Name" asp-action="@nameof(DecksController.Details)" asp-route-id="@Model.DeckID">Back</a>
 </div>

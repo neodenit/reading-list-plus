@@ -1,4 +1,5 @@
 ﻿@using ReadingListPlus.Common.App_GlobalResources
+@using ReadingListPlus.Web.Core.Controllers
 
 @model ReadingListPlus.Web.Core.ViewModels.CreateCardViewModel
 
@@ -8,55 +9,55 @@
 
 <h2>Create</h2>
 
-<form asp-controller="Cards" asp-action="Create" method="post" class="form-horizontal">
+<form method="post" class="form-horizontal">
     <h4>@Resources.Item</h4>
-    <hr/>
+    <hr />
 
-    <input type="hidden" asp-for="Type"/>
-    <input type="hidden" asp-for="CreationMode"/>
-    <input type="hidden" asp-for="ParentCardID"/>
-    <input type="hidden" asp-for="ParentCardUpdatedText"/>
-    <input type="hidden" asp-for="OldDeckID"/>
+    <input type="hidden" asp-for="Type" />
+    <input type="hidden" asp-for="CreationMode" />
+    <input type="hidden" asp-for="ParentCardID" />
+    <input type="hidden" asp-for="ParentCardUpdatedText" />
+    <input type="hidden" asp-for="OldDeckID" />
 
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
     @if (Model.DeckListItems != null)
     {
-    <div class="form-group">
-        <div class="row">
-            <label asp-for="DeckID" class="control-label col-md-2"></label>
-            <div class="col-md-8">
-                <select asp-for="DeckID" asp-items="Model.DeckListItems" class="form-control">
-                    @if (Model.DeckID == null)
-                    {
-                        <option></option>
-                    }
-                </select>
-                <span asp-validation-for="DeckID" class="text-danger"></span>
+        <div class="form-group">
+            <div class="row">
+                <label asp-for="DeckID" class="control-label col-md-2"></label>
+                <div class="col-md-8">
+                    <select asp-for="DeckID" asp-items="Model.DeckListItems" class="form-control">
+                        @if (Model.DeckID == null)
+                        {
+                            <option></option>
+                        }
+                    </select>
+                    <span asp-validation-for="DeckID" class="text-danger"></span>
+                </div>
             </div>
         </div>
-    </div>
     }
     else
     {
-    <input type="hidden" asp-for="DeckID"/>
-    <input type="hidden" asp-for="DeckTitle"/>
+        <input type="hidden" asp-for="DeckID" />
+        <input type="hidden" asp-for="DeckTitle" />
 
-    <div class="form-group">
-        <div class="row">
-            <label class="control-label col-md-2">@Resources.ItemCollection</label>
-            <div class="col-md-8">
-                <p class="form-control-static">@Model.DeckTitle</p>
+        <div class="form-group">
+            <div class="row">
+                <label class="control-label col-md-2">@Resources.ItemCollection</label>
+                <div class="col-md-8">
+                    <p class="form-control-static">@Model.DeckTitle</p>
+                </div>
             </div>
         </div>
-    </div>
     }
 
     <div class="form-group">
         <div class="row">
             <label asp-for="Title" class="control-label col-md-2"></label>
             <div class="col-md-8">
-                <input asp-for="Title" class="form-control"/>
+                <input asp-for="Title" class="form-control" />
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
         </div>
@@ -76,7 +77,7 @@
         <div class="row">
             <label asp-for="Url" class="control-label col-md-2"></label>
             <div class="col-md-8">
-                <input asp-for="Url" class="form-control"/>
+                <input asp-for="Url" class="form-control" />
                 <span asp-validation-for="Url" class="text-danger"></span>
             </div>
         </div>
@@ -100,7 +101,7 @@
     <div class="form-group">
         <div class="row">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default"/>
+                <input type="submit" value="Create" class="btn btn-default" />
             </div>
         </div>
     </div>
@@ -109,10 +110,10 @@
 <div>
     @if (Model.DeckID.HasValue)
     {
-        <a asp-controller="Decks" asp-action="Details" asp-route-id="@Model.DeckID">Back</a>
+        <a asp-controller="@DecksController.Name" asp-action="@nameof(DecksController.Details)" asp-route-id="@Model.DeckID">Back</a>
     }
     else
     {
-        <a asp-controller="Decks" asp-action="Index">Back</a>
+        <a asp-controller="@DecksController.Name" asp-action="@nameof(DecksController.Index)">Back</a>
     }
 </div>
