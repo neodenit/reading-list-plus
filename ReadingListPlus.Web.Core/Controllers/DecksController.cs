@@ -46,7 +46,20 @@ namespace ReadingListPlus.Web.Core.Controllers
             _ = id;
 
             var decks = await deckService.Decks.Include(d => d.Cards).ToListAsync();
-            var jsonResult = new JsonResult(decks, new JsonSerializerSettings { Formatting = Formatting.Indented });
+
+            var orderedDecks = decks
+                .OrderBy(d => d.OwnerID)
+                .ThenBy(d => d.Title);
+
+            foreach (var deck in orderedDecks)
+            {
+                deck.Cards = deck.Cards
+                    .OrderBy(c => c.Position)
+                    .ThenBy(c => c.Text)
+                    .ToList();
+            }
+
+            var jsonResult = new JsonResult(orderedDecks, new JsonSerializerSettings { Formatting = Formatting.Indented });
 
             return jsonResult;
         }
