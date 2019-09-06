@@ -1,5 +1,8 @@
 ﻿@using ReadingListPlus.Common.App_GlobalResources
 @using ReadingListPlus.Web.Core.Controllers
+@using ReadingListPlus.Web.Core.ViewModels
+
+@inject ISettings settings
 
 @model ReadingListPlus.Web.Core.ViewModels.CardViewModel
 
@@ -21,27 +24,49 @@
     <input type="hidden" asp-for="Type" value="@Model.Type.ToString("d")" />
     <input type="hidden" asp-for="Priority" />
 
-    <div id="topPanel" class="actions">
-        <a asp-action="@nameof(CardsController.Create)" asp-route-deckID="@Model.DeckID">Add @Resources.Item</a> |
-        <a asp-action="@nameof(CardsController.Edit)" asp-route-id="@Model.ID">Edit @Resources.Item</a> |
-        <a asp-action="@nameof(CardsController.Index)" asp-route-deckID="@Model.DeckID">Index</a>
-    </div>
+    @switch (Model.NewRepetitionCardState)
+    {
+        case NewRepetitionCardState.None:
+            <div id="topPanel" class="actions">
+                <a asp-action="@nameof(CardsController.Create)" asp-route-deckID="@Model.DeckID">Add @Resources.Item</a> |
+                <a asp-action="@nameof(CardsController.Edit)" asp-route-id="@Model.ID">Edit @Resources.Item</a> |
+                <a asp-action="@nameof(CardsController.Index)" asp-route-deckID="@Model.DeckID">Index</a>
+            </div>
 
-    <hr />
+            <hr />
 
-    <div id="scrollArea" class="mainPanelPlaceholder">
-        <div id="mainPanel" class="actions">
-            <a href="javascript:undefined" id="Extract" class="act">Extract</a> |
-            <a href="javascript:undefined" id="Bookmark" class="act">Bookmark</a> |
-            <a href="javascript:undefined" id="Highlight" class="act">Highlight</a> |
-            <a href="javascript:undefined" id="Cloze" class="act">Cloze</a> |
-            <a href="javascript:undefined" id="DeleteRegion" class="act">Drop</a> |
-            <span>New priority:</span>
-            <a href="javascript:undefined" id="PostponeHigh" class="act">High</a> |
-            <a href="javascript:undefined" id="PostponeMedium" class="act">Medium</a> |
-            <a href="javascript:undefined" id="PostponeLow" class="act">Low</a>
-        </div>
-    </div>
+            <div id="scrollArea" class="mainPanelPlaceholder">
+                <div id="mainPanel" class="actions">
+                    <a href="javascript:undefined" id="Extract" class="act">Extract</a> |
+                    <a href="javascript:undefined" id="Bookmark" class="act">Bookmark</a> |
+                    @if (settings.RememberEnabled)
+                    {
+                        <a href="javascript:undefined" id="Remember" class="act">Remember</a>@: |
+                    }
+                    <a href="javascript:undefined" id="Highlight" class="act">Highlight</a> |
+                    <a href="javascript:undefined" id="Cloze" class="act">Cloze</a> |
+                    <a href="javascript:undefined" id="DeleteRegion" class="act">Drop</a> |
+                    <span>New priority:</span>
+                    <a href="javascript:undefined" id="PostponeHigh" class="act">High</a> |
+                    <a href="javascript:undefined" id="PostponeMedium" class="act">Medium</a> |
+                    <a href="javascript:undefined" id="PostponeLow" class="act">Low</a>
+                </div>
+            </div>
+            break;
+        case NewRepetitionCardState.Pending:
+            <p>Please finish the new repetition card creation.</p>
+            <a href="javascript:undefined" id="CancelRepetitionCardCreation" class="act">Cancel</a>
+            <hr />
+            break;
+        case NewRepetitionCardState.Done:
+            <p>The new repetition card is created.</p>
+            <a href="javascript:undefined" id="CompleteRepetitionCardCreation" class="act">OK</a>
+            <hr />
+            break;
+        default:
+            break;
+    }
+
 
     <div id="ModalDialog" class="modal fade" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
@@ -74,9 +99,12 @@
         @Html.Raw(Model.HtmlText)
     </p>
 
-    <hr />
+    @if (Model.NewRepetitionCardState == NewRepetitionCardState.None)
+    {
+        <hr />
 
-    <div id="bottomPanel" class="actions">
-        <a asp-action="@nameof(CardsController.Delete)" asp-route-id="@Model.ID">Hide @Resources.Item</a>
-    </div>
+        <div id="bottomPanel" class="actions">
+            <a asp-action="@nameof(CardsController.Delete)" asp-route-id="@Model.ID">Hide @Resources.Item</a>
+        </div>
+    }
 </form>

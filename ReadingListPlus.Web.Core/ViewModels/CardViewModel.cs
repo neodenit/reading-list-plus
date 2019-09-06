@@ -35,5 +35,7 @@ namespace ReadingListPlus.Web.Core.ViewModels
         public string NextAction { get; set; }
 
         public Priority? Priority { get; set; }
+
+        public NewRepetitionCardState NewRepetitionCardState { get; set; }
     }
 }

@@ -86,6 +86,10 @@ span.extract {
     background-color: lime;
 }
 
+.newRepetition {
+    color: red;
+}
+
 .actions {
     background-color: white;
     padding-top: 5px;

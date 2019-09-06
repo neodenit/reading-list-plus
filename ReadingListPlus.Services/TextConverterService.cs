@@ -19,22 +19,22 @@ namespace ReadingListPlus.Services
             return GetReplacement(initialText, htmlSelection, "cloze");
         }
 
-        public string GetHtml(string text, string cardUrlTemplate)
+        public string GetHtml(string text, string cardUrlTemplate, string repetitionCardUrlTemplate, string newRepetitionCardUrlTemplate, string newRepetitionCardClass)
         {
             var encodedText = WebUtility.HtmlEncode(text);
-            var html = ConvertTemplateToHtml(encodedText, cardUrlTemplate);
+            var html = ConvertTemplateToHtml(encodedText, cardUrlTemplate, repetitionCardUrlTemplate, newRepetitionCardUrlTemplate, newRepetitionCardClass);
             return html;
         }
 
         public string GetSelection(string text)
         {
-            var result = Regex.Match(text, @"{{selection::(?s)(.+?)}}").Groups[1].Value;
+            var result = Regex.Match(text, @"{{selection::(?s)(.+?)(?m)}}").Groups[1].Value;
 
             return result;
         }
 
         public string ReplaceTag(string text, string oldTag, string newTag) =>
-            Regex.Replace(text, $"{{{{{oldTag}::(?s)(.+?)}}}}", $"{{{{{newTag}::$1}}}}");
+            Regex.Replace(text, $"{{{{{oldTag}::({Constants.GuidRegex}::)?(?s)(.+?)(?m)}}}}", $"{{{{{newTag}::$1$2}}}}");
 
         public string DeleteTagByText(string initialText, string htmlSelection)
         {
@@ -46,7 +46,7 @@ namespace ReadingListPlus.Services
         }
 
         public string DeleteTagByName(string initialText, string tagName) =>
-            Regex.Replace(initialText, $"{{{{{tagName}::(?s)(.+?)}}}}", "$1", RegexOptions.IgnoreCase);
+            Regex.Replace(initialText, $"{{{{{tagName}::(?:{Constants.GuidRegex}::)?(?s)(.+?)(?m)}}}}", "$1");
 
         private string GetReplacement(string initialText, string htmlSelection, string tag)
         {
@@ -74,6 +74,16 @@ namespace ReadingListPlus.Services
             }
         }
 
+        public string AddParameter(string text, string tagName, string parameter) =>
+            Regex.Replace(text, $"{{{{{tagName}::(?s)(.+?)(?m)}}}}", $"{{{{{tagName}::{parameter}::$1}}}}");
+
+        public string GetIdParameter(string text, string tagName) =>
+            Regex.Match(text, $"{{{{{tagName}::(?<{Constants.IdGroup}>{Constants.GuidRegex})::(?s).+?(?m)}}}}").Groups[Constants.IdGroup].Value;
+
+        public string GetNewRepetitionCardText(string text) =>
+             Regex.Match(text,
+                $"{{{{{Constants.NewRepetitionCardLabel}::(?<{Constants.IdGroup}>{Constants.GuidRegex})::(?s)(?<{Constants.TextGroup}>.+?)(?m)}}}}").Groups[Constants.TextGroup].Value;
+
         private bool Validate(string text)
         {
             var letters = Regex.IsMatch(text, @"\w");
@@ -83,16 +93,24 @@ namespace ReadingListPlus.Services
             return isValid;
         }
 
-        private string ConvertTemplateToHtml(string template, string cardUrlTemplate)
+        private string ConvertTemplateToHtml(string template, string cardUrlTemplate, string repetitionCardUrlTemplate, string newRepetitionCardUrlTemplate, string newRepetitionCardClass)
         {
             var htmlText1 = Regex.Replace(template, Environment.NewLine, "<br/>");
             var htmlText2 = Regex.Replace(htmlText1,
-                $"{{{{extract::(?<{Constants.CardIdGroup}>{Constants.GuidRegex})::(?s)(?<{Constants.TextGroup}>.+?)}}}}",
-                $@"<a href='{cardUrlTemplate}' class=""extract"" data-card-id=""${{{Constants.CardIdGroup}}})"">${{{Constants.TextGroup}}}</a>");
+                $"{{{{extract::(?<{Constants.IdGroup}>{Constants.GuidRegex})::(?s)(?<{Constants.TextGroup}>.+?)(?m)}}}}",
+                $@"<a href='{cardUrlTemplate}' class=""extract"" data-id-param=""${{{Constants.IdGroup}}}"">${{{Constants.TextGroup}}}</a>");
 
-            var htmlText3 = Regex.Replace(htmlText2, @"{{(\w+)::(?s)(.+?)}}", @"<span class=""$1"">$2</span>");
+            var htmlText3 = Regex.Replace(htmlText2,
+                $"{{{{{Constants.NewRepetitionCardLabel}::(?<{Constants.IdGroup}>{Constants.GuidRegex})::(?s)(?<{Constants.TextGroup}>.+?)(?m)}}}}",
+                $@"<a href='{newRepetitionCardUrlTemplate}' class=""{newRepetitionCardClass}"" data-id-param=""${{{Constants.IdGroup}}}"">${{{Constants.TextGroup}}}</a>");
 
-            return htmlText3;
+            var htmlText4 = Regex.Replace(htmlText3,
+                $"{{{{{Constants.RepetitionCardLabel}::(?<{Constants.IdGroup}>{Constants.GuidRegex})::(?s)(?<{Constants.TextGroup}>.+?)(?m)}}}}",
+                $@"<a href='{repetitionCardUrlTemplate}' class=""{Constants.RepetitionCardLabel}"" data-id-param=""${{{Constants.IdGroup}}}"">${{{Constants.TextGroup}}}</a>");
+
+            var htmlText5 = Regex.Replace(htmlText4, @"{{(\w+)::(?s)(.+?)(?m)}}", @"<span class=""$1"">$2</span>");
+
+            return htmlText5;
         }
 
         private string MatchEvaluator(Match match, IEnumerable<Match> matches, string tag)
@@ -122,8 +140,5 @@ namespace ReadingListPlus.Services
         {
             return "{{" + tag + "::" + text + "}}";
         }
-
-        public string AddParameter(string text, string tagName, string parameter) =>
-            Regex.Replace(text, $"{{{{{tagName}::(?s)(.+)}}}}", $"{{{{{tagName}::{parameter}::$1}}}}");
     }
 }

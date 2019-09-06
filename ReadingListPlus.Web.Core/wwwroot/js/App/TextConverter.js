@@ -1,9 +1,9 @@
-﻿var extractRegex = /<a href=".+?" class="extract" data-card-id="([0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12})">([\s\S]+?)<\/a>/g;
+﻿var extractRegex = /<a href=".+?" class="(\w+)" data-id-param="([0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12})">([\s\S]+?)<\/a>/g;
 var spanRegex = /<span class="(\w+)">([\s\S]+?)<\/span>/g;
-var brRegex = /<br\/>/g;
+var brRegex = /<br\s*\/?>/g;
 
 function HtmlToText(html) {
-    var textWithNoExtracts = html.replace(extractRegex, '{{extract::$1::$2}}');
+    var textWithNoExtracts = html.replace(extractRegex, '{{$1::$2::$3}}');
     var textWithNoSpans = textWithNoExtracts.replace(spanRegex, '{{$1::$2}}');
     var textWithNoBRs = textWithNoSpans.replace(brRegex, '\r\n');
 

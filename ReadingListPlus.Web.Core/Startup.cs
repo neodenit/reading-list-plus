@@ -62,6 +62,8 @@ namespace ReadingListPlus.Web.Core
             services.AddScoped<IApplicationContext, ApplicationContext>();
             AddRepositories(services);
             AddServices(services);
+
+            services.AddSingleton<IHttpClientWrapper>(new HttpClientWrapper());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

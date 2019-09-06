@@ -2,7 +2,7 @@
     var actionsHeight = $('#mainPanel').outerHeight(true);
     var topBar = $('#top-bar');
     var topBarHeight = topBar.height();
-    var headerHeight = $('#scrollArea').offset().top;
+    var headerHeight = $('#scrollArea').length ? $('#scrollArea').offset().top : 0;
 
     var maxClozeWidth = Math.max.apply(null, $('.cloze').map(function () {
         return $(this).width();
@@ -58,7 +58,7 @@
     $('.act').click(function () {
         var action = this.id;
 
-        if (action === 'Extract' || action === 'Bookmark') {
+        if (action === 'Extract' || action === 'Bookmark' || action === 'Remember') {
             var newNode = createSelectionSpan();
 
             surroundSelection(newNode);
@@ -88,6 +88,8 @@
                     break;
                 }
             }
+        } else if (action === 'CancelRepetitionCardCreation' || action === 'CompleteRepetitionCardCreation') {
+            SubmitSelection("", action);
         } else {
             var text = getSelectionText();
 
