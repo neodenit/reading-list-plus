@@ -97,8 +97,12 @@ span.extract {
     width: 100%;
 }
 
-.mainPanelPlaceholder {
-    height: 30px;
+.selection-panel {
+    display: inline-block;
+}
+
+.postpone-panel {
+    display: inline-block;
 }
 
 .notes-table {

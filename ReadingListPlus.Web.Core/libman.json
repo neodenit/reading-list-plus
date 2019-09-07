@@ -3,8 +3,8 @@
   "defaultProvider": "cdnjs",
   "libraries": [
     {
-      "library": "jquery-throttle-debounce@1.1",
-      "destination": "wwwroot/lib/jquery-throttle-debounce/"
+      "library": "jquery.sticky@1.0.4",
+      "destination": "wwwroot/lib/jquery.sticky/"
     }
   ]
 }

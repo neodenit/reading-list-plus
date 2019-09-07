@@ -1,39 +1,12 @@
 ﻿$(function () {
-    var actionsHeight = $('#mainPanel').outerHeight(true);
-    var topBar = $('#top-bar');
-    var topBarHeight = topBar.height();
-    var headerHeight = $('#scrollArea').length ? $('#scrollArea').offset().top : 0;
+    var mainPanelHeight = $('#mainPanel').outerHeight(true);
+    var navbarHeight = $('div.navbar-header').height();
 
     var maxClozeWidth = Math.max.apply(null, $('.cloze').map(function () {
         return $(this).width();
     }));
 
     $('.cloze').width(maxClozeWidth);
-
-    $('#ScrollDown').click(function () {
-        if ($('.extract').length) {
-            DropSelections();
-
-            $('.extract:last').before('<span class="top" />');
-
-            var position =
-                $(window).scrollTop() < headerHeight ?
-                $('.top').offset().top - actionsHeight * 2 :
-                $('.top').offset().top - actionsHeight;
-
-            $('html, body').animate({
-                scrollTop: position
-            }, 'slow', 'swing');
-
-            $('.top').remove();
-        }
-    });
-
-    $('#ScrollUp').click(function () {
-        $('html, body').animate({
-            scrollTop: 0
-        }, 'slow', 'swing');
-    });
 
     $('.bookmark').click(function () {
         DropSelections();
@@ -132,29 +105,14 @@
         postpone('Low');
     });
 
-    var throttledScroll = $.throttle(100, function () {
-        if ($(window).scrollTop() >= headerHeight) {
-            $('#mainPanel').css('position', 'fixed');
-            $('#mainPanel').css('top', topBarHeight);
-        } else {
-            $('#mainPanel').css('position', 'relative');
-            $('#mainPanel').css('top', 0);
-        };
-    });
-
-    $(window).scroll(throttledScroll);
+    $('#mainPanel').sticky({ topSpacing: navbarHeight });
 
     if ($('.bookmark').length) {
-        $('#mainPanel').css('position', 'fixed');
-        $('#mainPanel').css('top', topBarHeight);
-
-        var position = $('.bookmark').offset().top - topBarHeight - actionsHeight;
-
-        $('#mainPanel').css('position', 'relative');
+        var position = $('.bookmark').offset().top - navbarHeight - mainPanelHeight;
 
         $('html, body').animate({
             scrollTop: position
-        }, 'slow', 'swing');
+        }, 'slow');
     }
 });
 
