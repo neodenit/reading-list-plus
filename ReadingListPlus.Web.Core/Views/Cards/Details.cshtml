@@ -37,15 +37,36 @@
 
             <div id="scrollArea" class="mainPanelPlaceholder">
                 <div id="mainPanel" class="actions">
-                    <a href="javascript:undefined" id="Extract" class="act">Extract</a> |
-                    <a href="javascript:undefined" id="Bookmark" class="act">Bookmark</a> |
+                    @if (settings.ExtractEnabled)
+                    {
+                        <a href="javascript:undefined" id="Extract" class="act">Extract</a>@: |
+                    }
+
+                    @if (settings.BookmarkEnabled)
+                    {
+                        <a href="javascript:undefined" id="Bookmark" class="act">Bookmark</a>@: |
+                    }
+
                     @if (settings.RememberEnabled)
                     {
                         <a href="javascript:undefined" id="Remember" class="act">Remember</a>@: |
                     }
-                    <a href="javascript:undefined" id="Highlight" class="act">Highlight</a> |
-                    <a href="javascript:undefined" id="Cloze" class="act">Cloze</a> |
-                    <a href="javascript:undefined" id="DeleteRegion" class="act">Drop</a> |
+
+                    @if (settings.HighlightEnabled)
+                    {
+                        <a href="javascript:undefined" id="Highlight" class="act">Highlight</a>@: |
+                    }
+
+                    @if (settings.ClozeEnabled)
+                    {
+                        <a href="javascript:undefined" id="Cloze" class="act">Cloze</a>@: |
+                    }
+
+                    @if (settings.DropEnabled)
+                    {
+                        <a href="javascript:undefined" id="DeleteRegion" class="act">Drop</a>@: |
+                    }
+
                     <span>New priority:</span>
                     <a href="javascript:undefined" id="PostponeHigh" class="act">High</a> |
                     <a href="javascript:undefined" id="PostponeMedium" class="act">Medium</a> |

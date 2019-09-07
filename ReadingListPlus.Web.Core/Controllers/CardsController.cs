@@ -147,12 +147,7 @@ namespace ReadingListPlus.Web.Core.Controllers
                 case "Bookmark":
                     return await Bookmark(card.ID, card.Selection);
                 case "Remember":
-                    if (settings.RememberEnabled)
-                    {
-                        return await Remember(card.ID, card.Selection);
-                    }
-
-                    break;
+                    return await Remember(card.ID, card.Selection);
                 case "DeleteRegion":
                     return await DeleteRegion(card.ID, card.Selection);
                 case "CancelRepetitionCardCreation":
@@ -161,9 +156,9 @@ namespace ReadingListPlus.Web.Core.Controllers
                     return await CompleteRepetitionCardCreation(card.ID, card.Selection);
                 case "Postpone":
                     return await Postpone(card.ID, card.Priority.ToString());
+                default:
+                    return BadRequest();
             }
-
-            return BadRequest();
         }
 
         private async Task<ActionResult> Remember(Guid cardId, string text)
@@ -419,6 +414,11 @@ namespace ReadingListPlus.Web.Core.Controllers
 
         public async Task<ActionResult> Highlight(Guid ID, string text)
         {
+            if (!settings.HighlightEnabled)
+            {
+                return BadRequest();
+            }
+
             var card = await cardService.GetCardAsync(ID);
 
             if (!card.IsAuthorized(User))
@@ -439,6 +439,11 @@ namespace ReadingListPlus.Web.Core.Controllers
 
         public async Task<ActionResult> Cloze(Guid ID, string text)
         {
+            if (!settings.ClozeEnabled)
+            {
+                return BadRequest();
+            }
+
             var card = await cardService.GetCardAsync(ID);
 
             if (!card.IsAuthorized(User))
@@ -459,6 +464,11 @@ namespace ReadingListPlus.Web.Core.Controllers
 
         public async Task<ActionResult> Extract(Guid ID, string text)
         {
+            if (!settings.ExtractEnabled)
+            {
+                return BadRequest();
+            }
+
             var card = await cardService.GetCardAsync(ID);
 
             if (!card.IsAuthorized(User))
@@ -513,6 +523,11 @@ namespace ReadingListPlus.Web.Core.Controllers
 
         public async Task<ActionResult> Bookmark(Guid ID, string text)
         {
+            if (!settings.BookmarkEnabled)
+            {
+                return BadRequest();
+            }
+
             var card = await cardService.GetCardAsync(ID);
 
             if (!card.IsAuthorized(User))
@@ -539,6 +554,11 @@ namespace ReadingListPlus.Web.Core.Controllers
 
         public async Task<ActionResult> DeleteRegion(Guid ID, string text)
         {
+            if (!settings.DropEnabled)
+            {
+                return BadRequest();
+            }
+
             var card = await cardService.GetCardAsync(ID);
 
             if (!card.IsAuthorized(User))
@@ -559,6 +579,11 @@ namespace ReadingListPlus.Web.Core.Controllers
 
         public async Task<ActionResult> CancelRepetitionCardCreation(Guid ID, string text)
         {
+            if (!settings.RememberEnabled)
+            {
+                return BadRequest();
+            }
+
             var card = await cardService.GetCardAsync(ID);
 
             if (!card.IsAuthorized(User))
@@ -579,6 +604,11 @@ namespace ReadingListPlus.Web.Core.Controllers
 
         public async Task<ActionResult> CompleteRepetitionCardCreation(Guid ID, string text)
         {
+            if (!settings.RememberEnabled)
+            {
+                return BadRequest();
+            }
+
             var card = await cardService.GetCardAsync(ID);
 
             if (!card.IsAuthorized(User))

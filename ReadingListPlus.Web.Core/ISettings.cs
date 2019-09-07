@@ -2,12 +2,22 @@
 {
     public interface ISettings
     {
-        bool AllowDeckSelection { get; set; }
+        string SpacedRepetionServer { get; }
 
-        bool ResetKeysOnImport { get; set; }
+        bool AllowDeckSelection { get; }
 
-        bool RememberEnabled { get; set; }
+        bool ResetKeysOnImport { get; }
 
-        string SpacedRepetionServer { get; set; }
+        bool ExtractEnabled { get; }
+
+        bool BookmarkEnabled { get; }
+
+        bool RememberEnabled { get; }
+
+        bool HighlightEnabled { get; }
+
+        bool ClozeEnabled { get; }
+
+        bool DropEnabled { get; }
     }
 }
