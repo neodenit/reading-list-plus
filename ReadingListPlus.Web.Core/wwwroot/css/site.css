@@ -92,17 +92,25 @@ span.extract {
 
 .actions {
     background-color: white;
-    padding-top: 5px;
-    padding-bottom: 5px;
     width: 100%;
+}
+
+#topPanel {
+    padding-top: 5px;
+}
+
+#mainPanel {
+    padding-bottom: 5px;
 }
 
 .selection-panel {
     display: inline-block;
+    padding-top: 5px;
 }
 
 .postpone-panel {
     display: inline-block;
+    padding-top: 5px;
 }
 
 .notes-table {

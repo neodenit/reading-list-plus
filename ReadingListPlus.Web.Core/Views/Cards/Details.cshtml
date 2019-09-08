@@ -28,9 +28,9 @@
     {
         case NewRepetitionCardState.None:
             <div id="topPanel" class="actions">
-                <a asp-action="@nameof(CardsController.Create)" asp-route-deckID="@Model.DeckID">Add @Resources.Item</a> |
-                <a asp-action="@nameof(CardsController.Edit)" asp-route-id="@Model.ID">Edit @Resources.Item</a> |
-                <a asp-action="@nameof(CardsController.Index)" asp-route-deckID="@Model.DeckID">Index</a>
+                <a asp-action="@nameof(CardsController.Create)" asp-route-deckID="@Model.DeckID" class="btn btn-default">Add @Resources.Item</a>
+                <a asp-action="@nameof(CardsController.Edit)" asp-route-id="@Model.ID" class="btn btn-default">Edit @Resources.Item</a>
+                <a asp-action="@nameof(CardsController.Index)" asp-route-deckID="@Model.DeckID" class="btn btn-default">Index</a>
             </div>
 
             <hr />
@@ -39,40 +39,42 @@
                 <div class="selection-panel">
                     @if (settings.ExtractEnabled)
                     {
-                        <a href="javascript:undefined" id="Extract" class="act">Extract</a>@: |
+                        <a href="javascript:undefined" id="Extract" class="act btn btn-primary">Extract</a>
                     }
 
                     @if (settings.BookmarkEnabled)
                     {
-                        <a href="javascript:undefined" id="Bookmark" class="act">Bookmark</a>@: |
+                        <a href="javascript:undefined" id="Bookmark" class="act btn btn-primary">Bookmark</a>
                     }
 
                     @if (settings.RememberEnabled)
                     {
-                        <a href="javascript:undefined" id="Remember" class="act">Remember</a>@: |
+                        <a href="javascript:undefined" id="Remember" class="act btn btn-primary">Remember</a>
                     }
 
                     @if (settings.HighlightEnabled)
                     {
-                        <a href="javascript:undefined" id="Highlight" class="act">Highlight</a>@: |
+                        <a href="javascript:undefined" id="Highlight" class="act btn btn-primary">Highlight</a>
                     }
 
                     @if (settings.ClozeEnabled)
                     {
-                        <a href="javascript:undefined" id="Cloze" class="act">Cloze</a>@: |
+                        <a href="javascript:undefined" id="Cloze" class="act btn btn-primary">Cloze</a>
                     }
 
                     @if (settings.DropEnabled)
                     {
-                        <a href="javascript:undefined" id="DeleteRegion" class="act">Drop</a>@: |
+                        <a href="javascript:undefined" id="DeleteRegion" class="act btn btn-danger">Drop</a>
                     }
                 </div>
 
                 <div class="postpone-panel">
                     <label>New priority:</label>
-                    <a href="javascript:undefined" id="PostponeHigh" class="act">High</a> |
-                    <a href="javascript:undefined" id="PostponeMedium" class="act">Medium</a> |
-                    <a href="javascript:undefined" id="PostponeLow" class="act">Low</a>
+                    <div class="btn-group">
+                        <a href="javascript:undefined" id="PostponeHigh" class="act btn btn-primary">High</a>
+                        <a href="javascript:undefined" id="PostponeMedium" class="act btn btn-primary">Medium</a>
+                        <a href="javascript:undefined" id="PostponeLow" class="act btn btn-primary">Low</a>
+                    </div>
                 </div>
             </div>
             break;
@@ -130,7 +132,7 @@
         <hr />
 
         <div id="bottomPanel" class="actions">
-            <a asp-action="@nameof(CardsController.Delete)" asp-route-id="@Model.ID">Hide @Resources.Item</a>
+            <a asp-action="@nameof(CardsController.Delete)" asp-route-id="@Model.ID" class="btn btn-default">Hide @Resources.Item</a>
         </div>
     }
 </form>
