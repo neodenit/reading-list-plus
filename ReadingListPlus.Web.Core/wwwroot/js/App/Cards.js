@@ -8,6 +8,39 @@
 
     $('.cloze').width(maxClozeWidth);
 
+    document.onselectionchange = function () {
+        var selection = window.getSelection();
+
+        var anchorNodeClassName =
+            selection.anchorNode &&
+            selection.anchorNode.className;
+
+        var focusNodeClassName =
+            selection.focusNode &&
+            selection.focusNode.className;
+
+        var anchorNodeParentClassName =
+            selection.anchorNode &&
+            selection.anchorNode.parentNode &&
+            selection.anchorNode.parentNode.className;
+
+        var focusNodeParentClassName =
+            selection.focusNode &&
+            selection.focusNode.parentNode &&
+            selection.focusNode.parentNode.className;
+
+        var isValid =
+            (anchorNodeClassName === 'article' || anchorNodeParentClassName === 'article') &&
+            (focusNodeClassName === 'article' || focusNodeParentClassName === 'article') &&
+            selection.toString();
+
+        if (isValid) {
+            $('.selection-panel .act.btn-primary').removeClass('disabled');
+        } else {
+            $('.selection-panel .act.btn-primary').addClass('disabled');
+        }
+    };
+
     $('.bookmark').click(function () {
         DropSelections();
         $(this).removeClass('bookmark').addClass('bookmarkselected');
