@@ -110,7 +110,7 @@
 <div>
     @if (Model.DeckID.HasValue)
     {
-        <a asp-controller="@DecksController.Name" asp-action="@nameof(DecksController.Details)" asp-route-id="@Model.DeckID">Back</a>
+        <a asp-action="@nameof(CardsController.Index)" asp-route-deckID="@Model.DeckID">Back</a>
     }
     else
     {

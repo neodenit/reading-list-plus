@@ -310,7 +310,9 @@ namespace ReadingListPlus.Web.Core.Controllers
 
                     await deckService.SaveChangesAsync();
 
-                    return RedirectToDeckDetails(card.OldDeckID ?? newCard.DeckID);
+                    return card.CreationMode == CreationMode.Extract ?
+                        RedirectToDeckDetails(card.OldDeckID ?? newCard.DeckID) :
+                        RedirectToAction(nameof(Index), new { newCard.DeckID });
                 }
             }
             else
@@ -375,7 +377,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
                     await deckService.SaveChangesAsync();
 
-                    return RedirectToAction(nameof(DecksController.Details), DecksController.Name, new { id = dbCard.DeckID });
+                    return RedirectToDeckDetails(dbCard.DeckID);
                 }
             }
             else

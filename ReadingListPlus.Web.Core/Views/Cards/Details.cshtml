@@ -27,15 +27,14 @@
     @switch (Model.NewRepetitionCardState)
     {
         case NewRepetitionCardState.None:
-            <div id="topPanel" class="actions">
-                <a asp-action="@nameof(CardsController.Create)" asp-route-deckID="@Model.DeckID" class="btn btn-default">Add @Resources.Item</a>
+            <div id="topPanel" class="actions topPanel">
                 <a asp-action="@nameof(CardsController.Edit)" asp-route-id="@Model.ID" class="btn btn-default">Edit @Resources.Item</a>
-                <a asp-action="@nameof(CardsController.Index)" asp-route-deckID="@Model.DeckID" class="btn btn-default">Index</a>
+                <a asp-action="@nameof(CardsController.Index)" asp-route-deckID="@Model.DeckID" class="btn btn-default">Library</a>
             </div>
 
             <hr />
 
-            <div id="mainPanel" class="actions">
+            <div id="mainPanel" class="actions mainPanel">
                 <div class="selection-panel">
                     @if (settings.ExtractEnabled)
                     {

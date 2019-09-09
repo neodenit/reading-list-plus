@@ -37,11 +37,6 @@ body {
     }
 }
 
-.article {
-    padding-top: 5px;
-    padding-bottom: 5px;
-}
-
 span.extract {
     color: black;
     background-color: cyan;
@@ -95,11 +90,11 @@ span.extract {
     width: 100%;
 }
 
-#topPanel {
+.topPanel {
     padding-top: 5px;
 }
 
-#mainPanel {
+.mainPanel {
     padding-bottom: 5px;
 }
 

@@ -1,4 +1,5 @@
-﻿@using ReadingListPlus.Web.Core.Controllers
+﻿@using ReadingListPlus.Common.App_GlobalResources
+@using ReadingListPlus.Web.Core.Controllers
 
 @model IEnumerable<ReadingListPlus.Web.Core.ViewModels.CardViewModel>
 
@@ -6,9 +7,15 @@
     ViewBag.Title = Model.First().DeckTitle;
 }
 
+<div class="topPanel">
+    <a asp-controller="@DecksController.Name" asp-action="@nameof(CardsController.Details)" asp-route-id="@Model.First().DeckID" class="btn btn-default">Back</a>
+</div>
+
 <h2>@Model.First().DeckTitle</h2>
 
-<a asp-controller="@DecksController.Name" asp-action="@nameof(CardsController.Details)" asp-route-id="@Model.First().DeckID">Back</a>
+<div class="mainPanel">
+    <a asp-action="@nameof(CardsController.Create)" asp-route-deckID="@Model.First().DeckID" class="btn btn-default">Add @Resources.Item</a>
+</div>
 
 <table class="table notes-table">
     <tr>
