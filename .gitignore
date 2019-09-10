@@ -234,3 +234,5 @@ $RECYCLE.BIN/
 # Others
 *.dll
 *.exe
+
+/ReadingListPlus.Web.Core/wwwroot/lib
