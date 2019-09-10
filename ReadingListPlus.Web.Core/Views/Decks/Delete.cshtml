@@ -1,4 +1,5 @@
 ﻿@using ReadingListPlus.Common.App_GlobalResources
+@using ReadingListPlus.Web.Core.Controllers
 
 @model ReadingListPlus.DataAccess.Models.Deck
 
@@ -8,15 +9,9 @@
 
 <h2>Delete</h2>
 
-<h3>Are you sure you want to delete @(Resources.ItemCollection.ToLower()) "@Html.DisplayFor(model => model.Title)"?</h3>
-<div>
-    @using (Html.BeginForm())
-    {
-        @Html.AntiForgeryToken()
+<h3>Are you sure you want to delete @Resources.ItemCollection.ToLower() "@Html.DisplayFor(model => model.Title)"?</h3>
 
-        <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
-        </div>
-    }
-</div>
+<form method="post">
+    <input type="submit" value="Delete" class="btn btn-danger" />
+    <a asp-action="@nameof(DecksController.Index)" class="btn btn-default">Back</a>
+</form>

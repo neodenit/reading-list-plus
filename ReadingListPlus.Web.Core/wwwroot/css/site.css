@@ -108,23 +108,32 @@ span.extract {
     padding-top: 5px;
 }
 
-.notes-table {
+table.notes-table {
     width: 100%;
 }
 
-    .notes-table tr td:nth-child(1) {
-        width: 1%;
-        white-space: nowrap;
+    table.notes-table tr td {
+        vertical-align: middle;
     }
 
-    .notes-table tr td:nth-child(2) {
-        max-width: 0;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
+        table.notes-table tr td:nth-child(1) {
+            width: 1%;
+            white-space: nowrap;
+        }
 
-    .notes-table tr td:nth-child(3) {
-        width: 1%;
-        white-space: nowrap;
-    }
+        table.notes-table tr td:nth-child(2) {
+            max-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        table.notes-table tr td:nth-child(3) {
+            width: 1%;
+            white-space: nowrap;
+        }
+
+
+table.decks-table tr td {
+    vertical-align: middle;
+}

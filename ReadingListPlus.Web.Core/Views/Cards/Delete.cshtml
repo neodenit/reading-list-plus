@@ -9,54 +9,52 @@
 
 <h2>Delete</h2>
 
-<h3>Are you sure you want to delete this @(Resources.Item.ToLower())?</h3>
-<div>
-    <hr />
-    <dl class="dl-horizontal">
+<h3>Are you sure you want to delete this @Resources.Item.ToLower()?</h3>
+
+<hr />
+
+<dl class="dl-horizontal">
+    <dt>
+        @Resources.ItemCollection
+    </dt>
+
+    <dd>
+        @Html.DisplayFor(model => model.DeckTitle)
+    </dd>
+
+    @if (!string.IsNullOrEmpty(Model.Title))
+    {
         <dt>
-            @(Resources.ItemCollection)
+            @Html.DisplayNameFor(model => model.Title)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.DeckTitle)
+            @Html.DisplayFor(model => model.Title)
         </dd>
+    }
 
-        @if (!string.IsNullOrEmpty(Model.Title))
-        {
-            <dt>
-                @Html.DisplayNameFor(model => model.Title)
-            </dt>
+    <dt>
+        @Html.DisplayNameFor(model => model.Text)
+    </dt>
 
-            <dd>
-                @Html.DisplayFor(model => model.Title)
-            </dd>
-        }
+    <dd>
+        @(Model.Text.Substring(0, Math.Min(128, Model.Text.Length)) + (Model.Text.Length > 128 ? "..." : string.Empty))
+    </dd>
 
+    @if (!string.IsNullOrEmpty(Model.Url))
+    {
         <dt>
-            @Html.DisplayNameFor(model => model.Text)
+            @Html.DisplayNameFor(model => model.Url)
         </dt>
 
         <dd>
-            @(Model.Text.Substring(0, Math.Min(128, Model.Text.Length)) + (Model.Text.Length > 128 ? "..." : string.Empty))
+            @Html.DisplayFor(model => model.Url)
         </dd>
+    }
 
-        @if (!string.IsNullOrEmpty(Model.Url))
-        {
-            <dt>
-                @Html.DisplayNameFor(model => model.Url)
-            </dt>
+</dl>
 
-            <dd>
-                @Html.DisplayFor(model => model.Url)
-            </dd>
-        }
-
-    </dl>
-
-    <form method="post">
-        <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            <a asp-controller="@DecksController.Name" asp-action="@nameof(DecksController.Details)" asp-route-id="@Model.DeckID">Back</a>
-        </div>
-    </form>
-</div>
+<form method="post">
+    <input type="submit" value="Delete" class="btn btn-danger" /> |
+    <a asp-controller="@DecksController.Name" asp-action="@nameof(DecksController.Details)" asp-route-id="@Model.DeckID">Back</a>
+</form>

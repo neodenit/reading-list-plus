@@ -9,22 +9,22 @@
 
 <h2>Create</h2>
 
-<form method="post" class="form-horizontal">
-    <h4>@Resources.Item</h4>
-    <hr />
+<form method="post">
+    <div class="form-horizontal">
+        <h4>@Resources.Item</h4>
+        <hr />
 
-    <input type="hidden" asp-for="Type" />
-    <input type="hidden" asp-for="CreationMode" />
-    <input type="hidden" asp-for="ParentCardID" />
-    <input type="hidden" asp-for="ParentCardUpdatedText" />
-    <input type="hidden" asp-for="OldDeckID" />
+        <input type="hidden" asp-for="Type" />
+        <input type="hidden" asp-for="CreationMode" />
+        <input type="hidden" asp-for="ParentCardID" />
+        <input type="hidden" asp-for="ParentCardUpdatedText" />
+        <input type="hidden" asp-for="OldDeckID" />
 
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-    @if (Model.DeckListItems != null)
-    {
-        <div class="form-group">
-            <div class="row">
+        @if (Model.DeckListItems != null)
+        {
+            <div class="form-group row">
                 <label asp-for="DeckID" class="control-label col-md-2"></label>
                 <div class="col-md-8">
                     <select asp-for="DeckID" asp-items="Model.DeckListItems" class="form-control">
@@ -36,55 +36,45 @@
                     <span asp-validation-for="DeckID" class="text-danger"></span>
                 </div>
             </div>
-        </div>
-    }
-    else
-    {
-        <input type="hidden" asp-for="DeckID" />
-        <input type="hidden" asp-for="DeckTitle" />
+        }
+        else
+        {
+            <input type="hidden" asp-for="DeckID" />
+            <input type="hidden" asp-for="DeckTitle" />
 
-        <div class="form-group">
-            <div class="row">
+            <div class="form-group row">
                 <label class="control-label col-md-2">@Resources.ItemCollection</label>
                 <div class="col-md-8">
                     <p class="form-control-static">@Model.DeckTitle</p>
                 </div>
             </div>
-        </div>
-    }
+        }
 
-    <div class="form-group">
-        <div class="row">
+        <div class="form-group row">
             <label asp-for="Title" class="control-label col-md-2"></label>
             <div class="col-md-8">
                 <input asp-for="Title" class="form-control" />
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        <div class="row">
+        <div class="form-group row">
             <label asp-for="Text" class="control-label col-md-2"></label>
             <div class="col-md-8">
                 <textarea asp-for="Text" class="form-control focused" rows=10></textarea>
                 <span asp-validation-for="Text" class="text-danger"></span>
             </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        <div class="row">
+        <div class="form-group row">
             <label asp-for="Url" class="control-label col-md-2"></label>
             <div class="col-md-8">
                 <input asp-for="Url" class="form-control" />
                 <span asp-validation-for="Url" class="text-danger"></span>
             </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        <div class="row">
+        <div class="form-group row">
             <label asp-for="Priority" class="control-label col-md-2"></label>
             <div class="col-md-8">
                 <select asp-for="Priority" asp-items="Model.PriorityList" class="form-control">
@@ -96,24 +86,24 @@
                 <span asp-validation-for="Priority" class="text-danger"></span>
             </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        <div class="row">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+        <div class="form-group row">
+            <div class="col-md-offset-2 col-md-2">
+                <input type="submit" value="Create" class="btn btn-success btn-block" />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-md-offset-2 col-md-2">
+                @if (Model.DeckID.HasValue)
+                {
+                    <a asp-action="@nameof(CardsController.Index)" asp-route-deckID="@Model.DeckID" class="btn btn-default btn-block">Back</a>
+                }
+                else
+                {
+                    <a asp-controller="@DecksController.Name" asp-action="@nameof(DecksController.Index)" class="btn btn-default btn-block">Back</a>
+                }
             </div>
         </div>
     </div>
 </form>
-
-<div>
-    @if (Model.DeckID.HasValue)
-    {
-        <a asp-action="@nameof(CardsController.Index)" asp-route-deckID="@Model.DeckID">Back</a>
-    }
-    else
-    {
-        <a asp-controller="@DecksController.Name" asp-action="@nameof(DecksController.Index)">Back</a>
-    }
-</div>

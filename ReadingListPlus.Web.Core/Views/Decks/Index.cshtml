@@ -8,18 +8,19 @@
     ViewBag.Title = Resources.ItemCollections;
 }
 
-<h2>@(Resources.ItemCollections)</h2>
+<h2>@Resources.ItemCollections</h2>
 
-<p>
-    @Html.ActionLink("Add New", "Create")
-</p>
-<table class="table">
+<div class="mainPanel">
+    <a asp-action="@nameof(DecksController.Create)" class="btn btn-primary">Add New</a>
+</div>
+
+<table class="table decks-table">
     <tr>
         <th>
             @Html.DisplayNameFor(model => model.Title)
         </th>
         <th>
-            @(Resources.Items)
+            @Resources.Items
         </th>
         <th></th>
     </tr>
@@ -28,13 +29,13 @@
     {
         <tr>
             <td>
-                @Html.ActionLink(item.Title, "Details", new { id = item.ID })
+                <a asp-action="@nameof(DecksController.Details)" asp-route-id="@item.ID">@item.Title</a>
             </td>
             <td>
                 @(item.ConnectedCards?.Count() ?? 0)
             </td>
             <td>
-                @Html.ActionLink("Options", "Edit", new { id = item.ID })
+                <a asp-action="@nameof(DecksController.Edit)" asp-route-id="@item.ID" class="btn btn-default btn-block">Options</a>
             </td>
         </tr>
     }
@@ -43,7 +44,6 @@
 @if (User.HasClaim(Constants.BackupClaim, Constants.BackupClaim))
 {
     <hr />
-    <p>
-        <a asp-action="@nameof(DecksController.Import)">Backup/Restore</a>
-    </p>
+
+    <a asp-action="@nameof(DecksController.Import)" class="btn btn-default">Backup/Restore</a>
 }

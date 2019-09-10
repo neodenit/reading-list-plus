@@ -1,4 +1,5 @@
 ﻿@using ReadingListPlus.Common.App_GlobalResources
+@using ReadingListPlus.Web.Core.Controllers
 
 @model ReadingListPlus.DataAccess.Models.Deck
 
@@ -8,37 +9,37 @@
 
 <h2>Edit</h2>
 
-
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
-
+<form method="post">
     <div class="form-horizontal">
-        <h4>@(Resources.ItemCollection)</h4>
+        <h4>@Resources.ItemCollection</h4>
 
         <hr />
 
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.ID)
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-6">
-                @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control focused" } })
-                @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+        <input type="hidden" asp-for="ID" />
+
+        <div class="form-group row">
+            <label asp-for="Title" class="control-label col-md-2"></label>
+            <div class="col-md-8">
+                <input asp-for="Title" class="form-control focused" />
+                <span asp-validation-for="Title" class="text-danger"></span>
             </div>
         </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-1">
+
+        <div class="form-group row">
+            <div class="col-md-offset-2 col-md-2">
                 <input type="submit" value="Save" class="btn btn-success btn-block" />
             </div>
-            <div class="col-md-offset-4 col-md-1">
-                @Html.ActionLink("Delete", "Delete", new { id = Model.ID }, new { @Class = "btn btn-danger" })
+            <div class="col-md-offset-4 col-md-2">
+                <a asp-action="@nameof(DecksController.Delete)" asp-route-id="Model.ID" class="btn btn-danger btn-block">Delete</a>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-md-offset-2 col-md-2">
+                <a asp-action="@nameof(DecksController.Index)" class="btn btn-default btn-block">Back</a>
             </div>
         </div>
     </div>
-}
-
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
+</form>

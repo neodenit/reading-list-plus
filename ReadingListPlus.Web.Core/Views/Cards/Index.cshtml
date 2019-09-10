@@ -14,7 +14,7 @@
 <h2>@Model.First().DeckTitle</h2>
 
 <div class="mainPanel">
-    <a asp-action="@nameof(CardsController.Create)" asp-route-deckID="@Model.First().DeckID" class="btn btn-default">Add @Resources.Item</a>
+    <a asp-action="@nameof(CardsController.Create)" asp-route-deckID="@Model.First().DeckID" class="btn btn-primary">Add @Resources.Item</a>
 </div>
 
 <table class="table notes-table">
@@ -39,11 +39,23 @@
                 @item.Text
             </td>
             <td>
-                <a asp-action="@nameof(CardsController.Details)" asp-route-id="@item.ID">Read</a> |
-                <a asp-action="@nameof(CardsController.Edit)" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="@nameof(CardsController.Delete)" asp-route-id="@item.ID">Hide</a>
+                @{ 
+                    var id = $"menu{item.UserFriendlyPosition}";
+                }
+
+                <div class="mainPanel">
+                    <a class="btn btn-default btn-block" data-toggle="collapse" href="#@(id)">&hellip;</a>
+                </div>
+                <div class="collapse" id="@(id)">
+                    <a asp-action="@nameof(CardsController.Details)" asp-route-id="@item.ID" class="btn btn-default btn-block">Read</a>
+                    <a asp-action="@nameof(CardsController.Edit)" asp-route-id="@item.ID" class="btn btn-default btn-block">Edit</a>
+                    <a asp-action="@nameof(CardsController.Delete)" asp-route-id="@item.ID" class="btn btn-default btn-block">Hide</a>
+                </div>
+
             </td>
         </tr>
+
+
     }
 
 </table>
