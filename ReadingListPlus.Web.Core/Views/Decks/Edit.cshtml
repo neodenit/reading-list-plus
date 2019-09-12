@@ -1,7 +1,7 @@
 ﻿@using ReadingListPlus.Common.App_GlobalResources
 @using ReadingListPlus.Web.Core.Controllers
 
-@model ReadingListPlus.DataAccess.Models.Deck
+@model ReadingListPlus.Web.Core.ViewModels.DeckViewModel
 
 @{
     ViewBag.Title = "Edit";
@@ -32,7 +32,7 @@
                 <input type="submit" value="Save" class="btn btn-success btn-block" />
             </div>
             <div class="col-md-offset-4 col-md-2">
-                <a asp-action="@nameof(DecksController.Delete)" asp-route-id="Model.ID" class="btn btn-danger btn-block">Delete</a>
+                <a asp-action="@nameof(DecksController.Delete)" asp-route-id="@Model.ID" class="btn btn-danger btn-block">Delete</a>
             </div>
         </div>
 

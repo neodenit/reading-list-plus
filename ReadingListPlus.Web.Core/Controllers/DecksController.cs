@@ -1,4 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -6,11 +11,6 @@ using ReadingListPlus.Common;
 using ReadingListPlus.DataAccess.Models;
 using ReadingListPlus.Services;
 using ReadingListPlus.Web.Core.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ReadingListPlus.Web.Core.Controllers
 {
@@ -35,9 +35,20 @@ namespace ReadingListPlus.Web.Core.Controllers
         // GET: Decks
         public async Task<ActionResult> Index()
         {
-            var items = deckService.GetUserDecks(User).OrderBy(d => d.Title);
+            var items = await deckService
+                .GetUserDecks(User)
+                .OrderBy(d => d.Title)
+                .ToListAsync();
 
-            return View(await items.ToListAsync());
+            var viewModel = items
+                .Select(d => new DeckViewModel
+                {
+                    ID = d.ID,
+                    Title = d.Title,
+                    CardCount = d.ConnectedCards?.Count() ?? 0
+                });
+
+            return View(viewModel);
         }
 
         [Authorize(Policy = Constants.BackupPolicy)]
@@ -148,7 +159,7 @@ namespace ReadingListPlus.Web.Core.Controllers
         // GET: Decks/Create
         public ActionResult Create()
         {
-            var deck = new Deck();
+            var deck = new CreateDeckViewModel();
 
             return View(deck);
         }
@@ -156,7 +167,7 @@ namespace ReadingListPlus.Web.Core.Controllers
         // POST: Decks/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(DeckViewModel deckViewModel)
+        public async Task<ActionResult> Create(CreateDeckViewModel deckViewModel)
         {
             if (ModelState.IsValid)
             {
@@ -199,14 +210,15 @@ namespace ReadingListPlus.Web.Core.Controllers
             }
             else
             {
-                return View(deck);
+                var viewModel = new DeckViewModel { ID = deck.ID, Title = deck.Title };
+                return View(viewModel);
             }
         }
 
         // POST: Decks/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind("ID", "Title")] Deck deck)
+        public async Task<ActionResult> Edit([Bind("ID", "Title")] DeckViewModel deck)
         {
             if (ModelState.IsValid)
             {
@@ -252,7 +264,8 @@ namespace ReadingListPlus.Web.Core.Controllers
             }
             else
             {
-                return View(deck);
+                var viewModel = new DeckViewModel { ID = deck.ID, Title = deck.Title };
+                return View(viewModel);
             }
         }
 
