@@ -20,6 +20,8 @@ namespace ReadingListPlus.DataAccess
 
         Task<Deck> GetDeckAsync(Guid id);
 
+        Deck GetDeck(Guid id);
+
         IQueryable<Deck> GetUserDecks(IPrincipal user);
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);

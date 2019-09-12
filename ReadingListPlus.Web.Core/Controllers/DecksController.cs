@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ using Newtonsoft.Json;
 using ReadingListPlus.Common;
 using ReadingListPlus.DataAccess.Models;
 using ReadingListPlus.Services;
+using ReadingListPlus.Web.Core.Attributes;
 using ReadingListPlus.Web.Core.ViewModels;
 
 namespace ReadingListPlus.Web.Core.Controllers
@@ -124,23 +126,14 @@ namespace ReadingListPlus.Web.Core.Controllers
         }
 
         // GET: Decks/Details/5
-        public async Task<ActionResult> Details(Guid? id)
+        public async Task<ActionResult> Details([Required, DeckFound, DeckOwned]Guid? id)
         {
-            if (id == null)
+            if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ModelState);
             }
 
             var deck = await deckService.GetDeckAsync(id.Value);
-
-            if (deck == null)
-            {
-                return NotFound();
-            }
-            else if (!deck.IsAuthorized(User))
-            {
-                return Unauthorized();
-            }
 
             var cards = deck.ConnectedCards;
 
@@ -191,28 +184,17 @@ namespace ReadingListPlus.Web.Core.Controllers
         }
 
         // GET: Decks/Edit/5
-        public async Task<ActionResult> Edit(Guid? id)
+        public async Task<ActionResult> Edit([Required, DeckFound, DeckOwned]Guid? id)
         {
-            if (id == null)
+            if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ModelState);
             }
 
             var deck = await deckService.GetDeckAsync(id.Value);
 
-            if (deck == null)
-            {
-                return NotFound();
-            }
-            else if (!deck.IsAuthorized(User))
-            {
-                return Unauthorized();
-            }
-            else
-            {
-                var viewModel = new DeckViewModel { ID = deck.ID, Title = deck.Title };
-                return View(viewModel);
-            }
+            var viewModel = new DeckViewModel { ID = deck.ID, Title = deck.Title };
+            return View(viewModel);
         }
 
         // POST: Decks/Edit/5
@@ -223,15 +205,6 @@ namespace ReadingListPlus.Web.Core.Controllers
             if (ModelState.IsValid)
             {
                 var dbDeck = await deckService.GetDeckAsync(deck.ID);
-
-                if (deck == null)
-                {
-                    return NotFound();
-                }
-                else if (!dbDeck.IsAuthorized(User))
-                {
-                    return Unauthorized();
-                }
 
                 dbDeck.Title = deck.Title;
 
@@ -245,41 +218,30 @@ namespace ReadingListPlus.Web.Core.Controllers
             }
         }
 
-        public async Task<ActionResult> Delete(Guid? id)
+        public async Task<ActionResult> Delete([Required, DeckFound, DeckOwned]Guid? id)
         {
-            if (id == null)
+            if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ModelState);
             }
 
             var deck = await deckService.GetDeckAsync(id.Value);
 
-            if (deck == null)
-            {
-                return NotFound();
-            }
-            else if (!deck.IsAuthorized(User))
-            {
-                return Unauthorized();
-            }
-            else
-            {
-                var viewModel = new DeckViewModel { ID = deck.ID, Title = deck.Title };
-                return View(viewModel);
-            }
+            var viewModel = new DeckViewModel { ID = deck.ID, Title = deck.Title };
+            return View(viewModel);
         }
 
         // POST: Decks/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(Guid id)
+        public async Task<ActionResult> DeleteConfirmed([DeckFound, DeckOwned]Guid id)
         {
-            var deck = await deckService.GetDeckAsync(id);
-
-            if (!deck.IsAuthorized(User))
+            if (!ModelState.IsValid)
             {
-                return Unauthorized();
+                return BadRequest(ModelState);
             }
+
+            var deck = await deckService.GetDeckAsync(id);
 
             deckService.Decks.Remove(deck);
 
