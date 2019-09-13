@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ReadingListPlus.Web.Core.ViewModels
+namespace ReadingListPlus.Services.ViewModels
 {
     public class CreateDeckViewModel
     {

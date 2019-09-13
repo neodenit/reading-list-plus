@@ -1,4 +1,4 @@
-﻿namespace ReadingListPlus.Web.Core.ViewModels
+﻿namespace ReadingListPlus.Services.ViewModels
 {
     public enum NewRepetitionCardState
     {

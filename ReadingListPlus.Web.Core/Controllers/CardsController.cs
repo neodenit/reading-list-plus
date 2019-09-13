@@ -1,18 +1,17 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using ReadingListPlus.Common;
 using ReadingListPlus.Common.Enums;
 using ReadingListPlus.DataAccess.Models;
 using ReadingListPlus.Services;
 using ReadingListPlus.Services.ArticleExtractorService;
-using ReadingListPlus.Web.Core.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+using ReadingListPlus.Services.ViewModels;
 
 namespace ReadingListPlus.Web.Core.Controllers
 {
@@ -28,6 +27,8 @@ namespace ReadingListPlus.Web.Core.Controllers
         private readonly ITextConverterService textConverterService;
         private readonly ISettings settings;
         private readonly IHttpClientWrapper httpClientWrapper;
+
+        private string UserName => User.Identity.Name;
 
         public CardsController(IDeckService deckService, ICardService cardService, IArticleExtractorService articleExtractor, ISchedulerService schedulerService, ITextConverterService textConverterService, ISettings settings, IHttpClientWrapper httpClientWrapper)
         {
@@ -51,7 +52,7 @@ namespace ReadingListPlus.Web.Core.Controllers
             {
                 var deck = await deckService.GetDeckAsync(DeckID.Value);
 
-                if (!deck.IsAuthorized(User))
+                if (!deck.IsAuthorized(UserName))
                 {
                     return Unauthorized();
                 }
@@ -96,7 +97,7 @@ namespace ReadingListPlus.Web.Core.Controllers
                 {
                     return NotFound();
                 }
-                else if (!card.IsAuthorized(User))
+                else if (!card.IsAuthorized(UserName))
                 {
                     return Unauthorized();
                 }
@@ -170,7 +171,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
             var card = await cardService.GetCardAsync(cardId);
 
-            if (!card.IsAuthorized(User))
+            if (!card.IsAuthorized(UserName))
             {
                 return Unauthorized();
             }
@@ -198,7 +199,7 @@ namespace ReadingListPlus.Web.Core.Controllers
         {
             var deck = await deckService.GetDeckAsync(deckID);
 
-            if (!deck.IsAuthorized(User))
+            if (!deck.IsAuthorized(UserName))
             {
                 return Unauthorized();
             }
@@ -222,16 +223,17 @@ namespace ReadingListPlus.Web.Core.Controllers
 
         public async Task<ActionResult> CreateFromUrl(string url)
         {
-            var deckListItems = deckService.GetUserDecks(User)
-                                .OrderBy(d => d.Title)
-                                .Select(d => new SelectListItem { Value = d.ID.ToString(), Text = d.Title });
+            var deckListItems = await deckService
+                .GetUserDecks(UserName)
+                .OrderBy(d => d.Title)
+                .ToList();
 
             var articleText = await articleExtractor.GetArticleText(url);
             var formattedText = articleText.Replace("\n", Environment.NewLine + Environment.NewLine);
 
             var priorities = GetFullPriorityList();
 
-            var user = deckService.Users.Single(u => u.UserName == User.Identity.Name);
+            var user = deckService.Users.Single(u => u.UserName == UserName);
             var lastDeck = user.LastDeck;
 
             var card = new CreateCardViewModel
@@ -259,15 +261,15 @@ namespace ReadingListPlus.Web.Core.Controllers
                 var oldDeck = card.OldDeckID.HasValue ? await deckService.GetDeckAsync(card.OldDeckID.Value) : null;
                 var parentCard = card.ParentCardID.HasValue ? await cardService.GetCardAsync(card.ParentCardID.Value) : null;
 
-                if (!deck.IsAuthorized(User))
+                if (!deck.IsAuthorized(UserName))
                 {
                     return Unauthorized();
                 }
-                else if (oldDeck?.IsAuthorized(User) == false)
+                else if (oldDeck?.IsAuthorized(UserName) == false)
                 {
                     return Unauthorized();
                 }
-                else if (parentCard?.IsAuthorized(User) == false)
+                else if (parentCard?.IsAuthorized(UserName) == false)
                 {
                     return Unauthorized();
                 }
@@ -305,7 +307,7 @@ namespace ReadingListPlus.Web.Core.Controllers
                         parentCard.Text = textWithoutSelection;
                     }
 
-                    var user = deckService.Users.Single(u => u.UserName == User.Identity.Name);
+                    var user = deckService.Users.Single(u => u.UserName == UserName);
                     user.LastDeck = newCard.DeckID;
 
                     await deckService.SaveChangesAsync();
@@ -320,9 +322,10 @@ namespace ReadingListPlus.Web.Core.Controllers
                 card.DeckListItems =
                     card.CreationMode == CreationMode.Add ?
                         null :
-                        deckService.GetUserDecks(User)
+                        await deckService
+                            .GetUserDecks(UserName)
                             .OrderBy(d => d.Title)
-                            .Select(d => new SelectListItem { Value = d.ID.ToString(), Text = d.Title });
+                            .ToList();
 
                 card.PriorityList = card.CreationMode == CreationMode.Extract ? GetShortPriorityList() : GetFullPriorityList();
 
@@ -344,7 +347,7 @@ namespace ReadingListPlus.Web.Core.Controllers
             {
                 return NotFound();
             }
-            else if (!card.IsAuthorized(User))
+            else if (!card.IsAuthorized(UserName))
             {
                 return Unauthorized();
             }
@@ -364,7 +367,7 @@ namespace ReadingListPlus.Web.Core.Controllers
             {
                 var dbCard = await cardService.GetCardAsync(card.ID);
 
-                if (!dbCard.IsAuthorized(User))
+                if (!dbCard.IsAuthorized(UserName))
                 {
                     return Unauthorized();
                 }
@@ -391,7 +394,7 @@ namespace ReadingListPlus.Web.Core.Controllers
         {
             var card = await cardService.GetCardAsync(ID);
 
-            if (!card.IsAuthorized(User))
+            if (!card.IsAuthorized(UserName))
             {
                 return Unauthorized();
             }
@@ -423,7 +426,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
             var card = await cardService.GetCardAsync(ID);
 
-            if (!card.IsAuthorized(User))
+            if (!card.IsAuthorized(UserName))
             {
                 return Unauthorized();
             }
@@ -448,7 +451,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
             var card = await cardService.GetCardAsync(ID);
 
-            if (!card.IsAuthorized(User))
+            if (!card.IsAuthorized(UserName))
             {
                 return Unauthorized();
             }
@@ -473,7 +476,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
             var card = await cardService.GetCardAsync(ID);
 
-            if (!card.IsAuthorized(User))
+            if (!card.IsAuthorized(UserName))
             {
                 return Unauthorized();
             }
@@ -498,9 +501,10 @@ namespace ReadingListPlus.Web.Core.Controllers
 
                 if (settings.AllowDeckSelection)
                 {
-                    var userDecks = deckService.GetUserDecks(User)
-                            .OrderBy(d => d.Title)
-                            .Select(d => new SelectListItem { Value = d.ID.ToString(), Text = d.Title });
+                    var userDecks = await deckService
+                        .GetUserDecks(UserName)
+                        .OrderBy(d => d.Title)
+                        .ToList();
 
                     newCard.OldDeckID = card.DeckID;
 
@@ -532,7 +536,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
             var card = await cardService.GetCardAsync(ID);
 
-            if (!card.IsAuthorized(User))
+            if (!card.IsAuthorized(UserName))
             {
                 return Unauthorized();
             }
@@ -563,7 +567,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
             var card = await cardService.GetCardAsync(ID);
 
-            if (!card.IsAuthorized(User))
+            if (!card.IsAuthorized(UserName))
             {
                 return Unauthorized();
             }
@@ -588,7 +592,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
             var card = await cardService.GetCardAsync(ID);
 
-            if (!card.IsAuthorized(User))
+            if (!card.IsAuthorized(UserName))
             {
                 return Unauthorized();
             }
@@ -613,7 +617,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
             var card = await cardService.GetCardAsync(ID);
 
-            if (!card.IsAuthorized(User))
+            if (!card.IsAuthorized(UserName))
             {
                 return Unauthorized();
             }
@@ -644,7 +648,7 @@ namespace ReadingListPlus.Web.Core.Controllers
             {
                 return NotFound();
             }
-            else if (!card.IsAuthorized(User))
+            else if (!card.IsAuthorized(UserName))
             {
                 return Unauthorized();
             }
@@ -667,7 +671,7 @@ namespace ReadingListPlus.Web.Core.Controllers
         {
             var card = await cardService.GetCardAsync(id);
 
-            if (!card.IsAuthorized(User))
+            if (!card.IsAuthorized(UserName))
             {
                 return Unauthorized();
             }
@@ -700,7 +704,7 @@ namespace ReadingListPlus.Web.Core.Controllers
             return RedirectToAction(nameof(DecksController.Details), DecksController.Name, new { id = deckID });
         }
 
-        private IEnumerable<SelectListItem> GetFullPriorityList()
+        private IEnumerable<KeyValuePair<string, string>> GetFullPriorityList()
         {
             var priorities = new[]
             {
@@ -713,7 +717,7 @@ namespace ReadingListPlus.Web.Core.Controllers
             return GetPriorities(priorities);
         }
 
-        private IEnumerable<SelectListItem> GetShortPriorityList()
+        private IEnumerable<KeyValuePair<string, string>> GetShortPriorityList()
         {
             var priorities = new[]
             {
@@ -725,14 +729,12 @@ namespace ReadingListPlus.Web.Core.Controllers
             return GetPriorities(priorities);
         }
 
-        private IEnumerable<SelectListItem> GetPriorities(IEnumerable<Priority> priorities) =>
+        private IEnumerable<KeyValuePair<string, string>> GetPriorities(IEnumerable<Priority> priorities) =>
             from x in priorities
             let displayName = x.GetAttribute<DisplayAttribute>()
-            select new SelectListItem
-            {
-                Value = ((int)x).ToString(),
-                Text = displayName != null ? displayName.GetName() : x.ToString()
-            };
+            select KeyValuePair.Create(
+                ((int)x).ToString(),
+                displayName != null ? displayName.GetName() : x.ToString());
 
         private CardViewModel MapCardToViewModel(Card card) =>
             new CardViewModel

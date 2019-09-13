@@ -10,5 +10,7 @@ namespace ReadingListPlus.Repositories
         DbSet<Card> Cards { get; }
 
         Task<Card> GetCardAsync(Guid id);
+
+        void RemoveAll();
     }
 }

@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.IO;
 using System.Linq;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using ReadingListPlus.Common;
-using ReadingListPlus.DataAccess.Models;
+using ReadingListPlus.Common.Interfaces;
 using ReadingListPlus.Services;
-using ReadingListPlus.Web.Core.Attributes;
-using ReadingListPlus.Web.Core.ViewModels;
+using ReadingListPlus.Services.Attributes;
+using ReadingListPlus.Services.ViewModels;
 
 namespace ReadingListPlus.Web.Core.Controllers
 {
@@ -22,35 +21,21 @@ namespace ReadingListPlus.Web.Core.Controllers
         public const string Name = "Decks";
 
         private readonly IDeckService deckService;
-        private readonly ICardService cardService;
-        private readonly ISchedulerService schedulerService;
         private readonly ISettings settings;
 
-        public DecksController(IDeckService deckService, ICardService cardService, ISchedulerService schedulerService, ISettings settings)
+        private string UserName => User.Identity.Name;
+
+        public DecksController(IDeckService deckService, ISettings settings)
         {
             this.deckService = deckService ?? throw new ArgumentNullException(nameof(deckService));
-            this.cardService = cardService ?? throw new ArgumentNullException(nameof(cardService));
-            this.schedulerService = schedulerService ?? throw new ArgumentNullException(nameof(schedulerService));
             this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
         }
 
-        // GET: Decks
         public async Task<ActionResult> Index()
         {
-            var items = await deckService
-                .GetUserDecks(User)
-                .OrderBy(d => d.Title)
-                .ToListAsync();
-
-            var viewModel = items
-                .Select(d => new DeckViewModel
-                {
-                    ID = d.ID,
-                    Title = d.Title,
-                    CardCount = d.ConnectedCards?.Count() ?? 0
-                });
-
-            return View(viewModel);
+            IAsyncEnumerable<DeckViewModel> decks = deckService.GetUserDecks(UserName);
+            var orderedDecks = await decks.OrderBy(d => d.Title).ToList();
+            return View(orderedDecks);
         }
 
         [Authorize(Policy = Constants.BackupPolicy)]
@@ -58,23 +43,8 @@ namespace ReadingListPlus.Web.Core.Controllers
         {
             _ = id;
 
-            var decks = await deckService.Decks.Include(d => d.Cards).ToListAsync();
-
-            var orderedDecks = decks
-                .OrderBy(d => d.OwnerID)
-                .ThenBy(d => d.Title);
-
-            foreach (var deck in orderedDecks)
-            {
-                deck.Cards = deck.Cards
-                    .OrderBy(c => c.Position)
-                    .ThenBy(c => c.Text)
-                    .ToList();
-            }
-
-            var jsonResult = new JsonResult(orderedDecks, new JsonSerializerSettings { Formatting = Formatting.Indented });
-
-            return jsonResult;
+            string exportData = await deckService.GetExportDataAsync();
+            return Content(exportData, MediaTypeNames.Application.Json);
         }
 
         [Authorize(Policy = Constants.BackupPolicy)]
@@ -89,33 +59,7 @@ namespace ReadingListPlus.Web.Core.Controllers
         {
             if (ModelState.IsValid)
             {
-                using (var streamReader = new StreamReader(model.File.OpenReadStream()))
-                {
-                    var jsonSerializer = new JsonSerializer();
-                    var jsonReader = new JsonTextReader(streamReader);
-                    var newDecks = jsonSerializer.Deserialize<IEnumerable<Deck>>(jsonReader);
-
-                    if (settings.ResetKeysOnImport)
-                    {
-                        foreach (var deck in newDecks)
-                        {
-                            deck.ID = Guid.NewGuid();
-
-                            foreach (var card in deck.Cards)
-                            {
-                                card.ID = Guid.NewGuid();
-                                card.ParentCardID = null;
-                            }
-                        }
-                    }
-
-                    cardService.Cards.RemoveRange(cardService.Cards);
-                    deckService.Decks.RemoveRange(deckService.Decks);
-                    await deckService.SaveChangesAsync();
-
-                    deckService.Decks.AddRange(newDecks);
-                    await deckService.SaveChangesAsync();
-                }
+                await deckService.ImportAsync(model, settings.ResetKeysOnImport);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -125,7 +69,6 @@ namespace ReadingListPlus.Web.Core.Controllers
             }
         }
 
-        // GET: Decks/Details/5
         public async Task<ActionResult> Details([Required, DeckFound, DeckOwned]Guid? id)
         {
             if (!ModelState.IsValid)
@@ -133,49 +76,31 @@ namespace ReadingListPlus.Web.Core.Controllers
                 return BadRequest(ModelState);
             }
 
-            var deck = await deckService.GetDeckAsync(id.Value);
+            ICard card = await deckService.GetFirstCardOrDefaultAsync(id.Value);
 
-            var cards = deck.ConnectedCards;
+            var model =
+                card == null ?
+                    new { DeckID = id.Value } as dynamic :
+                    new { card.ID } as dynamic;
 
-            if (cards.Any())
-            {
-                var card = schedulerService.GetFirstCard(cards);
-
-                return RedirectToAction(nameof(CardsController.Details), CardsController.Name, new { card.ID });
-            }
-            else
-            {
-                return RedirectToAction(nameof(CardsController.Details), CardsController.Name, new { DeckID = id.Value });
-            }
+            return RedirectToAction(nameof(CardsController.Details), CardsController.Name, model);
         }
 
-        // GET: Decks/Create
         public ActionResult Create()
         {
             var deck = new CreateDeckViewModel();
-
             return View(deck);
         }
 
-        // POST: Decks/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(CreateDeckViewModel deckViewModel)
         {
             if (ModelState.IsValid)
             {
-                var deck = new Deck
-                {
-                    ID = Guid.NewGuid(),
-                    Title = deckViewModel.Title,
-                    OwnerID = User.Identity.Name
-                };
+                await deckService.CreateDeckAsync(deckViewModel.Title, UserName);
 
-                deckService.Decks.Add(deck);
-
-                await deckService.SaveChangesAsync();
-
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
             else
             {
@@ -183,7 +108,6 @@ namespace ReadingListPlus.Web.Core.Controllers
             }
         }
 
-        // GET: Decks/Edit/5
         public async Task<ActionResult> Edit([Required, DeckFound, DeckOwned]Guid? id)
         {
             if (!ModelState.IsValid)
@@ -191,26 +115,18 @@ namespace ReadingListPlus.Web.Core.Controllers
                 return BadRequest(ModelState);
             }
 
-            var deck = await deckService.GetDeckAsync(id.Value);
-
-            var viewModel = new DeckViewModel { ID = deck.ID, Title = deck.Title };
+            DeckViewModel viewModel = await deckService.GetDeckViewModelAsync(id.Value);
             return View(viewModel);
         }
 
-        // POST: Decks/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit([Bind("ID", "Title")] DeckViewModel deck)
         {
             if (ModelState.IsValid)
             {
-                var dbDeck = await deckService.GetDeckAsync(deck.ID);
-
-                dbDeck.Title = deck.Title;
-
-                await deckService.SaveChangesAsync();
-
-                return RedirectToAction("Index");
+                await deckService.UpdateDeckTitleAsync(deck.ID, deck.Title);
+                return RedirectToAction(nameof(Index));
             }
             else
             {
@@ -225,14 +141,11 @@ namespace ReadingListPlus.Web.Core.Controllers
                 return BadRequest(ModelState);
             }
 
-            var deck = await deckService.GetDeckAsync(id.Value);
-
-            var viewModel = new DeckViewModel { ID = deck.ID, Title = deck.Title };
+            DeckViewModel viewModel = await deckService.GetDeckViewModelAsync(id.Value);
             return View(viewModel);
         }
 
-        // POST: Decks/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost, ActionName(nameof(Delete))]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed([DeckFound, DeckOwned]Guid id)
         {
@@ -241,13 +154,9 @@ namespace ReadingListPlus.Web.Core.Controllers
                 return BadRequest(ModelState);
             }
 
-            var deck = await deckService.GetDeckAsync(id);
+            await deckService.DeleteDeckAsync(id);
 
-            deckService.Decks.Remove(deck);
-
-            await deckService.SaveChangesAsync();
-
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
     }
 }

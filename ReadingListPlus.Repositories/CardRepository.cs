@@ -18,6 +18,11 @@ namespace ReadingListPlus.Repositories
         public DbSet<Card> Cards => context.Cards;
 
         public Task<Card> GetCardAsync(Guid id) =>
-            context.GetCardAsync(id);
+            Cards.Include(c => c.Deck.Cards).SingleOrDefaultAsync(c => c.ID == id);
+
+        public void RemoveAll()
+        {
+            context.Cards.RemoveRange(context.Cards);
+        }
     }
 }

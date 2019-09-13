@@ -1,8 +1,8 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using ReadingListPlus.Web.Core.Attributes;
+using ReadingListPlus.Services.Attributes;
 
-namespace ReadingListPlus.Web.Core.ViewModels
+namespace ReadingListPlus.Services.ViewModels
 {
     public class DeckViewModel
     {

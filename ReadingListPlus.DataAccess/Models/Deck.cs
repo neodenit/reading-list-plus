@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using System.Security.Principal;
 using Newtonsoft.Json;
 using ReadingListPlus.Common;
 using ReadingListPlus.Common.Interfaces;
@@ -35,11 +34,10 @@ namespace ReadingListPlus.DataAccess.Models
         [NotMapped]
         public IEnumerable<Card> ConnectedCards => Cards?.Where(c => c.Position != Constants.DisconnectedCardPosition);
 
-        public bool IsAuthorized(IPrincipal user)
-        {
-            var userName = user.Identity.Name;
-
-            return OwnerID == userName;
+        public bool IsAuthorized(string userName)
+        { 
+            var result = OwnerID == userName;
+            return result;
         }
     }
 }

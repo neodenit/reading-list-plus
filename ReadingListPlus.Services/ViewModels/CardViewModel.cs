@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using ReadingListPlus.Common.Enums;
 using ReadingListPlus.DataAccess.Models;
 
-namespace ReadingListPlus.Web.Core.ViewModels
+namespace ReadingListPlus.Services.ViewModels
 {
     public class CardViewModel
     {

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 
-namespace ReadingListPlus.Web.Core.ViewModels
+namespace ReadingListPlus.Services.ViewModels
 {
     public class ImportViewModel
     {

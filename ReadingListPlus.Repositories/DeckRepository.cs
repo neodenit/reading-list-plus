@@ -1,10 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using ReadingListPlus.DataAccess;
 using ReadingListPlus.DataAccess.Models;
-using System;
-using System.Linq;
-using System.Security.Principal;
-using System.Threading.Tasks;
 
 namespace ReadingListPlus.Repositories
 {
@@ -21,11 +21,37 @@ namespace ReadingListPlus.Repositories
 
         public DbSet<ApplicationUser> Users => context.Users;
 
-        public Task<Deck> GetDeckAsync(Guid id) =>
-            context.GetDeckAsync(id);
+        public IAsyncEnumerable<Deck> GetAllDecks() =>
+            context.Decks.Include(d => d.Cards).ToAsyncEnumerable();
 
-        public IQueryable<Deck> GetUserDecks(IPrincipal user) =>
-            context.GetUserDecks(user);
+        public IAsyncEnumerable<Deck> GetUserDecks(string userName) =>
+            context.Decks.Include(d => d.Cards).Where(item => item.OwnerID == userName).ToAsyncEnumerable();
+
+        public Task<Deck> GetDeckAsync(Guid id) =>
+            context.Decks.Include(d => d.Cards).SingleOrDefaultAsync(d => d.ID == id);
+
+        public Deck GetDeck(Guid id) =>
+            context.Decks.Include(d => d.Cards).SingleOrDefault(d => d.ID == id);
+
+        public void AddRange(IEnumerable<Deck> newDecks)
+        {
+            context.Decks.AddRange(newDecks);
+        }
+
+        public void Add(Deck deck)
+        {
+            context.Decks.Add(deck);
+        }
+
+        public void RemoveAll()
+        {
+            context.Decks.RemoveRange(context.Decks);
+        }
+
+        public void Remove(Deck deck)
+        {
+            context.Decks.Remove(deck);
+        }
 
         public Task<int> SaveChangesAsync() =>
             context.SaveChangesAsync();

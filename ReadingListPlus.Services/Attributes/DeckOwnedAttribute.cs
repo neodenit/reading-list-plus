@@ -1,9 +1,9 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
-using ReadingListPlus.DataAccess;
+using ReadingListPlus.Repositories;
 
-namespace ReadingListPlus.Web.Core.Attributes
+namespace ReadingListPlus.Services.Attributes
 {
     public class DeckOwnedAttribute : ValidationAttribute
     {
@@ -17,12 +17,12 @@ namespace ReadingListPlus.Web.Core.Attributes
                 return DefaultValidationResult;
             }
 
-            var dbContext = validationContext.GetService(typeof(IApplicationContext)) as IApplicationContext;
+            var deckRepository = validationContext.GetService(typeof(IDeckRepository)) as IDeckRepository;
             var httpContextAccessor = validationContext.GetService(typeof(IHttpContextAccessor)) as IHttpContextAccessor;
             var userName = httpContextAccessor.HttpContext.User.Identity.Name;
 
             var deckId = (Guid)value;
-            var deck = dbContext.GetDeck(deckId);
+            var deck = deckRepository.GetDeck(deckId);
 
             if (deck == null)
             {

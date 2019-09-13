@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Security.Principal;
 using Newtonsoft.Json;
 using ReadingListPlus.Common.Interfaces;
 
@@ -48,11 +47,10 @@ namespace ReadingListPlus.DataAccess.Models
         [ForeignKey(nameof(ParentCardID))]
         public ICollection<Card> ChildCards { get; set; }
 
-        public bool IsAuthorized(IPrincipal user)
+        public bool IsAuthorized(string userName)
         {
-            var userName = user.Identity.Name;
-
-            return Deck.OwnerID == userName;
+            var result = Deck.OwnerID == userName;
+            return result;
         }
     }
 }

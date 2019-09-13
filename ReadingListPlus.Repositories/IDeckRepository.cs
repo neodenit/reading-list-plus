@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Linq;
-using System.Security.Principal;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ReadingListPlus.DataAccess;
@@ -16,7 +15,19 @@ namespace ReadingListPlus.Repositories
 
         Task<Deck> GetDeckAsync(Guid id);
 
-        IQueryable<Deck> GetUserDecks(IPrincipal user);
+        IAsyncEnumerable<Deck> GetAllDecks();
+
+        IAsyncEnumerable<Deck> GetUserDecks(string userName);
+
+        Deck GetDeck(Guid id);
+
+        void AddRange(IEnumerable<Deck> newDecks);
+
+        void Add(Deck deck);
+
+        void RemoveAll();
+
+        void Remove(Deck deck);
 
         Task<int> SaveChangesAsync();
     }

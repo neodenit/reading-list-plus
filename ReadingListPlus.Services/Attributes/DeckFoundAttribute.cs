@@ -1,8 +1,8 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using ReadingListPlus.DataAccess;
+using ReadingListPlus.Repositories;
 
-namespace ReadingListPlus.Web.Core.Attributes
+namespace ReadingListPlus.Services.Attributes
 {
     public class DeckFoundAttribute : ValidationAttribute
     {
@@ -16,11 +16,11 @@ namespace ReadingListPlus.Web.Core.Attributes
                 return DefaultValidationResult;
             }
 
-            var dbContext = validationContext.GetService(typeof(IApplicationContext)) as IApplicationContext;
+            var deckRepository = validationContext.GetService(typeof(IDeckRepository)) as IDeckRepository;
 
             var deckId = (Guid)value;
 
-            var deck = dbContext.GetDeck(deckId);
+            var deck = deckRepository.GetDeck(deckId);
 
             var validationResult = deck == null ? FailedValidationResult : ValidationResult.Success;
 
