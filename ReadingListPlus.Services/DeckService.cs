@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using ReadingListPlus.DataAccess;
 using ReadingListPlus.DataAccess.Models;
 using ReadingListPlus.Repositories;
 using ReadingListPlus.Services.ViewModels;
@@ -16,18 +14,16 @@ namespace ReadingListPlus.Services
     {
         private readonly IDeckRepository deckRepository;
         private readonly ICardRepository cardRepository;
+        private readonly IUserRepository userRepository;
         private readonly ISchedulerService schedulerService;
 
-        public DeckService(IDeckRepository deckRepository, ICardRepository cardRepository, ISchedulerService schedulerService)
+        public DeckService(IDeckRepository deckRepository, ICardRepository cardRepository, IUserRepository userRepository, ISchedulerService schedulerService)
         {
             this.deckRepository = deckRepository ?? throw new System.ArgumentNullException(nameof(deckRepository));
             this.cardRepository = cardRepository ?? throw new ArgumentNullException(nameof(cardRepository));
+            this.userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
             this.schedulerService = schedulerService ?? throw new ArgumentNullException(nameof(schedulerService));
         }
-
-        public DbSet<Deck> Decks => deckRepository.Decks;
-
-        public DbSet<ApplicationUser> Users => deckRepository.Users;
 
         public IAsyncEnumerable<DeckViewModel> GetUserDecks(string userName)
         {
@@ -149,6 +145,16 @@ namespace ReadingListPlus.Services
             await deckRepository.SaveChangesAsync();
         }
 
-        public Task<int> SaveChangesAsync() => deckRepository.SaveChangesAsync();
+        public Guid? GetUserLastDeck(string userName) =>
+            userRepository.GetUser(userName).LastDeck;
+
+        public Task SetUserLastDeckAsync(string userName, Guid deckId)
+        {
+            var user = userRepository.GetUser(userName);
+            user.LastDeck = deckId;
+            return userRepository.SaveChangesAsync();
+        }
+
+        public Task SaveChangesAsync() => deckRepository.SaveChangesAsync();
     }
 }

@@ -7,8 +7,10 @@ namespace ReadingListPlus.Services
 {
     public interface ICardService
     {
-        DbSet<Card> Cards { get; }
-
         Task<Card> GetCardAsync(Guid id);
+
+        Task AddAsync(Card card);
+
+        Task RemoveAsync(Card card);
     }
 }

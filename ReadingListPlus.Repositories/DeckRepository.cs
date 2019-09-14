@@ -17,10 +17,6 @@ namespace ReadingListPlus.Repositories
             this.context = context ?? throw new System.ArgumentNullException(nameof(context));
         }
 
-        public DbSet<Deck> Decks => context.Decks;
-
-        public DbSet<ApplicationUser> Users => context.Users;
-
         public IAsyncEnumerable<Deck> GetAllDecks() =>
             context.Decks.Include(d => d.Cards).ToAsyncEnumerable();
 
@@ -53,7 +49,6 @@ namespace ReadingListPlus.Repositories
             context.Decks.Remove(deck);
         }
 
-        public Task<int> SaveChangesAsync() =>
-            context.SaveChangesAsync();
+        public Task SaveChangesAsync() => context.SaveChangesAsync();
     }
 }

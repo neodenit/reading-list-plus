@@ -116,6 +116,7 @@ namespace ReadingListPlus.Web.Core
         {
             services.AddTransient<IDeckRepository, DeckRepository>();
             services.AddTransient<ICardRepository, CardRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
         }
     }
 }

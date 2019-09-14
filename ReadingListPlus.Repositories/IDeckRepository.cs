@@ -1,18 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using ReadingListPlus.DataAccess;
 using ReadingListPlus.DataAccess.Models;
 
 namespace ReadingListPlus.Repositories
 {
     public interface IDeckRepository
     {
-        DbSet<Deck> Decks { get; }
-
-        DbSet<ApplicationUser> Users { get; }
-
         Task<Deck> GetDeckAsync(Guid id);
 
         IAsyncEnumerable<Deck> GetAllDecks();
@@ -29,6 +23,6 @@ namespace ReadingListPlus.Repositories
 
         void Remove(Deck deck);
 
-        Task<int> SaveChangesAsync();
+        Task SaveChangesAsync();
     }
 }

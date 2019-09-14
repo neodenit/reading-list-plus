@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using ReadingListPlus.DataAccess;
 using ReadingListPlus.DataAccess.Models;
 using ReadingListPlus.Services.ViewModels;
 
@@ -10,10 +8,6 @@ namespace ReadingListPlus.Services
 {
     public interface IDeckService
     {
-        DbSet<Deck> Decks { get; }
-
-        DbSet<ApplicationUser> Users { get; }
-
         IAsyncEnumerable<DeckViewModel> GetUserDecks(string userName);
 
         Task<Deck> GetDeckAsync(Guid id);
@@ -32,6 +26,10 @@ namespace ReadingListPlus.Services
 
         Task DeleteDeckAsync(Guid id);
 
-        Task<int> SaveChangesAsync();
+        Guid? GetUserLastDeck(string userName);
+
+        Task SetUserLastDeckAsync(string userName, Guid deckId);
+
+        Task SaveChangesAsync();
     }
 }

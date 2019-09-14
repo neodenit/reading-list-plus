@@ -206,13 +206,10 @@ namespace ReadingListPlus.Web.Core.Controllers
 
             var priorities = GetFullPriorityList();
 
-            var user = deckService.Users.Single(u => u.UserName == UserName);
-            var lastDeck = user.LastDeck;
-
             var card = new CreateCardViewModel
             {
                 DeckListItems = deckListItems,
-                DeckID = lastDeck.GetValueOrDefault(),
+                DeckID = deckService.GetUserLastDeck(UserName),
                 Text = formattedText,
                 Url = url,
                 PriorityList = priorities,
@@ -249,7 +246,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
                 schedulerService.PrepareForAdding(deck, deck.ConnectedCards, newCard, priority);
 
-                cardService.Cards.Add(newCard);
+                await cardService.AddAsync(newCard);
 
                 if (oldDeck != null)
                 {
@@ -266,10 +263,7 @@ namespace ReadingListPlus.Web.Core.Controllers
                     parentCard.Text = textWithoutSelection;
                 }
 
-                var user = deckService.Users.Single(u => u.UserName == UserName);
-                user.LastDeck = newCard.DeckID;
-
-                await deckService.SaveChangesAsync();
+                await deckService.SetUserLastDeckAsync(UserName, newCard.DeckID.Value);
 
                 return card.CreationMode == CreationMode.Extract ?
                     RedirectToDeckDetails(card.OldDeckID ?? newCard.DeckID) :
@@ -557,9 +551,7 @@ namespace ReadingListPlus.Web.Core.Controllers
                 return BadRequest();
             }
 
-            cardService.Cards.Remove(card);
-
-            await deckService.SaveChangesAsync();
+            await cardService.RemoveAsync(card);
 
             return RedirectToDeckDetails(card.DeckID);
         }
