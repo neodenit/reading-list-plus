@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using ReadingListPlus.Common.Interfaces;
 using ReadingListPlus.DataAccess;
 using ReadingListPlus.DataAccess.Models;
 using ReadingListPlus.Repositories;
@@ -39,7 +38,7 @@ namespace ReadingListPlus.Services
                 {
                     ID = d.ID,
                     Title = d.Title,
-                    CardCount = d.ConnectedCards?.Count() ?? 0
+                    CardCount = d.ConnectedCards.Count()
                 });
 
             return viewModel;
@@ -53,7 +52,7 @@ namespace ReadingListPlus.Services
             var viewModel = new DeckViewModel {
                 ID = deck.ID,
                 Title = deck.Title,
-                CardCount = deck.ConnectedCards?.Count() ?? 0
+                CardCount = deck.ConnectedCards.Count()
             };
 
             return viewModel;
@@ -110,12 +109,12 @@ namespace ReadingListPlus.Services
             }
         }
 
-        public async Task<ICard> GetFirstCardOrDefaultAsync(Guid deckId)
+        public async Task<Guid> GetFirstCardIdOrDefaultAsync(Guid deckId)
         {
             Deck deck = await deckRepository.GetDeckAsync(deckId);
             var cards = deck.ConnectedCards;
-            var card = cards == null ? null : schedulerService.GetFirstCard(cards);
-            return card;
+            var result = cards.Any() ? schedulerService.GetFirstCard(cards).ID : Guid.Empty;
+            return result;
         }
 
         public Task CreateDeckAsync(string title, string userName)

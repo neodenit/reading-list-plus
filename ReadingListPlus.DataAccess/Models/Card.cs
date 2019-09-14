@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
-using ReadingListPlus.Common.Interfaces;
 
 namespace ReadingListPlus.DataAccess.Models
 {
@@ -14,7 +13,7 @@ namespace ReadingListPlus.DataAccess.Models
         Extract = 2,
     }
 
-    public class Card : ICard
+    public class Card
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]

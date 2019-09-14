@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using ReadingListPlus.Common;
-using ReadingListPlus.Common.Interfaces;
 using ReadingListPlus.Services;
 using ReadingListPlus.Services.Attributes;
 using ReadingListPlus.Services.ViewModels;
@@ -76,14 +75,9 @@ namespace ReadingListPlus.Web.Core.Controllers
                 return BadRequest(ModelState);
             }
 
-            ICard card = await deckService.GetFirstCardOrDefaultAsync(id.Value);
+            Guid cardId = await deckService.GetFirstCardIdOrDefaultAsync(id.Value);
 
-            var model =
-                card == null ?
-                    new { DeckID = id.Value } as dynamic :
-                    new { card.ID } as dynamic;
-
-            return RedirectToAction(nameof(CardsController.Details), CardsController.Name, model);
+            return RedirectToAction(nameof(CardsController.Details), CardsController.Name, new { Id = cardId, DeckId = id.Value });
         }
 
         public ActionResult Create()

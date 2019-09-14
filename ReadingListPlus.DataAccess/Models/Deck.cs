@@ -5,11 +5,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using Newtonsoft.Json;
 using ReadingListPlus.Common;
-using ReadingListPlus.Common.Interfaces;
 
 namespace ReadingListPlus.DataAccess.Models
 {
-    public class Deck : IDeck
+    public class Deck
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
@@ -32,7 +31,7 @@ namespace ReadingListPlus.DataAccess.Models
 
         [JsonIgnore]
         [NotMapped]
-        public IEnumerable<Card> ConnectedCards => Cards?.Where(c => c.Position != Constants.DisconnectedCardPosition);
+        public IEnumerable<Card> ConnectedCards => Cards?.Where(c => c.Position != Constants.DisconnectedCardPosition) ?? Enumerable.Empty<Card>();
 
         public bool IsAuthorized(string userName)
         { 

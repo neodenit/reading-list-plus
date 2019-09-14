@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using ReadingListPlus.Common.Interfaces;
 using ReadingListPlus.DataAccess;
 using ReadingListPlus.DataAccess.Models;
 using ReadingListPlus.Services.ViewModels;
@@ -25,7 +24,7 @@ namespace ReadingListPlus.Services
 
         Task ImportAsync(ImportViewModel model, bool resetKeysOnImport);
 
-        Task<ICard> GetFirstCardOrDefaultAsync(Guid deckId);
+        Task<Guid> GetFirstCardIdOrDefaultAsync(Guid deckId);
 
         Task CreateDeckAsync(string title, string userName);
 

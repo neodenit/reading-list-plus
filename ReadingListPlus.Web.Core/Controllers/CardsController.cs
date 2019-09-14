@@ -78,9 +78,9 @@ namespace ReadingListPlus.Web.Core.Controllers
 
         public async Task<ActionResult> Details(Guid? id, Guid? deckId)
         {
-            if (id == null)
+            if (id == null || id == Guid.Empty)
             {
-                if (deckId == null)
+                if (deckId == null || deckId == Guid.Empty)
                 {
                     return BadRequest();
                 }
