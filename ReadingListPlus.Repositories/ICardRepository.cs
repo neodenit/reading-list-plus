@@ -11,6 +11,8 @@ namespace ReadingListPlus.Repositories
 
         Task<Card> GetCardAsync(Guid id);
 
+        Card GetCard(Guid id);
+
         void RemoveAll();
     }
 }

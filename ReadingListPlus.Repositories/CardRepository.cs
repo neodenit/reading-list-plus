@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ReadingListPlus.DataAccess;
@@ -19,6 +20,9 @@ namespace ReadingListPlus.Repositories
 
         public Task<Card> GetCardAsync(Guid id) =>
             Cards.Include(c => c.Deck.Cards).SingleOrDefaultAsync(c => c.ID == id);
+
+        public Card GetCard(Guid id) =>
+            Cards.Include(c => c.Deck.Cards).SingleOrDefault(c => c.ID == id);
 
         public void RemoveAll()
         {

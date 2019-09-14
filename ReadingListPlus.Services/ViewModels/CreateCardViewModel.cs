@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using ReadingListPlus.Common.App_GlobalResources;
 using ReadingListPlus.Common.Enums;
-using ReadingListPlus.DataAccess.Models;
+using ReadingListPlus.Services.Attributes;
 
 namespace ReadingListPlus.Services.ViewModels
 {
@@ -15,6 +15,8 @@ namespace ReadingListPlus.Services.ViewModels
         public IEnumerable<KeyValuePair<string, string>> PriorityList { get; set; }
 
         [Required]
+        [DeckFound]
+        [DeckOwned]
         [Display(ResourceType = typeof(Resources), Name = nameof(Resources.ItemCollection))]
         public Guid? DeckID { get; set; }
 
@@ -33,10 +35,14 @@ namespace ReadingListPlus.Services.ViewModels
         [DataType(DataType.Url)]
         public string Url { get; set; }
 
+        [CardFound]
+        [CardOwned]
         public Guid? ParentCardID { get; set; }
 
         public string ParentCardUpdatedText { get; set; }
 
+        [DeckFound]
+        [DeckOwned]
         public Guid? OldDeckID { get; set; }
 
         public CreationMode CreationMode { get; set; }

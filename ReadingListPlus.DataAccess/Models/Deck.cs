@@ -32,11 +32,5 @@ namespace ReadingListPlus.DataAccess.Models
         [JsonIgnore]
         [NotMapped]
         public IEnumerable<Card> ConnectedCards => Cards?.Where(c => c.Position != Constants.DisconnectedCardPosition) ?? Enumerable.Empty<Card>();
-
-        public bool IsAuthorized(string userName)
-        { 
-            var result = OwnerID == userName;
-            return result;
-        }
     }
 }

@@ -3,16 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
+using ReadingListPlus.Common.Enums;
 
 namespace ReadingListPlus.DataAccess.Models
 {
-    public enum CardType
-    {
-        Common = 0,
-        Article = 1,
-        Extract = 2,
-    }
-
     public class Card
     {
         [Key]
@@ -45,11 +39,5 @@ namespace ReadingListPlus.DataAccess.Models
         [JsonIgnore]
         [ForeignKey(nameof(ParentCardID))]
         public ICollection<Card> ChildCards { get; set; }
-
-        public bool IsAuthorized(string userName)
-        {
-            var result = Deck.OwnerID == userName;
-            return result;
-        }
     }
 }

@@ -1,14 +1,18 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using ReadingListPlus.Common.Enums;
-using ReadingListPlus.DataAccess.Models;
+using ReadingListPlus.Services.Attributes;
 
 namespace ReadingListPlus.Services.ViewModels
 {
     public class CardViewModel
     {
+        [CardFound]
+        [CardOwned]
         public Guid ID { get; set; }
 
+        [DeckFound]
+        [DeckOwned]
         public Guid? DeckID { get; set; }
 
         public CardType Type { get; set; }

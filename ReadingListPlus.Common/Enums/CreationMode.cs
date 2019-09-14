@@ -1,4 +1,4 @@
-﻿namespace ReadingListPlus.Services.ViewModels
+﻿namespace ReadingListPlus.Common.Enums
 {
     public enum CreationMode
     {

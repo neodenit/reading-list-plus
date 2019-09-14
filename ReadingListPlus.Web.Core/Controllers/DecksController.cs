@@ -77,7 +77,14 @@ namespace ReadingListPlus.Web.Core.Controllers
 
             Guid cardId = await deckService.GetFirstCardIdOrDefaultAsync(id.Value);
 
-            return RedirectToAction(nameof(CardsController.Details), CardsController.Name, new { Id = cardId, DeckId = id.Value });
+            if (cardId == Guid.Empty)
+            {
+                return RedirectToAction(nameof(CardsController.Create), CardsController.Name, new { DeckId = id });
+            }
+            else
+            {
+                return RedirectToAction(nameof(CardsController.Details), CardsController.Name, new { Id = cardId });
+            }
         }
 
         public ActionResult Create()

@@ -11,6 +11,7 @@ using ReadingListPlus.Common.Enums;
 using ReadingListPlus.DataAccess.Models;
 using ReadingListPlus.Services;
 using ReadingListPlus.Services.ArticleExtractorService;
+using ReadingListPlus.Services.Attributes;
 using ReadingListPlus.Services.ViewModels;
 
 namespace ReadingListPlus.Web.Core.Controllers
@@ -42,25 +43,16 @@ namespace ReadingListPlus.Web.Core.Controllers
         }
 
         // GET: Cards
-        public async Task<ActionResult> Index(Guid? DeckID)
+        public async Task<ActionResult> Index([Required, DeckFound, DeckOwned]Guid? deckId)
         {
-            if (DeckID == null)
+            if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ModelState);
             }
-            else
-            {
-                var deck = await deckService.GetDeckAsync(DeckID.Value);
 
-                if (!deck.IsAuthorized(UserName))
-                {
-                    return Unauthorized();
-                }
-                else
-                {
-                    return View(deck.ConnectedCards.OrderBy(c => c.Position).Select(c => MapCardToViewModel(c)).ToList());
-                }
-            }
+            var deck = await deckService.GetDeckAsync(deckId.Value);
+
+            return View(deck.ConnectedCards.OrderBy(c => c.Position).Select(c => MapCardToViewModel(c)).ToList());
         }
 
         public async Task<ActionResult> Fix(Guid DeckID)
@@ -76,55 +68,40 @@ namespace ReadingListPlus.Web.Core.Controllers
             return View("Index", cards.Select(c => MapCardToViewModel(c)));
         }
 
-        public async Task<ActionResult> Details(Guid? id, Guid? deckId)
+        public async Task<ActionResult> Details([Required, CardFound, CardOwned]Guid? id)
         {
-            if (id == null || id == Guid.Empty)
+            if (!ModelState.IsValid)
             {
-                if (deckId == null || deckId == Guid.Empty)
-                {
-                    return BadRequest();
-                }
-                else
-                {
-                    return RedirectToAction(nameof(Create), new { deckId });
-                }
+                return BadRequest(ModelState);
+            }
+
+            var card = await cardService.GetCardAsync(id.Value);
+
+            var newRepetitionCardText = textConverterService.GetNewRepetitionCardText(card.Text);
+
+            if (!string.IsNullOrEmpty(newRepetitionCardText))
+            {
+                var reservedId = textConverterService.GetIdParameter(card.Text, Constants.NewRepetitionCardLabel);
+                var isValid = await IsRepetitionCardValidAsync(new Guid(reservedId), card.ID);
+                var newRepetitionCardState = isValid ? NewRepetitionCardState.Done : NewRepetitionCardState.Pending;
+                var viewModel = MapCardToHtmlViewModel(card, newRepetitionCardState);
+                return View(viewModel);
             }
             else
             {
-                var card = await cardService.GetCardAsync(id.Value);
-
-                if (card == null)
-                {
-                    return NotFound();
-                }
-                else if (!card.IsAuthorized(UserName))
-                {
-                    return Unauthorized();
-                }
-                else
-                {
-                    var newRepetitionCardText = textConverterService.GetNewRepetitionCardText(card.Text);
-
-                    if (!string.IsNullOrEmpty(newRepetitionCardText))
-                    {
-                        var reservedId = textConverterService.GetIdParameter(card.Text, Constants.NewRepetitionCardLabel);
-                        var isValid = await IsRepetitionCardValidAsync(new Guid(reservedId), card.ID);
-                        var newRepetitionCardState = isValid ? NewRepetitionCardState.Done : NewRepetitionCardState.Pending;
-                        var viewModel = MapCardToHtmlViewModel(card, newRepetitionCardState);
-                        return View(viewModel);
-                    }
-                    else
-                    {
-                        var viewModel = MapCardToHtmlViewModel(card, NewRepetitionCardState.None);
-                        return View(viewModel);
-                    }
-                }
+                var viewModel = MapCardToHtmlViewModel(card, NewRepetitionCardState.None);
+                return View(viewModel);
             }
         }
 
         [HttpPost]
         public async Task<ActionResult> Details([Bind("ID", "NextAction", "Selection", "Priority")] CardViewModel card)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var dbCard = await cardService.GetCardAsync(card.ID);
 
             var newRepetitionCardText = textConverterService.GetNewRepetitionCardText(dbCard.Text);
@@ -162,8 +139,13 @@ namespace ReadingListPlus.Web.Core.Controllers
             }
         }
 
-        private async Task<ActionResult> Remember(Guid cardId, string text)
+        private async Task<ActionResult> Remember([CardFound, CardOwned]Guid cardId, string text)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             if (!settings.RememberEnabled)
             {
                 return BadRequest();
@@ -171,54 +153,45 @@ namespace ReadingListPlus.Web.Core.Controllers
 
             var card = await cardService.GetCardAsync(cardId);
 
-            if (!card.IsAuthorized(UserName))
-            {
-                return Unauthorized();
-            }
-            else
-            {
-                var repetitionCardText = textConverterService.GetSelection(text);
-                var encodedRepetitionCardText = Uri.EscapeDataString(repetitionCardText);
+            var repetitionCardText = textConverterService.GetSelection(text);
+            var encodedRepetitionCardText = Uri.EscapeDataString(repetitionCardText);
 
-                var textWithNewRepetitionCard = textConverterService.ReplaceTag(text, Constants.SelectionLabel, Constants.NewRepetitionCardLabel);
-                var repetitionCardId = Guid.NewGuid().ToString();
-                var textWithNewRepetitionCardId = textConverterService.AddParameter(textWithNewRepetitionCard, Constants.NewRepetitionCardLabel, repetitionCardId);
+            var textWithNewRepetitionCard = textConverterService.ReplaceTag(text, Constants.SelectionLabel, Constants.NewRepetitionCardLabel);
+            var repetitionCardId = Guid.NewGuid().ToString();
+            var textWithNewRepetitionCardId = textConverterService.AddParameter(textWithNewRepetitionCard, Constants.NewRepetitionCardLabel, repetitionCardId);
 
-                card.Text = textWithNewRepetitionCardId;
+            card.Text = textWithNewRepetitionCardId;
 
-                await deckService.SaveChangesAsync();
+            await deckService.SaveChangesAsync();
 
-                var baseUri = new Uri(settings.SpacedRepetionServer);
-                var uri = new Uri(baseUri, $"Cards/Create?readingCardId={cardId}&repetitionCardId={repetitionCardId}&text={encodedRepetitionCardText}");
-                return Redirect(uri.AbsoluteUri);
-            }
+            var baseUri = new Uri(settings.SpacedRepetionServer);
+            var uri = new Uri(baseUri, $"Cards/Create?readingCardId={cardId}&repetitionCardId={repetitionCardId}&text={encodedRepetitionCardText}");
+            return Redirect(uri.AbsoluteUri);
         }
 
         // GET: Cards/Create/5
-        public async Task<ActionResult> Create(Guid deckID, string text)
+        public async Task<ActionResult> Create([DeckFound, DeckOwned]Guid deckID, string text)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var deck = await deckService.GetDeckAsync(deckID);
 
-            if (!deck.IsAuthorized(UserName))
-            {
-                return Unauthorized();
-            }
-            else
-            {
-                var priorities = GetFullPriorityList();
+            var priorities = GetFullPriorityList();
 
-                var card = new CreateCardViewModel
-                {
-                    DeckID = deck.ID,
-                    DeckTitle = deck.Title,
-                    Text = text,
-                    PriorityList = priorities,
-                    Type = CardType.Common,
-                    CreationMode = CreationMode.Add
-                };
+            var card = new CreateCardViewModel
+            {
+                DeckID = deck.ID,
+                DeckTitle = deck.Title,
+                Text = text,
+                PriorityList = priorities,
+                Type = CardType.Common,
+                CreationMode = CreationMode.Add
+            };
 
-                return View(card);
-            }
+            return View(card);
         }
 
         public async Task<ActionResult> CreateFromUrl(string url)
@@ -261,61 +234,46 @@ namespace ReadingListPlus.Web.Core.Controllers
                 var oldDeck = card.OldDeckID.HasValue ? await deckService.GetDeckAsync(card.OldDeckID.Value) : null;
                 var parentCard = card.ParentCardID.HasValue ? await cardService.GetCardAsync(card.ParentCardID.Value) : null;
 
-                if (!deck.IsAuthorized(UserName))
+                var priority = card.Priority.Value;
+
+                var newCard = new Card
                 {
-                    return Unauthorized();
+                    ID = Guid.NewGuid(),
+                    DeckID = card.DeckID,
+                    Title = card.Title,
+                    Text = card.Text,
+                    Url = card.Url,
+                    Type = card.Type,
+                    ParentCardID = card.ParentCardID,
+                };
+
+                schedulerService.PrepareForAdding(deck, deck.ConnectedCards, newCard, priority);
+
+                cardService.Cards.Add(newCard);
+
+                if (oldDeck != null)
+                {
+                    oldDeck.DependentDeckID = newCard.DeckID;
                 }
-                else if (oldDeck?.IsAuthorized(UserName) == false)
+
+                if (parentCard != null)
                 {
-                    return Unauthorized();
-                }
-                else if (parentCard?.IsAuthorized(UserName) == false)
-                {
-                    return Unauthorized();
-                }
-                else
-                {
-                    var priority = card.Priority.Value;
-
-                    var newCard = new Card
-                    {
-                        ID = Guid.NewGuid(),
-                        DeckID = card.DeckID,
-                        Title = card.Title,
-                        Text = card.Text,
-                        Url = card.Url,
-                        Type = card.Type,
-                        ParentCardID = card.ParentCardID,
-                    };
-
-                    schedulerService.PrepareForAdding(deck, deck.ConnectedCards, newCard, priority);
-
-                    cardService.Cards.Add(newCard);
-
-                    if (oldDeck != null)
-                    {
-                        oldDeck.DependentDeckID = newCard.DeckID;
-                    }
-
-                    if (parentCard != null)
-                    {
-                        await deckService.SaveChangesAsync();
-
-                        var textWithNewCardID = textConverterService.AddParameter(card.ParentCardUpdatedText, "selection", newCard.ID.ToString());
-                        var textWithoutSelection = textConverterService.ReplaceTag(textWithNewCardID, "selection", "extract");
-
-                        parentCard.Text = textWithoutSelection;
-                    }
-
-                    var user = deckService.Users.Single(u => u.UserName == UserName);
-                    user.LastDeck = newCard.DeckID;
-
                     await deckService.SaveChangesAsync();
 
-                    return card.CreationMode == CreationMode.Extract ?
-                        RedirectToDeckDetails(card.OldDeckID ?? newCard.DeckID) :
-                        RedirectToAction(nameof(Index), new { newCard.DeckID });
+                    var textWithNewCardID = textConverterService.AddParameter(card.ParentCardUpdatedText, "selection", newCard.ID.ToString());
+                    var textWithoutSelection = textConverterService.ReplaceTag(textWithNewCardID, "selection", "extract");
+
+                    parentCard.Text = textWithoutSelection;
                 }
+
+                var user = deckService.Users.Single(u => u.UserName == UserName);
+                user.LastDeck = newCard.DeckID;
+
+                await deckService.SaveChangesAsync();
+
+                return card.CreationMode == CreationMode.Extract ?
+                    RedirectToDeckDetails(card.OldDeckID ?? newCard.DeckID) :
+                    RedirectToAction(nameof(Index), new { newCard.DeckID });
             }
             else
             {
@@ -334,28 +292,17 @@ namespace ReadingListPlus.Web.Core.Controllers
         }
 
         // GET: Cards/Edit/5
-        public async Task<ActionResult> Edit(Guid? id)
+        public async Task<ActionResult> Edit([Required, CardFound, CardOwned]Guid? id)
         {
-            if (id == null)
+            if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ModelState);
             }
 
             var card = await cardService.GetCardAsync(id.Value);
 
-            if (card == null)
-            {
-                return NotFound();
-            }
-            else if (!card.IsAuthorized(UserName))
-            {
-                return Unauthorized();
-            }
-            else
-            {
-                var viewModel = MapCardToEditViewModel(card);
-                return View(viewModel);
-            }
+            var viewModel = MapCardToEditViewModel(card);
+            return View(viewModel);
         }
 
         // POST: Cards/Edit/5
@@ -367,21 +314,14 @@ namespace ReadingListPlus.Web.Core.Controllers
             {
                 var dbCard = await cardService.GetCardAsync(card.ID);
 
-                if (!dbCard.IsAuthorized(UserName))
-                {
-                    return Unauthorized();
-                }
-                else
-                {
-                    dbCard.Title = card.Title;
-                    dbCard.Text = card.Text;
-                    dbCard.Url = card.Url;
-                    dbCard.Type = card.Type;
+                dbCard.Title = card.Title;
+                dbCard.Text = card.Text;
+                dbCard.Url = card.Url;
+                dbCard.Type = card.Type;
 
-                    await deckService.SaveChangesAsync();
+                await deckService.SaveChangesAsync();
 
-                    return RedirectToDeckDetails(dbCard.DeckID);
-                }
+                return RedirectToDeckDetails(dbCard.DeckID);
             }
             else
             {
@@ -390,15 +330,11 @@ namespace ReadingListPlus.Web.Core.Controllers
         }
 
         #region Actions
-        public async Task<ActionResult> Postpone(Guid ID, string Priority)
+        private async Task<ActionResult> Postpone(Guid ID, string Priority)
         {
             var card = await cardService.GetCardAsync(ID);
 
-            if (!card.IsAuthorized(UserName))
-            {
-                return Unauthorized();
-            }
-            else if (card.Position != Constants.FirstCardPosition)
+            if (card.Position != Constants.FirstCardPosition)
             {
                 return RedirectToDeckDetails(card.DeckID);
             }
@@ -417,7 +353,7 @@ namespace ReadingListPlus.Web.Core.Controllers
             }
         }
 
-        public async Task<ActionResult> Highlight(Guid ID, string text)
+        private async Task<ActionResult> Highlight(Guid ID, string text)
         {
             if (!settings.HighlightEnabled)
             {
@@ -426,23 +362,16 @@ namespace ReadingListPlus.Web.Core.Controllers
 
             var card = await cardService.GetCardAsync(ID);
 
-            if (!card.IsAuthorized(UserName))
-            {
-                return Unauthorized();
-            }
-            else
-            {
-                var newText = textConverterService.AddHighlight(card.Text, text);
+            var newText = textConverterService.AddHighlight(card.Text, text);
 
-                card.Text = newText;
+            card.Text = newText;
 
-                await deckService.SaveChangesAsync();
+            await deckService.SaveChangesAsync();
 
-                return RedirectToDeckDetails(card.DeckID);
-            }
+            return RedirectToDeckDetails(card.DeckID);
         }
 
-        public async Task<ActionResult> Cloze(Guid ID, string text)
+        private async Task<ActionResult> Cloze([CardFound, CardOwned]Guid ID, string text)
         {
             if (!settings.ClozeEnabled)
             {
@@ -451,23 +380,16 @@ namespace ReadingListPlus.Web.Core.Controllers
 
             var card = await cardService.GetCardAsync(ID);
 
-            if (!card.IsAuthorized(UserName))
-            {
-                return Unauthorized();
-            }
-            else
-            {
-                var newText = textConverterService.AddCloze(card.Text, text);
+            var newText = textConverterService.AddCloze(card.Text, text);
 
-                card.Text = newText;
+            card.Text = newText;
 
-                await deckService.SaveChangesAsync();
+            await deckService.SaveChangesAsync();
 
-                return RedirectToDeckDetails(card.DeckID);
-            }
+            return RedirectToDeckDetails(card.DeckID);
         }
 
-        public async Task<ActionResult> Extract(Guid ID, string text)
+        private async Task<ActionResult> Extract(Guid ID, string text)
         {
             if (!settings.ExtractEnabled)
             {
@@ -476,58 +398,51 @@ namespace ReadingListPlus.Web.Core.Controllers
 
             var card = await cardService.GetCardAsync(ID);
 
-            if (!card.IsAuthorized(UserName))
+            ModelState.Clear();
+
+            var selection = textConverterService.GetSelection(text);
+
+            var priorities = GetShortPriorityList();
+
+            var newCard = new CreateCardViewModel
             {
-                return Unauthorized();
-            }
-            else
+                Url = card.Url,
+                ParentCardID = card.ID,
+                Text = selection,
+                ParentCardUpdatedText = text,
+                PriorityList = priorities,
+                Type = CardType.Extract,
+                CreationMode = CreationMode.Extract
+            };
+
+            if (settings.AllowDeckSelection)
             {
-                ModelState.Clear();
+                var userDecks = await deckService
+                    .GetUserDecks(UserName)
+                    .OrderBy(d => d.Title)
+                    .ToList();
 
-                var selection = textConverterService.GetSelection(text);
+                newCard.OldDeckID = card.DeckID;
 
-                var priorities = GetShortPriorityList();
-
-                var newCard = new CreateCardViewModel
+                if (card.Deck.DependentDeckID.HasValue)
                 {
-                    Url = card.Url,
-                    ParentCardID = card.ID,
-                    Text = selection,
-                    ParentCardUpdatedText = text,
-                    PriorityList = priorities,
-                    Type = CardType.Extract,
-                    CreationMode = CreationMode.Extract
-                };
-
-                if (settings.AllowDeckSelection)
-                {
-                    var userDecks = await deckService
-                        .GetUserDecks(UserName)
-                        .OrderBy(d => d.Title)
-                        .ToList();
-
-                    newCard.OldDeckID = card.DeckID;
-
-                    if (card.Deck.DependentDeckID.HasValue)
-                    {
-                        newCard.DeckID = card.Deck.DependentDeckID;
-                        newCard.DeckListItems = userDecks;
-                    }
-                    else
-                    {
-                        newCard.DeckListItems = userDecks;
-                    }
+                    newCard.DeckID = card.Deck.DependentDeckID;
+                    newCard.DeckListItems = userDecks;
                 }
                 else
                 {
-                    newCard.DeckID = card.DeckID;
+                    newCard.DeckListItems = userDecks;
                 }
-
-                return View("Create", newCard);
             }
+            else
+            {
+                newCard.DeckID = card.DeckID;
+            }
+
+            return View("Create", newCard);
         }
 
-        public async Task<ActionResult> Bookmark(Guid ID, string text)
+        private async Task<ActionResult> Bookmark(Guid ID, string text)
         {
             if (!settings.BookmarkEnabled)
             {
@@ -536,29 +451,22 @@ namespace ReadingListPlus.Web.Core.Controllers
 
             var card = await cardService.GetCardAsync(ID);
 
-            if (!card.IsAuthorized(UserName))
-            {
-                return Unauthorized();
-            }
-            else
-            {
-                var textWithoutBookmarks = textConverterService.DeleteTagByName(text, "bookmark");
+            var textWithoutBookmarks = textConverterService.DeleteTagByName(text, "bookmark");
 
-                var newText = textConverterService.ReplaceTag(textWithoutBookmarks, "selection", "bookmark");
+            var newText = textConverterService.ReplaceTag(textWithoutBookmarks, "selection", "bookmark");
 
-                card.Text = newText;
+            card.Text = newText;
 
-                await deckService.SaveChangesAsync();
+            await deckService.SaveChangesAsync();
 
-                var viewModel = MapCardToHtmlViewModel(card, NewRepetitionCardState.None);
+            var viewModel = MapCardToHtmlViewModel(card, NewRepetitionCardState.None);
 
-                viewModel.IsBookmarked = true;
+            viewModel.IsBookmarked = true;
 
-                return View("Details", viewModel);
-            }
+            return View("Details", viewModel);
         }
 
-        public async Task<ActionResult> DeleteRegion(Guid ID, string text)
+        private async Task<ActionResult> DeleteRegion(Guid ID, string text)
         {
             if (!settings.DropEnabled)
             {
@@ -567,23 +475,16 @@ namespace ReadingListPlus.Web.Core.Controllers
 
             var card = await cardService.GetCardAsync(ID);
 
-            if (!card.IsAuthorized(UserName))
-            {
-                return Unauthorized();
-            }
-            else
-            {
-                var newText = textConverterService.DeleteTagByText(card.Text, text);
+            var newText = textConverterService.DeleteTagByText(card.Text, text);
 
-                card.Text = newText;
+            card.Text = newText;
 
-                await deckService.SaveChangesAsync();
+            await deckService.SaveChangesAsync();
 
-                return RedirectToDeckDetails(card.DeckID);
-            }
+            return RedirectToDeckDetails(card.DeckID);
         }
 
-        public async Task<ActionResult> CancelRepetitionCardCreation(Guid ID, string text)
+        private async Task<ActionResult> CancelRepetitionCardCreation(Guid ID, string text)
         {
             if (!settings.RememberEnabled)
             {
@@ -592,23 +493,16 @@ namespace ReadingListPlus.Web.Core.Controllers
 
             var card = await cardService.GetCardAsync(ID);
 
-            if (!card.IsAuthorized(UserName))
-            {
-                return Unauthorized();
-            }
-            else
-            {
-                var newText = textConverterService.DeleteTagByName(card.Text, Constants.NewRepetitionCardLabel);
+            var newText = textConverterService.DeleteTagByName(card.Text, Constants.NewRepetitionCardLabel);
 
-                card.Text = newText;
+            card.Text = newText;
 
-                await deckService.SaveChangesAsync();
+            await deckService.SaveChangesAsync();
 
-                return RedirectToDeckDetails(card.DeckID);
-            }
+            return RedirectToDeckDetails(card.DeckID);
         }
 
-        public async Task<ActionResult> CompleteRepetitionCardCreation(Guid ID, string text)
+        private async Task<ActionResult> CompleteRepetitionCardCreation(Guid ID, string text)
         {
             if (!settings.RememberEnabled)
             {
@@ -617,76 +511,57 @@ namespace ReadingListPlus.Web.Core.Controllers
 
             var card = await cardService.GetCardAsync(ID);
 
-            if (!card.IsAuthorized(UserName))
-            {
-                return Unauthorized();
-            }
-            else
-            {
-                var newText = textConverterService.ReplaceTag(card.Text, Constants.NewRepetitionCardLabel, Constants.RepetitionCardLabel);
+            var newText = textConverterService.ReplaceTag(card.Text, Constants.NewRepetitionCardLabel, Constants.RepetitionCardLabel);
 
-                card.Text = newText;
+            card.Text = newText;
 
-                await deckService.SaveChangesAsync();
+            await deckService.SaveChangesAsync();
 
-                return RedirectToDeckDetails(card.DeckID);
-            }
+            return RedirectToDeckDetails(card.DeckID);
         }
         #endregion
 
         // GET: Cards/Delete/5
-        public async Task<ActionResult> Delete(Guid? id)
+        public async Task<ActionResult> Delete([Required, CardFound, CardOwned]Guid? id)
         {
-            if (id == null)
+            if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ModelState);
             }
 
             var card = await cardService.GetCardAsync(id.Value);
 
-            if (card == null)
-            {
-                return NotFound();
-            }
-            else if (!card.IsAuthorized(UserName))
-            {
-                return Unauthorized();
-            }
-            else
-            {
-                schedulerService.PrepareForDeletion(card.Deck.ConnectedCards, card);
+            schedulerService.PrepareForDeletion(card.Deck.ConnectedCards, card);
 
-                card.Position = Constants.DisconnectedCardPosition;
+            card.Position = Constants.DisconnectedCardPosition;
 
-                await deckService.SaveChangesAsync();
+            await deckService.SaveChangesAsync();
 
-                return RedirectToDeckDetails(card.DeckID);
-            }
+            return RedirectToDeckDetails(card.DeckID);
         }
 
         // POST: Cards/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(Guid id)
+        public async Task<ActionResult> DeleteConfirmed([CardFound, CardOwned]Guid id)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var card = await cardService.GetCardAsync(id);
 
-            if (!card.IsAuthorized(UserName))
-            {
-                return Unauthorized();
-            }
-            else if (card.Position != Constants.DisconnectedCardPosition)
+            if (card.Position != Constants.DisconnectedCardPosition)
             {
                 return BadRequest();
             }
-            else
-            {
-                cardService.Cards.Remove(card);
 
-                await deckService.SaveChangesAsync();
+            cardService.Cards.Remove(card);
 
-                return RedirectToDeckDetails(card.DeckID);
-            }
+            await deckService.SaveChangesAsync();
+
+            return RedirectToDeckDetails(card.DeckID);
         }
 
         [AllowAnonymous]
