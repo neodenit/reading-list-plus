@@ -7,6 +7,8 @@
 
         public const string BackupPolicy = "BackupPolicy";
         public const string BackupClaim = "BackupClaim";
+        public const string FixPolicy = "FixPolicy";
+        public const string FixClaim = "FixClaim";
 
         public const string GuidRegex = "[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}";
 

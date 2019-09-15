@@ -53,9 +53,15 @@ namespace ReadingListPlus.Web.Core
             });
 
             services.AddAuthorization(options =>
+            {
                 options.AddPolicy(
                     Constants.BackupPolicy,
-                    policy => policy.RequireClaim(Constants.BackupClaim, Constants.BackupClaim)));
+                    policy => policy.RequireClaim(Constants.BackupClaim, Constants.BackupClaim));
+
+                options.AddPolicy(
+                    Constants.FixPolicy,
+                    policy => policy.RequireClaim(Constants.FixClaim, Constants.FixClaim));                
+            });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 

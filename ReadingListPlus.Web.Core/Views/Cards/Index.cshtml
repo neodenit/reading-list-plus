@@ -1,4 +1,5 @@
-﻿@using ReadingListPlus.Common.App_GlobalResources
+﻿@using ReadingListPlus.Common
+@using ReadingListPlus.Common.App_GlobalResources
 @using ReadingListPlus.Web.Core.Controllers
 
 @model IEnumerable<ReadingListPlus.Services.ViewModels.CardViewModel>
@@ -22,9 +23,11 @@
         <th>
             @Html.DisplayNameFor(model => model.UserFriendlyPosition)
         </th>
+
         <th>
             @Html.DisplayNameFor(model => model.Text)
         </th>
+
         <th>
         </th>
     </tr>
@@ -35,27 +38,34 @@
             <td>
                 @Html.DisplayFor(modelItem => item.UserFriendlyPosition)
             </td>
+
             <td>
                 @item.Text
             </td>
+
             <td>
-                @{ 
+                @{
                     var id = $"menu{item.UserFriendlyPosition}";
                 }
 
                 <div class="mainPanel">
                     <a class="btn btn-default btn-block" data-toggle="collapse" href="#@(id)">&hellip;</a>
                 </div>
+
                 <div class="collapse" id="@(id)">
                     <a asp-action="@nameof(CardsController.Details)" asp-route-id="@item.ID" class="btn btn-default btn-block">Read</a>
                     <a asp-action="@nameof(CardsController.Edit)" asp-route-id="@item.ID" class="btn btn-default btn-block">Edit</a>
                     <a asp-action="@nameof(CardsController.Delete)" asp-route-id="@item.ID" class="btn btn-default btn-block">Hide</a>
                 </div>
-
             </td>
         </tr>
-
-
     }
 
 </table>
+
+@if (User.HasClaim(Constants.FixClaim, Constants.FixClaim))
+{
+    <hr />
+
+    <a asp-action="@nameof(CardsController.Fix)" asp-route-deckId="@Model.First().DeckID" class="btn btn-default">Fix</a>
+}

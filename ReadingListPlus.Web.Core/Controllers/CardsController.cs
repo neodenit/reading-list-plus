@@ -55,17 +55,21 @@ namespace ReadingListPlus.Web.Core.Controllers
             return View(deck.ConnectedCards.OrderBy(c => c.Position).Select(c => MapCardToViewModel(c)).ToList());
         }
 
-        public async Task<ActionResult> Fix(Guid DeckID)
+        [Authorize(Policy = Constants.FixPolicy)]
+        public async Task<ActionResult> Fix(Guid deckId)
         {
-            var deck = await deckService.GetDeckAsync(DeckID);
+            var deck = await deckService.GetDeckAsync(deckId);
 
             var cards = deck.ConnectedCards.OrderBy(item => item.Position).ToList();
 
-            Enumerable.Range(Constants.FirstCardPosition, cards.Count).Zip(cards, (i, item) => new { i = i, card = item }).ToList().ForEach(item => item.card.Position = item.i);
+            Enumerable.Range(Constants.FirstCardPosition, cards.Count)
+                .Zip(cards, (i, item) => new { i, card = item })
+                .ToList()
+                .ForEach(item => item.card.Position = item.i);
 
             await deckService.SaveChangesAsync();
 
-            return View("Index", cards.Select(c => MapCardToViewModel(c)));
+            return RedirectToAction(nameof(Index), new { deckId });
         }
 
         public async Task<ActionResult> Details([Required, CardFound, CardOwned]Guid? id)
