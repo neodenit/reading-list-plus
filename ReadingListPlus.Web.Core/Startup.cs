@@ -113,9 +113,14 @@ namespace ReadingListPlus.Web.Core
         {
             services.AddTransient<IDeckService, DeckService>();
             services.AddTransient<ICardService, CardService>();
-            services.AddTransient<IArticleExtractorService, CombinedExtractor>();
+
+            services.AddTransient<ILocalExtractorService, LocalExtractorService>();
+            services.AddTransient<IRemoteExtractorService, RemoteExtractorService>();
+            services.AddTransient<IArticleExtractorService, CombinedExtractorService>();
+
             services.AddTransient<ISchedulerService, SchedulerService>();
             services.AddTransient<ITextConverterService, TextConverterService>();
+            services.AddTransient<IRepetitionCardService, RepetitionCardService>();
         }
 
         private static void AddRepositories(IServiceCollection services)

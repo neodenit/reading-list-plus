@@ -2,7 +2,7 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace ReadingListPlus.Web.Core
+namespace ReadingListPlus.Services
 {
     public interface IHttpClientWrapper
     {

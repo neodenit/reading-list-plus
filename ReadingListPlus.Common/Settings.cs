@@ -1,4 +1,4 @@
-﻿namespace ReadingListPlus.Web.Core
+﻿namespace ReadingListPlus.Common
 {
     public class Settings : ISettings
     {

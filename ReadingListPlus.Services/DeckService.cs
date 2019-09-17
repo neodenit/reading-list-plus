@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using ReadingListPlus.Common;
 using ReadingListPlus.DataAccess.Models;
 using ReadingListPlus.Repositories;
 using ReadingListPlus.Services.ViewModels;
@@ -40,9 +41,7 @@ namespace ReadingListPlus.Services
             return viewModel;
         }
 
-        public Task<Deck> GetDeckAsync(Guid id) => deckRepository.GetDeckAsync(id);
-
-        public async Task<DeckViewModel> GetDeckViewModelAsync(Guid id)
+        public async Task<DeckViewModel> GetDeckAsync(Guid id)
         {
             Deck deck = await deckRepository.GetDeckAsync(id);
             var viewModel = new DeckViewModel {
@@ -155,6 +154,18 @@ namespace ReadingListPlus.Services
             return userRepository.SaveChangesAsync();
         }
 
-        public Task SaveChangesAsync() => deckRepository.SaveChangesAsync();
+        public async Task FixDeckAsync(Guid deckId)
+        {
+            Deck deck = await deckRepository.GetDeckAsync(deckId);
+
+            var cards = deck.ConnectedCards.OrderBy(item => item.Position).ToList();
+
+            Enumerable.Range(Constants.FirstCardPosition, cards.Count)
+                .Zip(cards, (i, item) => new { i, card = item })
+                .ToList()
+                .ForEach(item => item.card.Position = item.i);
+
+            await deckRepository.SaveChangesAsync();
+        }
     }
 }

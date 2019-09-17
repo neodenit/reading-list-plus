@@ -53,6 +53,7 @@ namespace ReadingListPlus.Web.Core.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         [Authorize(Policy = Constants.BackupPolicy)]
         public async Task<ActionResult> Import(ImportViewModel model)
         {
@@ -116,7 +117,7 @@ namespace ReadingListPlus.Web.Core.Controllers
                 return BadRequest(ModelState);
             }
 
-            DeckViewModel viewModel = await deckService.GetDeckViewModelAsync(id.Value);
+            DeckViewModel viewModel = await deckService.GetDeckAsync(id.Value);
             return View(viewModel);
         }
 
@@ -142,7 +143,7 @@ namespace ReadingListPlus.Web.Core.Controllers
                 return BadRequest(ModelState);
             }
 
-            DeckViewModel viewModel = await deckService.GetDeckViewModelAsync(id.Value);
+            DeckViewModel viewModel = await deckService.GetDeckAsync(id.Value);
             return View(viewModel);
         }
 

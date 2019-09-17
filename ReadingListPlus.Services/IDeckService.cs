@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using ReadingListPlus.DataAccess.Models;
 using ReadingListPlus.Services.ViewModels;
 
 namespace ReadingListPlus.Services
@@ -10,9 +9,7 @@ namespace ReadingListPlus.Services
     {
         IAsyncEnumerable<DeckViewModel> GetUserDecks(string userName);
 
-        Task<Deck> GetDeckAsync(Guid id);
-
-        Task<DeckViewModel> GetDeckViewModelAsync(Guid id);
+        Task<DeckViewModel> GetDeckAsync(Guid id);
 
         Task<string> GetExportDataAsync();
 
@@ -30,6 +27,6 @@ namespace ReadingListPlus.Services
 
         Task SetUserLastDeckAsync(string userName, Guid deckId);
 
-        Task SaveChangesAsync();
+        Task FixDeckAsync(Guid deckId);
     }
 }

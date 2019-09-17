@@ -7,11 +7,12 @@ namespace ReadingListPlus.Repositories
 {
     public interface IDeckRepository
     {
-        Task<Deck> GetDeckAsync(Guid id);
 
         IAsyncEnumerable<Deck> GetAllDecks();
 
         IAsyncEnumerable<Deck> GetUserDecks(string userName);
+
+        Task<Deck> GetDeckAsync(Guid id);
 
         Deck GetDeck(Guid id);
 
