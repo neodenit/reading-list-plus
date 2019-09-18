@@ -168,7 +168,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
                 return card.CreationMode == CreationMode.Extract ?
                     RedirectToAction(nameof(DecksController.Details), DecksController.Name, new { id = card.OldDeckID ?? newCardDeckId }):
-                    RedirectToAction(nameof(Index), new { newCardDeckId });
+                    RedirectToAction(nameof(Index), new { DeckId = newCardDeckId });
             }
             else
             {
