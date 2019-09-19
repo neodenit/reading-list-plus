@@ -10,14 +10,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{DA5D5C
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadingListPlus.Tests", "ReadingListPlus.Tests\ReadingListPlus.Tests.csproj", "{80D7D3BB-D189-46FF-9E80-F53B5D15704C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadingListPlus", "ReadingListPlus\ReadingListPlus.csproj", "{2F5FAA65-D83A-47D4-ABEA-F2693DAE25A3}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadingListPlus.Web", "ReadingListPlus.Web\ReadingListPlus.Web.csproj", "{1C82468E-77F8-44FA-BE30-DC56BE50B3CF}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadingListPlus.Persistence", "ReadingListPlus.Persistence\ReadingListPlus.Persistence.csproj", "{357B2001-C26E-4CB7-AB4A-344F9DF27738}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadingListPlus.Services", "ReadingListPlus.Services\ReadingListPlus.Services.csproj", "{E28DAA11-0CFF-4843-BA28-54C4D3E8757F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadingListPlus.Repositories", "ReadingListPlus.Repositories\ReadingListPlus.Repositories.csproj", "{0A6289C5-7FC5-4850-B1F7-44A30E7E1B90}"
@@ -26,7 +18,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadingListPlus.Web.Core", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadingListPlus.DataAccess", "ReadingListPlus.DataAccess\ReadingListPlus.DataAccess.csproj", "{D9184BC3-1AC7-4D71-91A5-11E3D7EFDF3E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadingListPlus.Common", "ReadingListPlus.Common\ReadingListPlus.Common.csproj", "{00B7CB7D-1AAB-44A3-8F33-A818FCBBDE43}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadingListPlus.Common", "ReadingListPlus.Common\ReadingListPlus.Common.csproj", "{00B7CB7D-1AAB-44A3-8F33-A818FCBBDE43}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,22 +26,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{80D7D3BB-D189-46FF-9E80-F53B5D15704C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{80D7D3BB-D189-46FF-9E80-F53B5D15704C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{80D7D3BB-D189-46FF-9E80-F53B5D15704C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{80D7D3BB-D189-46FF-9E80-F53B5D15704C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2F5FAA65-D83A-47D4-ABEA-F2693DAE25A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2F5FAA65-D83A-47D4-ABEA-F2693DAE25A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2F5FAA65-D83A-47D4-ABEA-F2693DAE25A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2F5FAA65-D83A-47D4-ABEA-F2693DAE25A3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1C82468E-77F8-44FA-BE30-DC56BE50B3CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1C82468E-77F8-44FA-BE30-DC56BE50B3CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1C82468E-77F8-44FA-BE30-DC56BE50B3CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1C82468E-77F8-44FA-BE30-DC56BE50B3CF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{357B2001-C26E-4CB7-AB4A-344F9DF27738}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{357B2001-C26E-4CB7-AB4A-344F9DF27738}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{357B2001-C26E-4CB7-AB4A-344F9DF27738}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{357B2001-C26E-4CB7-AB4A-344F9DF27738}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E28DAA11-0CFF-4843-BA28-54C4D3E8757F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E28DAA11-0CFF-4843-BA28-54C4D3E8757F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E28DAA11-0CFF-4843-BA28-54C4D3E8757F}.Release|Any CPU.ActiveCfg = Release|Any CPU
