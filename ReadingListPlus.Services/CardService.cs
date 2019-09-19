@@ -421,13 +421,13 @@ namespace ReadingListPlus.Services
 
             var repetitionCardUrlTemplate = new Uri(new Uri(settings.SpacedRepetionServer), $"Cards/Edit/{textConverterService.GetIdParameter(card.Text, Constants.RepetitionCardLabel)}").AbsoluteUri;
 
-            var newRepetitionCardUrlTemplate = newRepetitionCardState == NewRepetitionCardState.Done ?
-                new Uri(new Uri(settings.SpacedRepetionServer), $"Cards/Edit/{textConverterService.GetIdParameter(card.Text, Constants.NewRepetitionCardLabel)}").AbsoluteUri :
-                new Uri(new Uri(settings.SpacedRepetionServer), $"Cards/Create?readingCardId={card.ID}&repetitionCardId={textConverterService.GetIdParameter(card.Text, Constants.NewRepetitionCardLabel)}&text={Uri.EscapeDataString(textConverterService.GetNewRepetitionCardText(card.Text))}").AbsoluteUri;
+            var newRepetitionCardUrlTemplate = newRepetitionCardState == NewRepetitionCardState.Done
+                ? new Uri(new Uri(settings.SpacedRepetionServer), $"Cards/Edit/{textConverterService.GetIdParameter(card.Text, Constants.NewRepetitionCardLabel)}").AbsoluteUri
+                : new Uri(new Uri(settings.SpacedRepetionServer), $"Cards/Create?readingCardId={card.ID}&repetitionCardId={textConverterService.GetIdParameter(card.Text, Constants.NewRepetitionCardLabel)}&text={Uri.EscapeDataString(textConverterService.GetNewRepetitionCardText(card.Text))}").AbsoluteUri;
 
-            var newRepetitionCardClass = newRepetitionCardState == NewRepetitionCardState.Done ?
-                Constants.RepetitionCardLabel :
-                Constants.NewRepetitionCardLabel;
+            var newRepetitionCardClass = newRepetitionCardState == NewRepetitionCardState.Done
+                ? Constants.RepetitionCardLabel
+                : Constants.NewRepetitionCardLabel;
 
             var model = new CardViewModel
             {

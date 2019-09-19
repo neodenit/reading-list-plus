@@ -53,7 +53,7 @@ namespace ReadingListPlus.Web.Core.Controllers
         public async Task<ActionResult> Fix(Guid deckId)
         {
             await deckService.FixDeckAsync(deckId);
-            return RedirectToAction(nameof(Index), new { deckId });
+            return RedirectToAction(nameof(Index), new { DeckId = deckId });
         }
 
         public async Task<ActionResult> Details([Required, CardFound, CardOwned]Guid? id)
@@ -89,23 +89,23 @@ namespace ReadingListPlus.Web.Core.Controllers
                     ModelState.Clear();
                     return View(nameof(Create), await cardService.ExtractAsync(card.ID, card.Selection, UserName));
                 case "Cloze":
-                    return RedirectToAction(nameof(Details), new { id = await cardService.ClozeAsync(card.ID, card.Selection) });
+                    return RedirectToAction(nameof(Details), new { Id = await cardService.ClozeAsync(card.ID, card.Selection) });
                 case "Highlight":
-                    return RedirectToAction(nameof(Details), new { id = await cardService.HighlightAsync(card.ID, card.Selection) });
+                    return RedirectToAction(nameof(Details), new { Id = await cardService.HighlightAsync(card.ID, card.Selection) });
                 case "Bookmark":
                     return View(nameof(Details), await cardService.BookmarkAsync(card.ID, card.Selection));
                 case "Remember":
                     Uri uri = await cardService.RememberAsync(card.ID, card.Selection);
                     return Redirect(uri.AbsoluteUri);
                 case "DeleteRegion":
-                    return RedirectToAction(nameof(Details), new { id = await cardService.DeleteRegionAsync(card.ID, card.Selection) });
+                    return RedirectToAction(nameof(Details), new { Id = await cardService.DeleteRegionAsync(card.ID, card.Selection) });
                 case "CancelRepetitionCardCreation":
-                    return RedirectToAction(nameof(Details), new { id = await cardService.CancelRepetitionCardCreationAsync(card.ID) });
+                    return RedirectToAction(nameof(Details), new { Id = await cardService.CancelRepetitionCardCreationAsync(card.ID) });
                 case "CompleteRepetitionCardCreation":
-                    return RedirectToAction(nameof(Details), new { id = await cardService.CompleteRepetitionCardCreationAsync(card.ID) });
+                    return RedirectToAction(nameof(Details), new { Id = await cardService.CompleteRepetitionCardCreationAsync(card.ID) });
                 case "Postpone":
                     CardViewModel cardViewModel = await cardService.PostponeAsync(card.ID, card.Priority.Value);
-                    return RedirectToAction(nameof(DecksController.Details), DecksController.Name, new { id = cardViewModel.DeckID });
+                    return RedirectToAction(nameof(DecksController.Details), DecksController.Name, new { Id = cardViewModel.DeckID });
                 default:
                     return BadRequest();
             }
@@ -166,22 +166,22 @@ namespace ReadingListPlus.Web.Core.Controllers
 
                 await deckService.SetUserLastDeckAsync(UserName, newCardDeckId);
 
-                return card.CreationMode == CreationMode.Extract ?
-                    RedirectToAction(nameof(DecksController.Details), DecksController.Name, new { id = card.OldDeckID ?? newCardDeckId }):
-                    RedirectToAction(nameof(Index), new { DeckId = newCardDeckId });
+                return card.CreationMode == CreationMode.Extract
+                    ? RedirectToAction(nameof(DecksController.Details), DecksController.Name, new { Id = card.OldDeckID ?? newCardDeckId })
+                    : RedirectToAction(nameof(Index), new { DeckId = newCardDeckId });
             }
             else
             {
-                card.DeckListItems = settings.AllowDeckSelection && card.CreationMode != CreationMode.Add ?
-                        await deckService
+                card.DeckListItems = settings.AllowDeckSelection && card.CreationMode != CreationMode.Add
+                    ? await deckService
                             .GetUserDecks(UserName)
                             .OrderBy(d => d.Title)
-                            .ToList() :
-                        null;
+                            .ToList()
+                    : null;
 
-                card.PriorityList = card.CreationMode == CreationMode.Extract ?
-                    cardService.GetShortPriorityList() :
-                    cardService.GetFullPriorityList();
+                card.PriorityList = card.CreationMode == CreationMode.Extract
+                    ? cardService.GetShortPriorityList()
+                    : cardService.GetFullPriorityList();
 
                 return View(card);
             }
@@ -205,7 +205,7 @@ namespace ReadingListPlus.Web.Core.Controllers
             if (ModelState.IsValid)
             {
                 CardViewModel viewModel = await cardService.UpdateAsync(card);
-                return RedirectToAction(nameof(DecksController.Details), DecksController.Name, new { id = viewModel.DeckID });
+                return RedirectToAction(nameof(DecksController.Details), DecksController.Name, new { Id = viewModel.DeckID });
             }
             else
             {
@@ -222,7 +222,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
             CardViewModel card = await cardService.HideCardAsync(id.Value);
 
-            return RedirectToAction(nameof(DecksController.Details), DecksController.Name, new { id = card.DeckID });
+            return RedirectToAction(nameof(DecksController.Details), DecksController.Name, new { Id = card.DeckID });
         }
 
         [HttpPost, ActionName(nameof(Delete))]
