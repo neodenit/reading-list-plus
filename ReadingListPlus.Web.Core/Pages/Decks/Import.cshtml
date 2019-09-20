@@ -1,0 +1,23 @@
+﻿@page
+@model ImportModel
+
+@{
+    ViewBag.Title = "Backup/Restore";
+}
+
+@section scripts {
+    <script src="~/js/App/Import.js"></script>
+}
+
+<h2>Backup</h2>
+
+<p>
+    <a asp-controller="@DecksController.Name" asp-action="@nameof(DecksController.Export)" asp-route-id="@($"KM-BACKUP-{DateTime.UtcNow.ToString("yyyy-MM-dd-hh-mm-ss")}")">Backup Knowledge Base</a>
+</p>
+
+<h2>Restore</h2>
+
+<form method="post" enctype="multipart/form-data">
+    <input asp-for="ImportFile" accept=".json" />
+    <span asp-validation-for="ImportFile" />
+</form>

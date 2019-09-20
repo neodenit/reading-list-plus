@@ -1,0 +1,17 @@
+﻿@page
+@model DeckDeleteModel
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete @Resources.ItemCollection.ToLower() "@Html.DisplayFor(model => model.Deck.Title)"?</h3>
+
+<form method="post">
+    <input type="hidden" asp-for="Deck.ID" />
+    <input type="hidden" asp-for="Deck.Title" />
+    <input type="submit" value="Delete" class="btn btn-danger" />
+    <a asp-page="@DeckIndexModel.PageName" class="btn btn-default">Back</a>
+</form>

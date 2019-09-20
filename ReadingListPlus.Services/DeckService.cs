@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using ReadingListPlus.Common;
 using ReadingListPlus.DataAccess.Models;
@@ -74,9 +75,9 @@ namespace ReadingListPlus.Services
             return result;
         }
 
-        public async Task ImportAsync(ImportViewModel model, bool resetKeysOnImport)
+        public async Task ImportAsync(IFormFile file, bool resetKeysOnImport)
         {
-            using (var streamReader = new StreamReader(model.File.OpenReadStream()))
+            using (var streamReader = new StreamReader(file.OpenReadStream()))
             {
                 var jsonSerializer = new JsonSerializer();
                 var jsonReader = new JsonTextReader(streamReader);

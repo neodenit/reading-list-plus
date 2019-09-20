@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using ReadingListPlus.Services.ViewModels;
 
 namespace ReadingListPlus.Services
@@ -13,7 +14,7 @@ namespace ReadingListPlus.Services
 
         Task<string> GetExportDataAsync();
 
-        Task ImportAsync(ImportViewModel model, bool resetKeysOnImport);
+        Task ImportAsync(IFormFile file, bool resetKeysOnImport);
 
         Task<Guid> GetFirstCardIdOrDefaultAsync(Guid deckId);
 

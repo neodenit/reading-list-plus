@@ -1,0 +1,55 @@
+﻿@page
+@model DeckIndexModel
+
+@using ReadingListPlus.Common
+@using ReadingListPlus.Common.App_GlobalResources
+
+
+@{
+    ViewBag.Title = Resources.ItemCollections;
+}
+
+<h2>@Resources.ItemCollections</h2>
+
+<div class="mainPanel">
+    <a asp-page="@DeckCreateModel.PageName" class="btn btn-primary">Add New</a>
+</div>
+
+<table class="table decks-table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Decks.First().Title)
+        </th>
+
+        <th>
+            @Resources.Items
+        </th>
+
+        <th>
+        </th>
+    </tr>
+
+    @foreach (var item in Model.Decks)
+    {
+        <tr>
+            <td>
+                <a asp-controller="@DecksController.Name" asp-action="@nameof(DecksController.Details)" asp-route-id="@item.ID">@item.Title</a>
+            </td>
+
+            <td>
+                @item.CardCount
+            </td>
+
+            <td>
+                <a asp-page="@DeckEditModel.PageName" asp-route-id="@item.ID" class="btn btn-default btn-block">Options</a>
+            </td>
+        </tr>
+    }
+</table>
+
+@if (User.HasClaim(Constants.BackupClaim, Constants.BackupClaim))
+{
+    <hr />
+
+    <a asp-page="@ImportModel.PageName" class="btn btn-default">Backup/Restore</a>
+}

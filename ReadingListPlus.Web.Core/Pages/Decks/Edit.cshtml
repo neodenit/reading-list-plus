@@ -1,7 +1,7 @@
-﻿@using ReadingListPlus.Common.App_GlobalResources
-@using ReadingListPlus.Web.Core.Controllers
+﻿@page
+@model DeckEditModel
 
-@model ReadingListPlus.Services.ViewModels.DeckViewModel
+@using ReadingListPlus.Common.App_GlobalResources
 
 @{
     ViewBag.Title = "Edit";
@@ -17,28 +17,28 @@
 
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-        <input type="hidden" asp-for="ID" />
+        <input type="hidden" asp-for="Deck.ID" />
 
         <div class="form-group row">
-            <label asp-for="Title" class="control-label col-md-2"></label>
+            <label asp-for="Deck.Title" class="control-label col-md-2"></label>
             <div class="col-md-8">
-                <input asp-for="Title" class="form-control focused" />
-                <span asp-validation-for="Title" class="text-danger"></span>
+                <input asp-for="Deck.Title" class="form-control focused" />
+                <span asp-validation-for="Deck.Title" class="text-danger"></span>
             </div>
         </div>
-        
+
         <div class="form-group row">
             <div class="col-md-offset-2 col-md-2">
                 <input type="submit" value="Save" class="btn btn-success btn-block" />
             </div>
             <div class="col-md-offset-4 col-md-2">
-                <a asp-action="@nameof(DecksController.Delete)" asp-route-id="@Model.ID" class="btn btn-danger btn-block">Delete</a>
+                <a asp-page="@DeckDeleteModel.PageName" asp-route-id="@Model.Deck.ID" class="btn btn-danger btn-block">Delete</a>
             </div>
         </div>
 
         <div class="form-group row">
             <div class="col-md-offset-2 col-md-2">
-                <a asp-action="@nameof(DecksController.Index)" class="btn btn-default btn-block">Back</a>
+                <a asp-page="@DeckIndexModel.PageName" class="btn btn-default btn-block">Back</a>
             </div>
         </div>
     </div>

@@ -12,6 +12,7 @@ using ReadingListPlus.Services;
 using ReadingListPlus.Services.ArticleExtractorService;
 using ReadingListPlus.Services.Attributes;
 using ReadingListPlus.Services.ViewModels;
+using ReadingListPlus.Web.Core.Pages.Decks;
 
 namespace ReadingListPlus.Web.Core.Controllers
 {
@@ -236,7 +237,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
             await cardService.RemoveAsync(id);
 
-            return RedirectToAction(nameof(DecksController.Index), DecksController.Name);
+            return RedirectToPage(DeckIndexModel.PageName);
         }
 
         [AllowAnonymous]

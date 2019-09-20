@@ -1,5 +1,5 @@
 ﻿$(function () {
-    var fileElement = $('#File');
+    var fileElement = $('input[type="file"]');
 
     fileElement.change(function () {
         fileElement.closest('form').submit();
