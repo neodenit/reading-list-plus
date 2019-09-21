@@ -9,7 +9,7 @@
 }
 
 <div class="topPanel">
-    <a asp-controller="@DecksController.Name" asp-action="@nameof(CardsController.Details)" asp-route-id="@Model.First().DeckID" class="btn btn-default">Back</a>
+    <a asp-page="@DeckDetailsModel.PageName" asp-route-id="@Model.First().DeckID" class="btn btn-default">Back</a>
 </div>
 
 <h2>@Model.First().DeckTitle</h2>

@@ -106,7 +106,7 @@ namespace ReadingListPlus.Web.Core.Controllers
                     return RedirectToAction(nameof(Details), new { Id = await cardService.CompleteRepetitionCardCreationAsync(card.ID) });
                 case "Postpone":
                     CardViewModel cardViewModel = await cardService.PostponeAsync(card.ID, card.Priority.Value);
-                    return RedirectToAction(nameof(DecksController.Details), DecksController.Name, new { Id = cardViewModel.DeckID });
+                    return RedirectToPage(DeckDetailsModel.PageName, new { Id = cardViewModel.DeckID });
                 default:
                     return BadRequest();
             }
@@ -168,7 +168,7 @@ namespace ReadingListPlus.Web.Core.Controllers
                 await deckService.SetUserLastDeckAsync(UserName, newCardDeckId);
 
                 return card.CreationMode == CreationMode.Extract
-                    ? RedirectToAction(nameof(DecksController.Details), DecksController.Name, new { Id = card.OldDeckID ?? newCardDeckId })
+                    ? RedirectToPage(DeckDetailsModel.PageName, new { Id = card.OldDeckID ?? newCardDeckId }) as ActionResult
                     : RedirectToAction(nameof(Index), new { DeckId = newCardDeckId });
             }
             else
@@ -206,7 +206,7 @@ namespace ReadingListPlus.Web.Core.Controllers
             if (ModelState.IsValid)
             {
                 CardViewModel viewModel = await cardService.UpdateAsync(card);
-                return RedirectToAction(nameof(DecksController.Details), DecksController.Name, new { Id = viewModel.DeckID });
+                return RedirectToPage(DeckDetailsModel.PageName, new { Id = viewModel.DeckID });
             }
             else
             {
@@ -223,7 +223,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
             CardViewModel card = await cardService.HideCardAsync(id.Value);
 
-            return RedirectToAction(nameof(DecksController.Details), DecksController.Name, new { Id = card.DeckID });
+            return RedirectToPage(DeckDetailsModel.PageName, new { Id = card.DeckID });
         }
 
         [HttpPost, ActionName(nameof(Delete))]

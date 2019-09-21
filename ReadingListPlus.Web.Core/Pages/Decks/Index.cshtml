@@ -33,7 +33,7 @@
     {
         <tr>
             <td>
-                <a asp-controller="@DecksController.Name" asp-action="@nameof(DecksController.Details)" asp-route-id="@item.ID">@item.Title</a>
+                <a asp-page="@DeckDetailsModel.PageName" asp-route-id="@item.ID">@item.Title</a>
             </td>
 
             <td>

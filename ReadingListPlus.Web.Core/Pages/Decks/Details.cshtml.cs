@@ -1,38 +1,26 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Net.Mime;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using ReadingListPlus.Common;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using ReadingListPlus.Services;
 using ReadingListPlus.Services.Attributes;
+using ReadingListPlus.Web.Core.Controllers;
 
-namespace ReadingListPlus.Web.Core.Controllers
+namespace ReadingListPlus.Web.Core.Pages.Decks
 {
-    [Authorize]
-    public class DecksController : Controller
+    public class DeckDetailsModel : PageModel
     {
-        public const string Name = "Decks";
+        public const string PageName = "/Decks/Details";
 
         private readonly IDeckService deckService;
 
-        public DecksController(IDeckService deckService)
+        public DeckDetailsModel(IDeckService deckService)
         {
             this.deckService = deckService ?? throw new ArgumentNullException(nameof(deckService));
         }
 
-        [Authorize(Policy = Constants.BackupPolicy)]
-        public async Task<ActionResult> Export(string id)
-        {
-            _ = id;
-
-            string exportData = await deckService.GetExportDataAsync();
-            return Content(exportData, MediaTypeNames.Application.Json);
-        }
-
-        public async Task<ActionResult> Details([Required, DeckFound, DeckOwned]Guid? id)
+        public async Task<ActionResult> OnGetAsync([Required, DeckFound, DeckOwned]Guid? id)
         {
             if (!ModelState.IsValid)
             {
@@ -44,6 +32,7 @@ namespace ReadingListPlus.Web.Core.Controllers
             return cardId == Guid.Empty
                 ? RedirectToAction(nameof(CardsController.Create), CardsController.Name, new { DeckId = id })
                 : RedirectToAction(nameof(CardsController.Details), CardsController.Name, new { Id = cardId });
+
         }
     }
 }
