@@ -1,0 +1,13 @@
+﻿@page
+
+@model HomeIndexModel
+
+@{
+    ViewData[Constants.ViewTitle] = Resources.ApplicationName;
+}
+
+<div class="jumbotron">
+    <h1>@ViewData[Constants.ViewTitle]</h1>
+    <p class="lead">Please <a asp-area="Identity" asp-page="/Account/Login">log in</a>.</p>
+</div>
+

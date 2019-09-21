@@ -4,6 +4,8 @@
     {
         string SpacedRepetionServer { get; }
 
+        string ContactEmail { get; }
+
         bool AllowDeckSelection { get; }
 
         bool ResetKeysOnImport { get; }

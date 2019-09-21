@@ -19,5 +19,8 @@
         public const string NewRepetitionCardLabel = "newRepetition";
         public const string RepetitionCardLabel = "repetition";
         public const string SelectionLabel = "selection";
+
+        public const string ViewTitle = "Title";
+        public const string ViewMessage = "Message";
     }
 }

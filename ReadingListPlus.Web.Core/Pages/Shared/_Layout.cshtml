@@ -1,5 +1,5 @@
 ﻿@using ReadingListPlus.Common.App_GlobalResources
-@using ReadingListPlus.Web.Core.Controllers
+@using ReadingListPlus.Web.Core.Pages.Home
 <!DOCTYPE html>
 <html>
 <head>
@@ -28,13 +28,13 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-controller="@HomeController.Name" asp-action="@nameof(HomeController.Index)" class="navbar-brand">@Resources.ApplicationName</a>
+                <a asp-page="@HomeIndexModel.PageName" class="navbar-brand">@Resources.ApplicationName</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-controller="@HomeController.Name" asp-action="@nameof(HomeController.Index)">Home</a></li>
-                    <li><a asp-controller="@HomeController.Name" asp-action="@nameof(HomeController.About)">About</a></li>
-                    <li><a asp-controller="@HomeController.Name" asp-action="@nameof(HomeController.Contact)">Contact</a></li>
+                    <li><a asp-page="@HomeIndexModel.PageName">Home</a></li>
+                    <li><a asp-page="@AboutModel.PageName">About</a></li>
+                    <li><a asp-page="@ContactModel.PageName">Contact</a></li>
                 </ul>
                 <partial name="_LoginPartial" />
             </div>
