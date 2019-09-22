@@ -12,6 +12,7 @@ using ReadingListPlus.Services;
 using ReadingListPlus.Services.ArticleExtractorService;
 using ReadingListPlus.Services.Attributes;
 using ReadingListPlus.Services.ViewModels;
+using ReadingListPlus.Web.Core.Pages.Cards;
 using ReadingListPlus.Web.Core.Pages.Decks;
 
 namespace ReadingListPlus.Web.Core.Controllers
@@ -21,7 +22,6 @@ namespace ReadingListPlus.Web.Core.Controllers
     {
         public const string Name = "Cards";
 
-        private readonly ISettings settings;
         private readonly IDeckService deckService;
         private readonly ICardService cardService;
         private readonly IArticleExtractorService articleExtractor;
@@ -29,111 +29,19 @@ namespace ReadingListPlus.Web.Core.Controllers
 
         private string UserName => User.Identity.Name;
 
-        public CardsController(ISettings settings, IDeckService deckService, ICardService cardService, IArticleExtractorService articleExtractor, IRepetitionCardService repetitionCardService)
+        public CardsController(IDeckService deckService, ICardService cardService, IArticleExtractorService articleExtractor, IRepetitionCardService repetitionCardService)
         {
-            this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
             this.deckService = deckService ?? throw new ArgumentNullException(nameof(deckService));
             this.cardService = cardService ?? throw new ArgumentNullException(nameof(cardService));
             this.articleExtractor = articleExtractor ?? throw new ArgumentException(nameof(articleExtractor));
             this.repetitionCardService = repetitionCardService ?? throw new ArgumentNullException(nameof(repetitionCardService));
         }
 
-        public async Task<ActionResult> Index([Required, DeckFound, DeckOwned]Guid? deckId)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            IEnumerable<CardViewModel> cards = await cardService.GetConnectedCards(deckId.Value);
-            var orderedCards = cards.OrderBy(c => c.Position);
-            return View(orderedCards);
-        }
-
         [Authorize(Policy = Constants.FixPolicy)]
         public async Task<ActionResult> Fix(Guid deckId)
         {
             await deckService.FixDeckAsync(deckId);
-            return RedirectToAction(nameof(Index), new { DeckId = deckId });
-        }
-
-        public async Task<ActionResult> Details([Required, CardFound, CardOwned]Guid? id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            CardViewModel viewModel = await cardService.GetCardForReadingAsync(id.Value);
-            return View(viewModel);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Details([Bind("ID", "NextAction", "Selection", "Priority")] CardViewModel card)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            bool isActionValid = await repetitionCardService.IsActionValidAsync(card.ID, card.NextAction);
-
-            if (!isActionValid)
-            {
-                return BadRequest();
-            }
-
-            switch (card.NextAction)
-            {
-                case "Extract":
-                    ModelState.Clear();
-                    return View(nameof(Create), await cardService.ExtractAsync(card.ID, card.Selection, UserName));
-                case "Cloze":
-                    return RedirectToAction(nameof(Details), new { Id = await cardService.ClozeAsync(card.ID, card.Selection) });
-                case "Highlight":
-                    return RedirectToAction(nameof(Details), new { Id = await cardService.HighlightAsync(card.ID, card.Selection) });
-                case "Bookmark":
-                    return View(nameof(Details), await cardService.BookmarkAsync(card.ID, card.Selection));
-                case "Remember":
-                    Uri uri = await cardService.RememberAsync(card.ID, card.Selection);
-                    return Redirect(uri.AbsoluteUri);
-                case "DeleteRegion":
-                    return RedirectToAction(nameof(Details), new { Id = await cardService.DeleteRegionAsync(card.ID, card.Selection) });
-                case "CancelRepetitionCardCreation":
-                    return RedirectToAction(nameof(Details), new { Id = await cardService.CancelRepetitionCardCreationAsync(card.ID) });
-                case "CompleteRepetitionCardCreation":
-                    return RedirectToAction(nameof(Details), new { Id = await cardService.CompleteRepetitionCardCreationAsync(card.ID) });
-                case "Postpone":
-                    CardViewModel cardViewModel = await cardService.PostponeAsync(card.ID, card.Priority.Value);
-                    return RedirectToPage(DeckDetailsModel.PageName, new { Id = cardViewModel.DeckID });
-                default:
-                    return BadRequest();
-            }
-        }
-
-        public async Task<ActionResult> Create([DeckFound, DeckOwned]Guid deckID, string text)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            DeckViewModel deck = await deckService.GetDeckAsync(deckID);
-
-            IEnumerable<KeyValuePair<string, string>> priorities = cardService.GetFullPriorityList();
-
-            var viewModel = new CreateCardViewModel
-            {
-                DeckID = deck.ID,
-                DeckTitle = deck.Title,
-                Text = text,
-                PriorityList = priorities,
-                Type = CardType.Common,
-                CreationMode = CreationMode.Add
-            };
-
-            return View(viewModel);
+            return RedirectToPage(CardIndexModel.PageName, new { DeckId = deckId });
         }
 
         public async Task<ActionResult> CreateFromUrl(string url)
@@ -154,67 +62,11 @@ namespace ReadingListPlus.Web.Core.Controllers
                 CreationMode = CreationMode.FromUrl
             };
 
-            return View(nameof(Create), viewModel);
+            TempData[nameof(CreateCardViewModel)] = JsonConvert.SerializeObject(viewModel);
+            return RedirectToPage(CardCreateModel.PageName);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind("DeckID", "DeckTitle", "OldDeckID", "Title", "Text", "Url", "Priority", "Type", "ParentCardID", "ParentCardUpdatedText", "CreationMode")] CreateCardViewModel card)
-        {
-            if (ModelState.IsValid)
-            {
-                Guid newCardDeckId = await cardService.AddAsync(card);
-
-                await deckService.SetUserLastDeckAsync(UserName, newCardDeckId);
-
-                return card.CreationMode == CreationMode.Extract
-                    ? RedirectToPage(DeckDetailsModel.PageName, new { Id = card.OldDeckID ?? newCardDeckId }) as ActionResult
-                    : RedirectToAction(nameof(Index), new { DeckId = newCardDeckId });
-            }
-            else
-            {
-                card.DeckListItems = settings.AllowDeckSelection && card.CreationMode != CreationMode.Add
-                    ? await deckService
-                            .GetUserDecks(UserName)
-                            .OrderBy(d => d.Title)
-                            .ToList()
-                    : null;
-
-                card.PriorityList = card.CreationMode == CreationMode.Extract
-                    ? cardService.GetShortPriorityList()
-                    : cardService.GetFullPriorityList();
-
-                return View(card);
-            }
-        }
-
-        public async Task<ActionResult> Edit([Required, CardFound, CardOwned]Guid? id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            EditCardViewModel viewModel = await cardService.GetCardForEditingAsync(id.Value);
-            return View(viewModel);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind("ID", "Title", "Text", "Url", "Type")] EditCardViewModel card)
-        {
-            if (ModelState.IsValid)
-            {
-                CardViewModel viewModel = await cardService.UpdateAsync(card);
-                return RedirectToPage(DeckDetailsModel.PageName, new { Id = viewModel.DeckID });
-            }
-            else
-            {
-                return View(card);
-            }
-        }
-
-        public async Task<ActionResult> Delete([Required, CardFound, CardOwned]Guid? id)
+        public async Task<ActionResult> Hide([Required, CardFound, CardOwned]Guid? id)
         {
             if (!ModelState.IsValid)
             {
@@ -224,20 +76,6 @@ namespace ReadingListPlus.Web.Core.Controllers
             CardViewModel card = await cardService.HideCardAsync(id.Value);
 
             return RedirectToPage(DeckDetailsModel.PageName, new { Id = card.DeckID });
-        }
-
-        [HttpPost, ActionName(nameof(Delete))]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed([CardFound, CardOwned]Guid id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            await cardService.RemoveAsync(id);
-
-            return RedirectToPage(DeckIndexModel.PageName);
         }
 
         [AllowAnonymous]

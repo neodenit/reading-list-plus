@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ReadingListPlus.Services;
 using ReadingListPlus.Services.Attributes;
-using ReadingListPlus.Web.Core.Controllers;
+using ReadingListPlus.Web.Core.Pages.Cards;
 
 namespace ReadingListPlus.Web.Core.Pages.Decks
 {
@@ -30,8 +30,8 @@ namespace ReadingListPlus.Web.Core.Pages.Decks
             Guid cardId = await deckService.GetFirstCardIdOrDefaultAsync(id.Value);
 
             return cardId == Guid.Empty
-                ? RedirectToAction(nameof(CardsController.Create), CardsController.Name, new { DeckId = id })
-                : RedirectToAction(nameof(CardsController.Details), CardsController.Name, new { Id = cardId });
+                ? RedirectToPage(CardCreateModel.PageName, new { DeckId = id })
+                : RedirectToPage(CardReadModel.PageName, new { Id = cardId });
 
         }
     }

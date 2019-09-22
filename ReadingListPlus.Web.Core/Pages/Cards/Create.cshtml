@@ -1,0 +1,109 @@
+﻿@page
+
+@model CardCreateModel
+
+@{
+    ViewData[Constants.ViewTitle] = "Create";
+}
+
+<h2>Create</h2>
+
+<form method="post">
+    <div class="form-horizontal">
+        <h4>@Resources.Item</h4>
+
+        <hr />
+
+        <input type="hidden" asp-for="Card.Type" />
+        <input type="hidden" asp-for="Card.CreationMode" />
+        <input type="hidden" asp-for="Card.ParentCardID" />
+        <input type="hidden" asp-for="Card.ParentCardUpdatedText" />
+        <input type="hidden" asp-for="Card.OldDeckID" />
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        @if (Model.Card.DeckListItems != null)
+        {
+            <div class="form-group row">
+                <label asp-for="Card.DeckID" class="control-label col-md-2"></label>
+                <div class="col-md-8">
+                    <select asp-for="Card.DeckID" asp-items="@(new SelectList(Model.Card.DeckListItems, "ID", "Title"))" class="form-control">
+                        @if (Model.Card.DeckID == null)
+                        {
+                            <option></option>
+                        }
+                    </select>
+                    <span asp-validation-for="Card.DeckID" class="text-danger"></span>
+                </div>
+            </div>
+        }
+        else
+        {
+            <input type="hidden" asp-for="Card.DeckID" />
+            <input type="hidden" asp-for="Card.DeckTitle" />
+
+            <div class="form-group row">
+                <label class="control-label col-md-2">@Resources.ItemCollection</label>
+                <div class="col-md-8">
+                    <p class="form-control-static">@Model.Card.DeckTitle</p>
+                </div>
+            </div>
+        }
+
+        <div class="form-group row">
+            <label asp-for="Card.Title" class="control-label col-md-2"></label>
+            <div class="col-md-8">
+                <input asp-for="Card.Title" class="form-control" />
+                <span asp-validation-for="Card.Title" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label asp-for="Card.Text" class="control-label col-md-2"></label>
+            <div class="col-md-8">
+                <textarea asp-for="Card.Text" class="form-control focused" rows=10></textarea>
+                <span asp-validation-for="Card.Text" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label asp-for="Card.Url" class="control-label col-md-2"></label>
+            <div class="col-md-8">
+                <input asp-for="Card.Url" class="form-control" />
+                <span asp-validation-for="Card.Url" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label asp-for="Card.Priority" class="control-label col-md-2"></label>
+            <div class="col-md-8">
+                <select asp-for="Card.Priority" asp-items="@(new SelectList(Model.Card.PriorityList, "Key", "Value"))" class="form-control">
+                    @if (Model.Card.Priority == null)
+                    {
+                        <option></option>
+                    }
+                </select>
+                <span asp-validation-for="Card.Priority" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-md-offset-2 col-md-2">
+                <input type="submit" value="Create" class="btn btn-success btn-block" />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-md-offset-2 col-md-2">
+                @if (Model.Card.DeckID.HasValue)
+                {
+                    <a asp-page="@CardIndexModel.PageName" asp-route-deckID="@Model.Card.DeckID" class="btn btn-default btn-block">Back</a>
+                }
+                else
+                {
+                    <a asp-page="@DeckIndexModel.PageName" class="btn btn-default btn-block">Back</a>
+                }
+            </div>
+        </div>
+    </div>
+</form>

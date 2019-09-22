@@ -1,15 +1,12 @@
-﻿@using ReadingListPlus.Common
-@using ReadingListPlus.Common.App_GlobalResources
-@using ReadingListPlus.Common.Enums
-@using ReadingListPlus.Web.Core.Controllers
+﻿@page "{id:Guid?}"
 
-@inject ISettings settings
-
-@model ReadingListPlus.Services.ViewModels.CardViewModel
+@model CardReadModel
 
 @{
-    ViewBag.Title = $"{Model.DeckTitle} - Review";
+    ViewData[Constants.ViewTitle] = $"{Model.Card.DeckTitle} - Review";
 }
+
+@inject ISettings settings
 
 @section scripts {
     <script src="~/js/App/TextConverter.js"></script>
@@ -17,20 +14,20 @@
 }
 
 <form id="myForm" method="post">
-    <input type="hidden" asp-for="ID" />
-    <input type="hidden" asp-for="Selection" />
-    <input type="hidden" asp-for="NextAction" />
-    <input type="hidden" asp-for="DeckID" />
-    <input type="hidden" asp-for="IsBookmarked" />
-    <input type="hidden" asp-for="Type" value="@Model.Type.ToString("d")" />
-    <input type="hidden" asp-for="Priority" />
+    <input type="hidden" asp-for="Card.ID" />
+    <input type="hidden" asp-for="Card.Selection" />
+    <input type="hidden" asp-for="Card.NextAction" />
+    <input type="hidden" asp-for="Card.DeckID" />
+    <input type="hidden" asp-for="Card.IsBookmarked" />
+    <input type="hidden" asp-for="Card.Type" value="@Model.Card.Type.ToString("d")" />
+    <input type="hidden" asp-for="Card.Priority" />
 
-    @switch (Model.NewRepetitionCardState)
+    @switch (Model.Card.NewRepetitionCardState)
     {
         case NewRepetitionCardState.None:
             <div id="topPanel" class="actions topPanel">
-                <a asp-action="@nameof(CardsController.Edit)" asp-route-id="@Model.ID" class="btn btn-default">Edit @Resources.Item</a>
-                <a asp-action="@nameof(CardsController.Index)" asp-route-deckID="@Model.DeckID" class="btn btn-default">Library</a>
+                <a asp-page="@CardEditModel.PageName" asp-route-id="@Model.Card.ID" class="btn btn-default">Edit @Resources.Item</a>
+                <a asp-page="@CardIndexModel.PageName" asp-route-deckID="@Model.Card.DeckID" class="btn btn-default">Library</a>
             </div>
 
             <hr />
@@ -111,28 +108,28 @@
         </div>
     </div>
 
-    @if (!string.IsNullOrEmpty(Model.Title))
+    @if (!string.IsNullOrEmpty(Model.Card.Title))
     {
         <h2>
-            @Html.DisplayFor(model => model.Title)
+            @Html.DisplayFor(model => model.Card.Title)
         </h2>
     }
 
-    @if (!string.IsNullOrEmpty(Model.Url))
+    @if (!string.IsNullOrEmpty(Model.Card.Url))
     {
         @Html.DisplayFor(model => model.Url)
     }
 
     <p class="article" id="article">
-        @Html.Raw(Model.HtmlText)
+        @Html.Raw(Model.Card.HtmlText)
     </p>
 
-    @if (Model.NewRepetitionCardState == NewRepetitionCardState.None)
+    @if (Model.Card.NewRepetitionCardState == NewRepetitionCardState.None)
     {
         <hr />
 
         <div id="bottomPanel" class="actions">
-            <a asp-action="@nameof(CardsController.Delete)" asp-route-id="@Model.ID" class="btn btn-default">Hide @Resources.Item</a>
+            <a asp-controller="@CardsController.Name" asp-action="@nameof(CardsController.Hide)" asp-route-id="@Model.Card.ID" class="btn btn-default">Hide @Resources.Item</a>
         </div>
     }
 </form>

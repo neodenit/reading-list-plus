@@ -1,0 +1,69 @@
+﻿@page
+
+@model CardIndexModel
+
+@{
+    ViewData[Constants.ViewTitle] = "Index";
+}
+
+<div class="topPanel">
+    <a asp-page="@DeckDetailsModel.PageName" asp-route-id="@Model.Cards.First().DeckID" class="btn btn-default">Back</a>
+</div>
+
+<h2>@Model.Cards.First().DeckTitle</h2>
+
+<div class="mainPanel">
+    <a asp-page="@CardCreateModel.PageName" asp-route-deckID="@Model.Cards.First().DeckID" class="btn btn-primary">Add @Resources.Item</a>
+</div>
+
+<table class="table notes-table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Cards.First().UserFriendlyPosition)
+        </th>
+
+        <th>
+            @Html.DisplayNameFor(model => model.Cards.First().Text)
+        </th>
+
+        <th>
+        </th>
+    </tr>
+
+    @foreach (var item in Model.Cards)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserFriendlyPosition)
+            </td>
+
+            <td>
+                @item.Text
+            </td>
+
+            <td>
+                @{
+                    var id = $"menu{item.UserFriendlyPosition}";
+                }
+
+                <div class="mainPanel">
+                    <a class="btn btn-default btn-block" data-toggle="collapse" href="#@(id)">&hellip;</a>
+                </div>
+
+                <div class="collapse" id="@(id)">
+                    <a asp-page="@CardReadModel.PageName" asp-route-id="@item.ID" class="btn btn-default btn-block">Read</a>
+                    <a asp-page="@CardEditModel.PageName" asp-route-id="@item.ID" class="btn btn-default btn-block">Edit</a>
+                    <a asp-controller="@CardsController.Name" asp-action="@nameof(CardsController.Hide)" asp-route-id="@item.ID" class="btn btn-default btn-block">Hide</a>
+                </div>
+            </td>
+        </tr>
+    }
+
+</table>
+
+@if (User.HasClaim(Constants.FixClaim, Constants.FixClaim))
+{
+    <hr />
+
+    <a asp-controller="@CardsController.Name" asp-action="@nameof(CardsController.Fix)" asp-route-deckId="@Model.Cards.First().DeckID" class="btn btn-default">Fix</a>
+}

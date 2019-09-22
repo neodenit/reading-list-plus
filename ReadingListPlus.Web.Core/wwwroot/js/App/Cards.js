@@ -110,10 +110,10 @@
     });
 
     var postpone = function (priority) {
-        $('#Priority').val(priority);
+        $('#Card_Priority').val(priority);
 
-        var isBookmarked = $('#IsBookmarked').val();
-        var cardType = parseInt($('#Type').val());
+        var isBookmarked = $('#Card_IsBookmarked').val();
+        var cardType = parseInt($('#Card_Type').val());
 
         if (cardType !== Enums.CardType.Article || isBookmarked === 'True') {
             SubmitSelection("", "Postpone");
@@ -169,8 +169,8 @@ function DropSelections() {
 }
 
 function SubmitSelection(selection, action) {
-    $('#Selection').val(selection);
-    $('#NextAction').val(action);
+    $('#Card_Selection').val(selection);
+    $('#Card_NextAction').val(action);
 
     $('#myForm').submit();
 }
