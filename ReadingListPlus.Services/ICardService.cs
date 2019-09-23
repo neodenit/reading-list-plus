@@ -14,7 +14,9 @@ namespace ReadingListPlus.Services
 
         Task<CardViewModel> GetCardForReadingAsync(Guid id);
 
-        Task<IEnumerable<CardViewModel>> GetConnectedCards(Guid deckId);
+        Task<IEnumerable<CardViewModel>> GetAllCardsAsync(Guid deckId);
+
+        Task<IEnumerable<CardViewModel>> GetConnectedCardsAsync(Guid deckId);
 
         Task<CreateCardViewModel> ExtractAsync(Guid id, string text, string userName);
 

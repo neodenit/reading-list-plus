@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using ReadingListPlus.Common;
 using ReadingListPlus.Common.Enums;
 using ReadingListPlus.Services.Attributes;
 
@@ -29,8 +30,13 @@ namespace ReadingListPlus.Services.ViewModels
 
         public int Position { get; set; }
 
+        public bool IsConnected => Position != Constants.DisconnectedCardPosition;
+
         [Display(Name = "#")]
-        public int UserFriendlyPosition => Position + 1;
+        [DisplayFormat(NullDisplayText = "-")]
+        public int? UserFriendlyPosition => IsConnected
+            ? Position + 1
+            : null as int?;
 
         public bool IsBookmarked { get; set; }
 

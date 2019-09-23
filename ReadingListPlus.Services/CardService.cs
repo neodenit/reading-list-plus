@@ -67,7 +67,14 @@ namespace ReadingListPlus.Services
             }
         }
 
-        public async Task<IEnumerable<CardViewModel>> GetConnectedCards(Guid deckId)
+        public async Task<IEnumerable<CardViewModel>> GetAllCardsAsync(Guid deckId)
+        {
+            Deck deck = await deckRepository.GetDeckAsync(deckId);
+            IEnumerable<CardViewModel> result = deck.Cards.Select(c => MapCardToViewModel(c));
+            return result;
+        }
+
+        public async Task<IEnumerable<CardViewModel>> GetConnectedCardsAsync(Guid deckId)
         {
             Deck deck = await deckRepository.GetDeckAsync(deckId);
             IEnumerable<CardViewModel> result = deck.ConnectedCards.Select(c => MapCardToViewModel(c));
@@ -393,7 +400,7 @@ namespace ReadingListPlus.Services
         {
             Card card = await cardRepository.GetCardAsync(id);
 
-            if (card.Position != Constants.DisconnectedCardPosition)
+            if (card.IsConnected)
             {
                 throw new InvalidOperationException();
             }

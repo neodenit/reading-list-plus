@@ -31,6 +31,6 @@ namespace ReadingListPlus.DataAccess.Models
 
         [JsonIgnore]
         [NotMapped]
-        public IEnumerable<Card> ConnectedCards => Cards?.Where(c => c.Position != Constants.DisconnectedCardPosition) ?? Enumerable.Empty<Card>();
+        public IEnumerable<Card> ConnectedCards => Cards?.Where(c => c.IsConnected) ?? Enumerable.Empty<Card>();
     }
 }

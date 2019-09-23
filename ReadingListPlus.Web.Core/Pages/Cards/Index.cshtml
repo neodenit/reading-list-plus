@@ -2,6 +2,8 @@
 
 @model CardIndexModel
 
+@inject ISettings settings
+
 @{
     ViewData[Constants.ViewTitle] = "Index";
 }
@@ -32,7 +34,7 @@
 
     @foreach (var item in Model.Cards)
     {
-        <tr>
+        <tr class="@(!settings.ShowHiddenCardsInIndex ? string.Empty : item.IsConnected ? "success" : "danger")">
             <td>
                 @Html.DisplayFor(modelItem => item.UserFriendlyPosition)
             </td>
@@ -52,8 +54,13 @@
 
                 <div class="collapse" id="@(id)">
                     <a asp-page="@CardReadModel.PageName" asp-route-id="@item.ID" class="btn btn-default btn-block">Read</a>
-                    <a asp-page="@CardEditModel.PageName" asp-route-id="@item.ID" class="btn btn-default btn-block">Edit</a>
-                    <a asp-controller="@CardsController.Name" asp-action="@nameof(CardsController.Hide)" asp-route-id="@item.ID" class="btn btn-default btn-block">Hide</a>
+
+                    @if (item.IsConnected)
+                    {
+                        <a asp-page="@CardEditModel.PageName" asp-route-id="@item.ID" class="btn btn-default btn-block">Edit</a>
+                        <a asp-controller="@CardsController.Name" asp-action="@nameof(CardsController.Hide)" asp-route-id="@item.ID" class="btn btn-default btn-block">Hide</a>
+                    }
+
                 </div>
             </td>
         </tr>

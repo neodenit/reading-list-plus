@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
+using ReadingListPlus.Common;
 using ReadingListPlus.Common.Enums;
 
 namespace ReadingListPlus.DataAccess.Models
@@ -26,6 +27,8 @@ namespace ReadingListPlus.DataAccess.Models
         public string Text { get; set; }
 
         public int Position { get; set; }
+
+        public bool IsConnected => Position != Constants.DisconnectedCardPosition;
 
         public string Url { get; set; }
 
