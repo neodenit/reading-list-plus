@@ -36,7 +36,7 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
                 : await cardService.GetConnectedCardsAsync(deckId.Value);
 
             Cards = cards
-                .OrderBy(c => c.IsConnected)
+                .OrderByDescending(c => c.IsConnected)
                 .ThenBy(c => c.Position)
                 .ThenBy(c => c.Text);
 
