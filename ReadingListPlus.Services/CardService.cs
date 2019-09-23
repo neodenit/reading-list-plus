@@ -424,7 +424,7 @@ namespace ReadingListPlus.Services
 
         private CardViewModel MapCardToHtmlViewModel(Card card, NewRepetitionCardState newRepetitionCardState)
         {
-            var cardUrlTemplate = $"Cards/Details/${{{Constants.IdGroup}}}";
+            var cardUrlTemplate = $"/Cards/Read/${{{Constants.IdGroup}}}";
 
             var repetitionCardUrlTemplate = new Uri(new Uri(settings.SpacedRepetionServer), $"Cards/Edit/{textConverterService.GetIdParameter(card.Text, Constants.RepetitionCardLabel)}").AbsoluteUri;
 
