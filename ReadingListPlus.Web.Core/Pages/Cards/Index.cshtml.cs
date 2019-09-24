@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ReadingListPlus.Common;
@@ -12,6 +13,7 @@ using ReadingListPlus.Services.ViewModels;
 
 namespace ReadingListPlus.Web.Core.Pages.Cards
 {
+    [Authorize]
     public class CardIndexModel : PageModel
     {
         public const string PageName = "/Cards/Index";

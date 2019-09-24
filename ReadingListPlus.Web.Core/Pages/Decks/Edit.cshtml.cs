@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ReadingListPlus.Services;
@@ -9,6 +10,7 @@ using ReadingListPlus.Services.ViewModels;
 
 namespace ReadingListPlus.Web.Core.Pages.Decks
 {
+    [Authorize]
     public class DeckEditModel : PageModel
     {
         public const string PageName = "/Decks/Edit";
