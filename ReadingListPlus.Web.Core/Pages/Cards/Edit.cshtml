@@ -58,7 +58,7 @@
 
         <div class="form-group row">
             <div class="col-md-offset-2 col-md-2">
-                <a asp-page="@DeckDetailsModel.PageName" asp-route-id="@Model.Card.DeckID" class="btn btn-default btn-block">Back</a>
+                <a asp-action="@nameof(DecksController.Read)" asp-controller="@DecksController.Name" asp-route-id="@Model.Card.DeckID" class="btn btn-default btn-block">Back</a>
             </div>
         </div>
     </div>

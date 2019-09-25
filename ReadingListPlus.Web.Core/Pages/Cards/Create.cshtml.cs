@@ -11,7 +11,7 @@ using ReadingListPlus.Common.Enums;
 using ReadingListPlus.Services;
 using ReadingListPlus.Services.Attributes;
 using ReadingListPlus.Services.ViewModels;
-using ReadingListPlus.Web.Core.Pages.Decks;
+using ReadingListPlus.Web.Core.Controllers;
 
 namespace ReadingListPlus.Web.Core.Pages.Cards
 {
@@ -74,7 +74,7 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
                 await deckService.SetUserLastDeckAsync(User.Identity.Name, newCardDeckId);
 
                 return Card.CreationMode == CreationMode.Extract
-                    ? RedirectToPage(DeckDetailsModel.PageName, new { Id = Card.OldDeckID ?? newCardDeckId })
+                    ? RedirectToAction(nameof(DecksController.Read), DecksController.Name, new { Id = Card.OldDeckID ?? newCardDeckId }) as ActionResult
                     : RedirectToPage(CardIndexModel.PageName, new { DeckId = newCardDeckId });
             }
             else

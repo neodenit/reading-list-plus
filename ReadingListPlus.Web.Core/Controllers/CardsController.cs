@@ -75,7 +75,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
             CardViewModel card = await cardService.HideCardAsync(id.Value);
 
-            return RedirectToPage(DeckDetailsModel.PageName, new { Id = card.DeckID });
+            return RedirectToAction(nameof(DecksController.Read), DecksController.Name, new { Id = card.DeckID });
         }
 
         [AllowAnonymous]

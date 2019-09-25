@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 using ReadingListPlus.Services;
 using ReadingListPlus.Services.Attributes;
 using ReadingListPlus.Services.ViewModels;
-using ReadingListPlus.Web.Core.Pages.Decks;
+using ReadingListPlus.Web.Core.Controllers;
 
 namespace ReadingListPlus.Web.Core.Pages.Cards
 {
@@ -79,7 +79,7 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
                     return RedirectToPage(PageName, new { Id = await cardService.CompleteRepetitionCardCreationAsync(Card.ID) });
                 case "Postpone":
                     CardViewModel cardViewModel = await cardService.PostponeAsync(Card.ID, Card.Priority.Value);
-                    return RedirectToPage(DeckDetailsModel.PageName, new { Id = cardViewModel.DeckID });
+                    return RedirectToAction(nameof(DecksController.Read), DecksController.Name, new { Id = cardViewModel.DeckID });
                 default:
                     return BadRequest();
             }

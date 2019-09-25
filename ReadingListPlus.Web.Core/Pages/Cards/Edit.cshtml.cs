@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using ReadingListPlus.Services;
 using ReadingListPlus.Services.Attributes;
 using ReadingListPlus.Services.ViewModels;
+using ReadingListPlus.Web.Core.Controllers;
 using ReadingListPlus.Web.Core.Pages.Decks;
 
 namespace ReadingListPlus.Web.Core.Pages.Cards
@@ -43,7 +44,7 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
             if (ModelState.IsValid)
             {
                 CardViewModel viewModel = await cardService.UpdateAsync(Card);
-                return RedirectToPage(DeckDetailsModel.PageName, new { Id = viewModel.DeckID });
+                return RedirectToAction(nameof(DecksController.Read), DecksController.Name, new { Id = viewModel.DeckID });
             }
             else
             {

@@ -61,5 +61,5 @@
 
 <form method="post">
     <input type="submit" value="Delete" class="btn btn-danger" /> |
-    <a asp-page="@DeckDetailsModel.PageName" asp-route-id="@Model.Card.DeckID">Back</a>
+    <a asp-action="@nameof(DecksController.Read)" asp-controller="@DecksController.Name" asp-route-id="@Model.Card.DeckID">Back</a>
 </form>
