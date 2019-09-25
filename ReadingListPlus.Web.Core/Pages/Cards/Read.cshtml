@@ -27,7 +27,13 @@
         case NewRepetitionCardState.None:
             <div id="topPanel" class="actions topPanel">
                 <a asp-page="@CardEditModel.PageName" asp-route-id="@Model.Card.ID" class="btn btn-default">Edit @Resources.Item</a>
-                <a asp-page="@CardIndexModel.PageName" asp-route-deckID="@Model.Card.DeckID" class="btn btn-default">Library</a>
+
+                @if (Model.Card.ParentCardID != null)
+                {
+                    <a asp-page="@CardReadModel.PageName" asp-route-id="@Model.Card.ParentCardID" class="btn btn-default">Parent @Resources.Item</a>
+                }
+
+                <a asp-page="@CardIndexModel.PageName" asp-route-deckID="@Model.Card.DeckID" class="btn btn-default">Queue</a>
             </div>
 
             <hr />
@@ -108,16 +114,19 @@
         </div>
     </div>
 
+    @if (!string.IsNullOrEmpty(Model.Card.Url))
+    {
+        <hr />
+        <label>Source:</label>
+        <a href="@Model.Card.Url" class="url">@Model.Card.Url</a>
+        <hr />
+    }
+
     @if (!string.IsNullOrEmpty(Model.Card.Title))
     {
         <h2>
             @Html.DisplayFor(model => model.Card.Title)
         </h2>
-    }
-
-    @if (!string.IsNullOrEmpty(Model.Card.Url))
-    {
-        @Html.DisplayFor(model => model.Url)
     }
 
     <p class="article" id="article">

@@ -440,6 +440,7 @@ namespace ReadingListPlus.Services
             {
                 ID = card.ID,
                 DeckID = card.DeckID,
+                ParentCardID = card.ParentCardID,
                 DeckTitle = card.Deck.Title,
                 Type = card.Type,
                 Title = card.Title,

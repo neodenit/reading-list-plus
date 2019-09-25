@@ -108,6 +108,10 @@ span.extract {
     padding-top: 5px;
 }
 
+.url {
+    word-break: break-all;            
+}
+
 table.notes-table {
     width: 100%;
 }
