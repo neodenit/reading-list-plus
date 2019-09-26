@@ -13,6 +13,7 @@ using ReadingListPlus.Services.ArticleExtractorService;
 using ReadingListPlus.Services.Attributes;
 using ReadingListPlus.Services.ViewModels;
 using ReadingListPlus.Web.Core.Pages.Cards;
+using ReadingListPlus.Web.Core.Pages.Decks;
 
 namespace ReadingListPlus.Web.Core.Controllers
 {
@@ -65,16 +66,18 @@ namespace ReadingListPlus.Web.Core.Controllers
             return RedirectToPage(CardCreateModel.PageName);
         }
 
-        public async Task<ActionResult> Hide([Required, CardFound, CardOwned]Guid? id)
+        public async Task<ActionResult> Hide([Required, CardFound, CardOwned]Guid? id, string returnUrl)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            CardViewModel card = await cardService.HideCardAsync(id.Value);
+            await cardService.HideCardAsync(id.Value);
 
-            return RedirectToAction(nameof(DecksController.Read), DecksController.Name, new { Id = card.DeckID });
+            return string.IsNullOrEmpty(returnUrl)
+                ? RedirectToPage(DeckIndexModel.PageName) as ActionResult
+                : Redirect(returnUrl);
         }
 
         [AllowAnonymous]

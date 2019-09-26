@@ -98,6 +98,7 @@ namespace ReadingListPlus.Services
             {
                 Url = card.Url,
                 ParentCardID = card.ID,
+                OldDeckID = card.DeckID,
                 Text = selection,
                 ParentCardUpdatedText = text,
                 PriorityList = priorities,
@@ -116,8 +117,6 @@ namespace ReadingListPlus.Services
                         Title = d.Title
                     })
                     .ToList();
-
-                newCard.OldDeckID = card.DeckID;
 
                 if (card.Deck.DependentDeckID.HasValue)
                 {

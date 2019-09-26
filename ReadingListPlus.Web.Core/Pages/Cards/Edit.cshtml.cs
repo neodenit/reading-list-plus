@@ -24,7 +24,7 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
             this.cardService = cardService ?? throw new ArgumentNullException(nameof(cardService));
         }
 
-        public async Task<ActionResult> OnGetAsync([Required, CardFound, CardOwned]Guid? id)
+        public async Task<ActionResult> OnGetAsync([Required, CardFound, CardOwned]Guid? id, string returnUrl)
         {
             if (!ModelState.IsValid)
             {
@@ -39,12 +39,18 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
         [BindProperty]
         public EditCardViewModel Card { get; set; }
 
+        [BindProperty]
+        public string ReturnUrl { get; set; }
+
         public async Task<ActionResult> OnPostAsync()
         {
             if (ModelState.IsValid)
             {
-                CardViewModel viewModel = await cardService.UpdateAsync(Card);
-                return RedirectToAction(nameof(DecksController.Read), DecksController.Name, new { Id = viewModel.DeckID });
+                await cardService.UpdateAsync(Card);
+
+                return string.IsNullOrEmpty(ReturnUrl)
+                    ? RedirectToPage(DeckIndexModel.PageName) as ActionResult
+                    : Redirect(ReturnUrl);
             }
             else
             {

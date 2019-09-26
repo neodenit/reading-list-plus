@@ -57,8 +57,8 @@
 
                     @if (item.IsConnected)
                     {
-                        <a asp-page="@CardEditModel.PageName" asp-route-id="@item.ID" class="btn btn-default btn-block">Edit</a>
-                        <a asp-controller="@CardsController.Name" asp-action="@nameof(CardsController.Hide)" asp-route-id="@item.ID" class="btn btn-default btn-block">Hide</a>
+                        <a asp-page="@CardEditModel.PageName" asp-route-id="@item.ID" asp-route-returnUrl="@Url.Page(CardIndexModel.PageName, new { item.DeckID })" class="btn btn-default btn-block">Edit</a>
+                        <a asp-controller="@CardsController.Name" asp-action="@nameof(CardsController.Hide)" asp-route-id="@item.ID" asp-route-returnUrl="@Url.Page(CardIndexModel.PageName, new { item.DeckID })" class="btn btn-default btn-block">Hide</a>
                     }
 
                 </div>
