@@ -6,13 +6,12 @@
     ViewData[Constants.ViewTitle] = "Edit";
 }
 
-<h2>Edit</h2>
+<h2>Edit @Resources.Item</h2>
+
+<hr />
 
 <form method="post">
     <div class="form-horizontal">
-        <h4>@Resources.Item</h4>
-
-        <hr />
 
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
@@ -21,7 +20,7 @@
         <div class="form-group row">
             <label asp-for="Card.Title" class="control-label col-md-2"></label>
             <div class="col-md-8">
-                <input asp-for="Card.Title" class="form-control" />
+                <input asp-for="Card.Title" class="form-control no-zoom" />
                 <span asp-validation-for="Card.Title" class="text-danger"></span>
             </div>
         </div>
@@ -29,7 +28,7 @@
         <div class="form-group row">
             <label asp-for="Card.Text" class="control-label col-md-2"></label>
             <div class="col-md-8">
-                <textarea asp-for="Card.Text" class="form-control focused" rows=10></textarea>
+                <textarea asp-for="Card.Text" class="form-control no-zoom" autofocus></textarea>
                 <span asp-validation-for="Card.Text" class="text-danger"></span>
             </div>
         </div>
@@ -37,7 +36,7 @@
         <div class="form-group row">
             <label asp-for="Card.Url" class="control-label col-md-2"></label>
             <div class="col-md-8">
-                <input asp-for="Card.Url" class="form-control" />
+                <input asp-for="Card.Url" class="form-control no-zoom" />
                 <span asp-validation-for="Card.Url" class="text-danger"></span>
             </div>
         </div>
@@ -45,7 +44,7 @@
         <div class="form-group row">
             <label asp-for="Card.Type" class="control-label col-md-2"></label>
             <div class="col-md-8">
-                <select asp-for="Card.Type" asp-items="Html.GetEnumSelectList(Model.Card.Type.GetType())" class="form-control"></select>
+                <select asp-for="Card.Type" asp-items="Html.GetEnumSelectList(Model.Card.Type.GetType())" class="form-control no-zoom"></select>
                 <span asp-validation-for="Card.Type" class="text-danger"></span>
             </div>
         </div>

@@ -112,6 +112,10 @@ span.extract {
     word-break: break-all;            
 }
 
+input.no-zoom, textarea.no-zoom, select.no-zoom {
+    font-size: inherit;
+}
+
 table.notes-table {
     width: 100%;
 }
