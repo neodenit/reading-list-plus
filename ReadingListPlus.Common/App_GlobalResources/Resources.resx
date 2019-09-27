@@ -135,4 +135,19 @@
   <data name="ApplicationNameShort" xml:space="preserve">
     <value>KM</value>
   </data>
+  <data name="HighestPriority" xml:space="preserve">
+    <value>Highest</value>
+  </data>
+  <data name="HighestPriorityWithWarning" xml:space="preserve">
+    <value>Highest (not recommended)</value>
+  </data>
+  <data name="HighPriority" xml:space="preserve">
+    <value>High</value>
+  </data>
+  <data name="LowPriority" xml:space="preserve">
+    <value>Low</value>
+  </data>
+  <data name="MediumPriority" xml:space="preserve">
+    <value>Medium</value>
+  </data>
 </root>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ReadingListPlus.Common;
+using ReadingListPlus.Common.App_GlobalResources;
 using ReadingListPlus.Common.Enums;
 using ReadingListPlus.DataAccess.Models;
 using ReadingListPlus.Repositories;
@@ -471,6 +472,23 @@ namespace ReadingListPlus.Services
             };
 
         private IEnumerable<KeyValuePair<string, string>> GetPriorities(IEnumerable<Priority> priorities) =>
-            priorities.Select(p => new KeyValuePair<string, string>(p.ToString("d"), p.ToString()));
+            priorities.Select(p => new KeyValuePair<string, string>(p.ToString("d"), GetPriorityLabel(p)));
+
+        private string GetPriorityLabel(Priority priority)
+        {
+            switch (priority)
+            {
+                case Priority.Highest:
+                    return Resources.HighestPriorityWithWarning;
+                case Priority.High:
+                    return Resources.HighPriority;
+                case Priority.Medium:
+                    return Resources.MediumPriority;
+                case Priority.Low:
+                    return Resources.LowPriority;
+                default:
+                    return string.Empty;
+            }
+        }
     }
 }
