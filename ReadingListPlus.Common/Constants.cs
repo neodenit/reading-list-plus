@@ -22,5 +22,9 @@
 
         public const string ViewTitle = "Title";
         public const string ViewMessage = "Message";
+
+        public const string Ellipsis = "…";
+        public const int MaxIndexTextLength = 256;
+        public const int MaxDeleteTextLength = 128;
     }
 }

@@ -1,41 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-
-namespace ReadingListPlus.Common
+﻿namespace ReadingListPlus.Common
 {
     public static class Extension
     {
-        public static TSource GetMaxElement<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
-        {
-            return source.OrderByDescending(keySelector).First();
-        }
-
-        public static TSource GetMinElement<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
-        {
-            return source.OrderBy(keySelector).First();
-        }
-
-        public static IEnumerable<TSource> ToEnumerable<TSource>(this TSource source)
-        {
-            return Enumerable.Repeat(source, 1);
-        }
-
-        public static IEnumerable<TSource> Concat<TSource>(this IEnumerable<TSource> first, TSource second)
-        {
-            return first.Concat(second.ToEnumerable());
-        }
-
-        public static IEnumerable<TSource> Concat<TSource>(this TSource first, IEnumerable<TSource> second)
-        {
-            return first.ToEnumerable().Concat(second);
-        }
-
-        public static TAttribute GetAttribute<TAttribute>(this Enum enumValue) where TAttribute : Attribute =>
-            enumValue.GetType()
-                .GetMember(enumValue.ToString())
-                .First()
-                .GetCustomAttribute<TAttribute>();
+        public static string Truncate(this string value, int length) =>
+            value.Length > length ? value.Substring(0, length) + Constants.Ellipsis : value;
     }
 }

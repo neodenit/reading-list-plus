@@ -43,7 +43,7 @@
     </dt>
 
     <dd>
-        @(Model.Card.Text.Substring(0, Math.Min(128, Model.Card.Text.Length)) + (Model.Card.Text.Length > 128 ? "..." : string.Empty))
+        @(Model.Card.Text.Truncate(Constants.MaxDeleteTextLength)))
     </dd>
 
     @if (!string.IsNullOrEmpty(Model.Card.Url))

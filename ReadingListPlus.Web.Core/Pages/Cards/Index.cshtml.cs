@@ -10,6 +10,7 @@ using ReadingListPlus.Common;
 using ReadingListPlus.Services;
 using ReadingListPlus.Services.Attributes;
 using ReadingListPlus.Services.ViewModels;
+using ReadingListPlus.Web.Core.Pages.Decks;
 
 namespace ReadingListPlus.Web.Core.Pages.Cards
 {
@@ -36,6 +37,11 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
             IEnumerable<CardViewModel> cards = settings.ShowHiddenCardsInIndex
                 ? await cardService.GetAllCardsAsync(deckId.Value)
                 : await cardService.GetConnectedCardsAsync(deckId.Value);
+
+            if (!cards.Any())
+            {
+                return RedirectToPage(DeckIndexModel.PageName);
+            }
 
             Cards = cards
                 .OrderByDescending(c => c.IsConnected)

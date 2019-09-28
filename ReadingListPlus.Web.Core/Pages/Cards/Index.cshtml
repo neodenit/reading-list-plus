@@ -5,17 +5,17 @@
 @inject ISettings settings
 
 @{
-    ViewData[Constants.ViewTitle] = "Index";
+    ViewData[Constants.ViewTitle] = $"{@Model.Cards.First().DeckTitle} - Priority Queue";
 }
 
 <div class="topPanel">
     <a asp-action="@nameof(DecksController.Read)" asp-controller="@DecksController.Name" asp-route-id="@Model.Cards.First().DeckID" class="btn btn-default">Back</a>
 </div>
 
-<h2>@Model.Cards.First().DeckTitle</h2>
+<h2>Priority Queue for @Model.Cards.First().DeckTitle</h2>
 
 <div class="mainPanel">
-    <a asp-page="@CardCreateModel.PageName" asp-route-deckID="@Model.Cards.First().DeckID" class="btn btn-primary">Add @Resources.Item</a>
+    <a asp-page="@CardCreateModel.PageName" asp-route-deckId="@Model.Cards.First().DeckID" class="btn btn-primary">Add @Resources.Item</a>
 </div>
 
 <table class="table notes-table">
@@ -40,7 +40,7 @@
             </td>
 
             <td>
-                @item.Text
+                @item.Text.Truncate(Constants.MaxIndexTextLength)
             </td>
 
             <td>
