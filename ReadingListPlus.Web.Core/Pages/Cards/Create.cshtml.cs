@@ -71,7 +71,10 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
             {
                 Guid newCardDeckId = await cardService.AddAsync(Card);
 
-                await deckService.SetUserLastDeckAsync(User.Identity.Name, newCardDeckId);
+                if (Card.CreationMode == CreationMode.FromUrl)
+                {
+                    await deckService.SetUserLastDeckAsync(User.Identity.Name, newCardDeckId);
+                }
 
                 return Card.CreationMode == CreationMode.Extract
                     ? RedirectToAction(nameof(DecksController.Read), DecksController.Name, new { Id = Card.OldDeckID }) as ActionResult
