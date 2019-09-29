@@ -5,6 +5,10 @@
     {
       "library": "jquery.sticky@1.0.4",
       "destination": "wwwroot/lib/jquery.sticky/"
+    },
+    {
+      "library": "jstree@3.3.8",
+      "destination": "wwwroot/lib/jstree/"
     }
   ]
 }

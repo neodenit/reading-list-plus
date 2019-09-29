@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Net.Mime;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -7,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using ReadingListPlus.Common;
 using ReadingListPlus.Services;
 using ReadingListPlus.Services.Attributes;
+using ReadingListPlus.Services.ViewModels;
 using ReadingListPlus.Web.Core.Pages.Cards;
 
 namespace ReadingListPlus.Web.Core.Controllers
@@ -46,6 +49,18 @@ namespace ReadingListPlus.Web.Core.Controllers
 
             string exportData = await deckService.GetExportDataAsync();
             return Content(exportData, MediaTypeNames.Application.Json);
+        }
+
+        public async Task<ActionResult> Tree(string id)
+        {
+            _ = id;
+
+            IEnumerable<DeckViewModel> decks = await deckService.GetUserDecks(UserName).ToList();
+            var json = decks
+                .OrderBy(d => d.Title)
+                .Select(d => new { d.ID, Text = d.Title, Children = true });
+
+            return Json(json);
         }
     }
 }

@@ -25,6 +25,7 @@
 
         public const string Ellipsis = "…";
         public const int MaxIndexTextLength = 256;
+        public const int MaxTreeTextLength = 128;
         public const int MaxDeleteTextLength = 128;
     }
 }

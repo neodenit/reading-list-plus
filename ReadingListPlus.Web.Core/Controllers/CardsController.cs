@@ -86,5 +86,15 @@ namespace ReadingListPlus.Web.Core.Controllers
             bool isValid = await repetitionCardService.IsLocalIdValidAsync(readingCardId, repetitionCardId);
             return Json(isValid);
         }
+
+        public async Task<ActionResult> Tree(Guid id)
+        {
+            IEnumerable<CardViewModel> cards = await cardService.GetConnectedCardsAsync(id);
+            var json = cards
+                .OrderBy(d => d.Text)
+                .Select(c => new { c.ID, Text = c.Text.Truncate(Constants.MaxTreeTextLength) });
+
+            return Json(json);
+        }
     }
 }
