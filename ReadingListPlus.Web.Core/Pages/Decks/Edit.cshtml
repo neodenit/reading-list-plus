@@ -1,17 +1,18 @@
 ﻿@page
+
 @model DeckEditModel
 
 @using ReadingListPlus.Common.App_GlobalResources
 
 @{
-    ViewBag.Title = "Edit";
+    ViewData[Constants.ViewTitle] = "Edit";
 }
 
 <h2>Edit</h2>
 
 <form method="post">
     <div class="form-horizontal">
-        <h4>@Resources.ItemCollection</h4>
+        <h4>@Resources.Collection</h4>
 
         <hr />
 

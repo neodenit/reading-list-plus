@@ -79,6 +79,24 @@ namespace ReadingListPlus.Common.App_GlobalResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Topic.
+        /// </summary>
+        public static string Collection {
+            get {
+                return ResourceManager.GetString("Collection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Topics.
+        /// </summary>
+        public static string Collections {
+            get {
+                return ResourceManager.GetString("Collections", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Highest.
         /// </summary>
         public static string HighestPriority {
@@ -111,24 +129,6 @@ namespace ReadingListPlus.Common.App_GlobalResources {
         public static string Item {
             get {
                 return ResourceManager.GetString("Item", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Topic.
-        /// </summary>
-        public static string ItemCollection {
-            get {
-                return ResourceManager.GetString("ItemCollection", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Topics.
-        /// </summary>
-        public static string ItemCollections {
-            get {
-                return ResourceManager.GetString("ItemCollections", resourceCulture);
             }
         }
         

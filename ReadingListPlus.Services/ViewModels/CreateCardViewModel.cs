@@ -17,7 +17,7 @@ namespace ReadingListPlus.Services.ViewModels
         [Required]
         [DeckFound]
         [DeckOwned]
-        [Display(ResourceType = typeof(Resources), Name = nameof(Resources.ItemCollection))]
+        [Display(ResourceType = typeof(Resources), Name = nameof(Resources.Collection))]
         public Guid? DeckID { get; set; }
 
         public IEnumerable<DeckViewModel> DeckListItems { get; set; }

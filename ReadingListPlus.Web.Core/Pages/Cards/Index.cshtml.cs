@@ -18,6 +18,7 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
     public class CardIndexModel : PageModel
     {
         public const string PageName = "/Cards/Index";
+
         private readonly ISettings settings;
         private readonly ICardService cardService;
 

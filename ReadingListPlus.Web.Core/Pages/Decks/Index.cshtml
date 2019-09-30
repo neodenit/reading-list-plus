@@ -1,4 +1,5 @@
 ﻿@page
+
 @model DeckIndexModel
 
 @using ReadingListPlus.Common
@@ -6,10 +7,10 @@
 
 
 @{
-    ViewBag.Title = Resources.ItemCollections;
+    ViewData[Constants.ViewTitle] = Resources.Collections;
 }
 
-<h2>@Resources.ItemCollections</h2>
+<h2>@Resources.Collections</h2>
 
 <div class="mainPanel">
     <a asp-page="@DeckCreateModel.PageName" class="btn btn-primary">Add New</a>

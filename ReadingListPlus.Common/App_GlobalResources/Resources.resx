@@ -120,10 +120,10 @@
   <data name="Item" xml:space="preserve">
     <value>Note</value>
   </data>
-  <data name="ItemCollection" xml:space="preserve">
+  <data name="Collection" xml:space="preserve">
     <value>Topic</value>
   </data>
-  <data name="ItemCollections" xml:space="preserve">
+  <data name="Collections" xml:space="preserve">
     <value>Topics</value>
   </data>
   <data name="Items" xml:space="preserve">

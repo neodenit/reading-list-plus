@@ -1,13 +1,14 @@
 ﻿@page
+
 @model DeckDeleteModel
 
 @{
-    ViewBag.Title = "Delete";
+    ViewData[Constants.ViewTitle] = "Delete";
 }
 
 <h2>Delete</h2>
 
-<h3>Are you sure you want to delete @Resources.ItemCollection.ToLower() "@Html.DisplayFor(model => model.Deck.Title)"?</h3>
+<h3>Are you sure you want to delete @Resources.Collection.ToLower() "@Html.DisplayFor(model => model.Deck.Title)"?</h3>
 
 <form method="post">
     <input type="hidden" asp-for="Deck.ID" />
