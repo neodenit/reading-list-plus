@@ -28,7 +28,7 @@ namespace ReadingListPlus.Services
 
         public string GetSelection(string text)
         {
-            var result = Regex.Match(text, @"{{selection::(?s)(.+?)(?m)}}").Groups[1].Value;
+            var result = Regex.Match(text, $@"{{{{{Constants.SelectionLabel}::(?s)(.+?)(?m)}}}}").Groups[1].Value;
 
             return result;
         }
@@ -46,7 +46,14 @@ namespace ReadingListPlus.Services
         }
 
         public string DeleteTagByName(string initialText, string tagName) =>
-            Regex.Replace(initialText, $"{{{{{tagName}::(?:{Constants.GuidRegex}::)?(?s)(.+?)(?m)}}}}", "$1");
+            Regex.Replace(initialText,
+                $"{{{{{tagName}::(?<{Constants.IdGroup}>{Constants.GuidRegex}::)?(?s)(?<{Constants.TextGroup}>.+?)(?m)}}}}",
+                $"${{{Constants.TextGroup}}}");
+
+        public string DeleteTagByNameAndParam(string initialText, string tagName, Guid param) =>
+            Regex.Replace(initialText,
+                $"{{{{{tagName}::(?<{Constants.IdGroup}>{param}::)(?s)(?<{Constants.TextGroup}>.+?)(?m)}}}}",
+                $"${{{Constants.TextGroup}}}");
 
         private string GetReplacement(string initialText, string htmlSelection, string tag)
         {
@@ -97,8 +104,8 @@ namespace ReadingListPlus.Services
         {
             var htmlText1 = Regex.Replace(template, Environment.NewLine, "<br/>");
             var htmlText2 = Regex.Replace(htmlText1,
-                $"{{{{extract::(?<{Constants.IdGroup}>{Constants.GuidRegex})::(?s)(?<{Constants.TextGroup}>.+?)(?m)}}}}",
-                $@"<a href='{cardUrlTemplate}' class=""extract"" data-id-param=""${{{Constants.IdGroup}}}"">${{{Constants.TextGroup}}}</a>");
+                $"{{{{{Constants.ExtractLabel}::(?<{Constants.IdGroup}>{Constants.GuidRegex})::(?s)(?<{Constants.TextGroup}>.+?)(?m)}}}}",
+                $@"<a href='{cardUrlTemplate}' class=""{Constants.ExtractLabel}"" data-id-param=""${{{Constants.IdGroup}}}"">${{{Constants.TextGroup}}}</a>");
 
             var htmlText3 = Regex.Replace(htmlText2,
                 $"{{{{{Constants.NewRepetitionCardLabel}::(?<{Constants.IdGroup}>{Constants.GuidRegex})::(?s)(?<{Constants.TextGroup}>.+?)(?m)}}}}",

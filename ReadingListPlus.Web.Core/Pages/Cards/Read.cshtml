@@ -138,7 +138,14 @@
         <hr />
 
         <div id="bottomPanel" class="actions">
-            <a asp-controller="@CardsController.Name" asp-action="@nameof(CardsController.Hide)" asp-route-id="@Model.Card.ID" asp-route-returnUrl="@Url.Action(nameof(DecksController.Read), DecksController.Name, new { Id = Model.Card.DeckID })" class="btn btn-default">Hide @Resources.Item</a>
+            @if (Model.Card.IsConnected)
+            {
+                <a asp-controller="@CardsController.Name" asp-action="@nameof(CardsController.Hide)" asp-route-id="@Model.Card.ID" asp-route-returnUrl="@Url.Action(nameof(DecksController.Read), DecksController.Name, new { Id = Model.Card.DeckID })" class="btn btn-default">Hide @Resources.Item</a>
+            }
+            else
+            {
+                <a asp-page="@CardDeleteModel.PageName" asp-route-id="@Model.Card.ID" asp-route-returnUrl="@Url.Action(nameof(DecksController.Read), DecksController.Name, new { Id = Model.Card.DeckID })" class="btn btn-danger">Delete @Resources.Item</a>
+            }
         </div>
     }
 </form>

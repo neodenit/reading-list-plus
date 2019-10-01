@@ -37,7 +37,7 @@
     </dt>
 
     <dd>
-        @(Model.Card.Text.Truncate(Constants.MaxDeleteTextLength)))
+        @(Model.Card.Text.Truncate(Constants.MaxDeleteTextLength))
     </dd>
 
     @if (!string.IsNullOrEmpty(Model.Card.Url))
@@ -54,6 +54,17 @@
 </dl>
 
 <form method="post">
-    <input type="submit" value="Delete" class="btn btn-danger" /> |
-    <a asp-action="@nameof(DecksController.Read)" asp-controller="@DecksController.Name" asp-route-id="@Model.Card.DeckID">Back</a>
+    <input type="hidden" asp-for="ReturnUrl" />
+
+    <div class="form-group row">
+        <div class="col-md-offset-2 col-md-2">
+            <input type="submit" value="Delete" class="btn btn-danger" />
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-offset-2 col-md-2">
+            <a href="@Model.ReturnUrl" class="btn btn-default btn-block">Back</a>
+        </div>
+    </div>
 </form>

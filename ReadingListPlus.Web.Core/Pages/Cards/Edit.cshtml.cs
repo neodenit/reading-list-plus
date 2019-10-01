@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using ReadingListPlus.Services;
 using ReadingListPlus.Services.Attributes;
 using ReadingListPlus.Services.ViewModels;
-using ReadingListPlus.Web.Core.Controllers;
 using ReadingListPlus.Web.Core.Pages.Decks;
 
 namespace ReadingListPlus.Web.Core.Pages.Cards
@@ -32,6 +31,8 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
             }
 
             Card = await cardService.GetCardForEditingAsync(id.Value);
+
+            ReturnUrl = returnUrl;
 
             return Page();
         }

@@ -1,4 +1,6 @@
-﻿namespace ReadingListPlus.Services
+﻿using System;
+
+namespace ReadingListPlus.Services
 {
     public interface ITextConverterService
     {
@@ -7,6 +9,8 @@
         string AddHighlight(string initialText, string htmlSelection);
 
         string DeleteTagByName(string initialText, string tagName);
+
+        string DeleteTagByNameAndParam(string initialText, string tagName, Guid param);
 
         string DeleteTagByText(string initialText, string htmlSelection);
 

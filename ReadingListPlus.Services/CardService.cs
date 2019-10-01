@@ -148,7 +148,7 @@ namespace ReadingListPlus.Services
 
             string textWithoutBookmarks = textConverterService.DeleteTagByName(text, "bookmark");
 
-            string newText = textConverterService.ReplaceTag(textWithoutBookmarks, "selection", "bookmark");
+            string newText = textConverterService.ReplaceTag(textWithoutBookmarks, Constants.SelectionLabel, "bookmark");
 
             card.Text = newText;
 
@@ -356,8 +356,8 @@ namespace ReadingListPlus.Services
             {
                 await cardRepository.SaveChangesAsync();
 
-                string textWithNewCardID = textConverterService.AddParameter(card.ParentCardUpdatedText, "selection", newCard.ID.ToString());
-                string textWithoutSelection = textConverterService.ReplaceTag(textWithNewCardID, "selection", "extract");
+                string textWithNewCardID = textConverterService.AddParameter(card.ParentCardUpdatedText, Constants.SelectionLabel, newCard.ID.ToString());
+                string textWithoutSelection = textConverterService.ReplaceTag(textWithNewCardID, Constants.SelectionLabel, Constants.ExtractLabel);
 
                 parentCard.Text = textWithoutSelection;
             }
@@ -405,7 +405,15 @@ namespace ReadingListPlus.Services
                 throw new InvalidOperationException();
             }
 
+            if (card.ParentCardID.HasValue)
+            {
+                Card parentCard = await cardRepository.GetCardAsync(card.ParentCardID.Value);
+                string text = textConverterService.DeleteTagByNameAndParam(parentCard.Text, Constants.ExtractLabel, card.ID);
+                parentCard.Text = text;
+            }
+
             cardRepository.Remove(card);
+
             await cardRepository.SaveChangesAsync();
         }
 
