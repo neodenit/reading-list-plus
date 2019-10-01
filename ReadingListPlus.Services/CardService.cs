@@ -181,7 +181,7 @@ namespace ReadingListPlus.Services
 
             await cardRepository.SaveChangesAsync();
 
-            var baseUri = new Uri(settings.SpacedRepetionServer);
+            var baseUri = new Uri(settings.SpacedRepetitionServer);
             var uri = new Uri(baseUri, $"Cards/Create?readingCardId={cardId}&repetitionCardId={repetitionCardId}&text={encodedRepetitionCardText}");
             return uri;
         }
@@ -434,11 +434,11 @@ namespace ReadingListPlus.Services
         {
             var cardUrlTemplate = $"/Cards/Read/${{{Constants.IdGroup}}}";
 
-            var repetitionCardUrlTemplate = new Uri(new Uri(settings.SpacedRepetionServer), $"Cards/Edit/{textConverterService.GetIdParameter(card.Text, Constants.RepetitionCardLabel)}").AbsoluteUri;
+            var repetitionCardUrlTemplate = new Uri(new Uri(settings.SpacedRepetitionServer), $"Cards/Edit/{textConverterService.GetIdParameter(card.Text, Constants.RepetitionCardLabel)}").AbsoluteUri;
 
             var newRepetitionCardUrlTemplate = newRepetitionCardState == NewRepetitionCardState.Done
-                ? new Uri(new Uri(settings.SpacedRepetionServer), $"Cards/Edit/{textConverterService.GetIdParameter(card.Text, Constants.NewRepetitionCardLabel)}").AbsoluteUri
-                : new Uri(new Uri(settings.SpacedRepetionServer), $"Cards/Create?readingCardId={card.ID}&repetitionCardId={textConverterService.GetIdParameter(card.Text, Constants.NewRepetitionCardLabel)}&text={Uri.EscapeDataString(textConverterService.GetNewRepetitionCardText(card.Text))}").AbsoluteUri;
+                ? new Uri(new Uri(settings.SpacedRepetitionServer), $"Cards/Edit/{textConverterService.GetIdParameter(card.Text, Constants.NewRepetitionCardLabel)}").AbsoluteUri
+                : new Uri(new Uri(settings.SpacedRepetitionServer), $"Cards/Create?readingCardId={card.ID}&repetitionCardId={textConverterService.GetIdParameter(card.Text, Constants.NewRepetitionCardLabel)}&text={Uri.EscapeDataString(textConverterService.GetNewRepetitionCardText(card.Text))}").AbsoluteUri;
 
             var newRepetitionCardClass = newRepetitionCardState == NewRepetitionCardState.Done
                 ? Constants.RepetitionCardLabel

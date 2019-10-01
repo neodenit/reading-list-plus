@@ -50,7 +50,7 @@ namespace ReadingListPlus.Services
 
         public async Task<bool> IsRemoteIdValidAsync(Guid readingCardId, Guid repetitionCardId)
         {
-            var baseUri = new Uri(settings.SpacedRepetionServer);
+            var baseUri = new Uri(settings.SpacedRepetitionServer);
             var uri = new Uri(baseUri, $"Cards/IsValid?readingCardId={readingCardId}&repetitionCardId={repetitionCardId}");
             HttpResponseMessage response = await httpClientWrapper.GetAsync(uri);
             var responseString = await response.Content.ReadAsStringAsync();

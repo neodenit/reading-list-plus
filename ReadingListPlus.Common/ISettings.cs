@@ -2,7 +2,7 @@
 {
     public interface ISettings
     {
-        string SpacedRepetionServer { get; }
+        string SpacedRepetitionServer { get; }
 
         string ContactEmail { get; }
 
