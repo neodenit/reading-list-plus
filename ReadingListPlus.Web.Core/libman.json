@@ -9,6 +9,11 @@
     {
       "library": "jstree@3.3.8",
       "destination": "wwwroot/lib/jstree/"
+    },
+    {
+      "provider": "unpkg",
+      "library": "bootstrap@4.3.1",
+      "destination": "wwwroot/lib/bootstrap/"
     }
   ]
 }
