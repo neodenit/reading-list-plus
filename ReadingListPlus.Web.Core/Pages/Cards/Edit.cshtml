@@ -11,55 +11,52 @@
 <hr />
 
 <form method="post">
-    <div class="form-horizontal">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="Card.ID" />
+    <input type="hidden" asp-for="ReturnUrl" />
 
-        <input type="hidden" asp-for="Card.ID" />
-        <input type="hidden" asp-for="ReturnUrl" />
-
-        <div class="form-group row">
-            <label asp-for="Card.Title" class="control-label col-md-2"></label>
-            <div class="col-md-8">
-                <input asp-for="Card.Title" class="form-control no-zoom" />
-                <span asp-validation-for="Card.Title" class="text-danger"></span>
-            </div>
+    <div class="form-group row">
+        <label asp-for="Card.Title" class="col-form-label col-md-2"></label>
+        <div class="col-md-8">
+            <input asp-for="Card.Title" class="form-control no-zoom" />
+            <span asp-validation-for="Card.Title" class="text-danger"></span>
         </div>
+    </div>
 
-        <div class="form-group row">
-            <label asp-for="Card.Text" class="control-label col-md-2"></label>
-            <div class="col-md-8">
-                <textarea asp-for="Card.Text" class="form-control no-zoom" autofocus></textarea>
-                <span asp-validation-for="Card.Text" class="text-danger"></span>
-            </div>
+    <div class="form-group row">
+        <label asp-for="Card.Text" class="col-form-label col-md-2"></label>
+        <div class="col-md-8">
+            <textarea asp-for="Card.Text" class="form-control no-zoom" autofocus></textarea>
+            <span asp-validation-for="Card.Text" class="text-danger"></span>
         </div>
+    </div>
 
-        <div class="form-group row">
-            <label asp-for="Card.Url" class="control-label col-md-2"></label>
-            <div class="col-md-8">
-                <input asp-for="Card.Url" class="form-control no-zoom" />
-                <span asp-validation-for="Card.Url" class="text-danger"></span>
-            </div>
+    <div class="form-group row">
+        <label asp-for="Card.Url" class="col-form-label col-md-2"></label>
+        <div class="col-md-8">
+            <input asp-for="Card.Url" class="form-control no-zoom" />
+            <span asp-validation-for="Card.Url" class="text-danger"></span>
         </div>
+    </div>
 
-        <div class="form-group row">
-            <label asp-for="Card.Type" class="control-label col-md-2"></label>
-            <div class="col-md-8">
-                <select asp-for="Card.Type" asp-items="Html.GetEnumSelectList(Model.Card.Type.GetType())" class="form-control no-zoom"></select>
-                <span asp-validation-for="Card.Type" class="text-danger"></span>
-            </div>
+    <div class="form-group row">
+        <label asp-for="Card.Type" class="col-form-label col-md-2"></label>
+        <div class="col-md-8">
+            <select asp-for="Card.Type" asp-items="Html.GetEnumSelectList(Model.Card.Type.GetType())" class="form-control no-zoom"></select>
+            <span asp-validation-for="Card.Type" class="text-danger"></span>
         </div>
+    </div>
 
-        <div class="form-group row">
-            <div class="col-md-offset-2 col-md-2">
-                <input type="submit" value="Save" class="btn btn-success btn-block" />
-            </div>
+    <div class="form-group row">
+        <div class="offset-md-2 col-md-2">
+            <input type="submit" value="Save" class="btn btn-success btn-block" />
         </div>
+    </div>
 
-        <div class="form-group row">
-            <div class="col-md-offset-2 col-md-2">
-                <a href="@Model.ReturnUrl" class="btn btn-default btn-block">Back</a>
-            </div>
+    <div class="form-group row">
+        <div class="offset-md-2 col-md-2">
+            <a href="@Model.ReturnUrl" class="btn btn-outline-secondary btn-block">Back</a>
         </div>
     </div>
 </form>

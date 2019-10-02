@@ -6,34 +6,30 @@
     ViewData[Constants.ViewTitle] = "Create";
 }
 
-<h2>Create</h2>
+<h2>Create @Resources.Collection</h2>
+
+<hr />
 
 <form method="post">
-    <div class="form-horizontal">
-        <h4>@Resources.Collection</h4>
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-        <hr />
-
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-        <div class="form-group row">
-            <label asp-for="Deck.Title" class="control-label col-md-2"></label>
-            <div class="col-md-8">
-                <input asp-for="Deck.Title" class="form-control no-zoom" autofocus/>
-                <span asp-validation-for="Deck.Title" class="text-danger"></span>
-            </div>
+    <div class="form-group row">
+        <label asp-for="Deck.Title" class="col-form-label col-md-2"></label>
+        <div class="col-md-8">
+            <input asp-for="Deck.Title" class="form-control no-zoom" autofocus />
+            <span asp-validation-for="Deck.Title" class="text-danger"></span>
         </div>
+    </div>
 
-        <div class="form-group row">
-            <div class="col-md-offset-2 col-md-2">
-                <input type="submit" value="Create" class="btn btn-success btn-block" />
-            </div>
+    <div class="form-group row">
+        <div class="offset-md-2 col-md-2">
+            <input type="submit" value="Create" class="btn btn-success btn-block" />
         </div>
+    </div>
 
-        <div class="form-group row">
-            <div class="col-md-offset-2 col-md-2">
-                <a asp-page="@DeckIndexModel.PageName" class="btn btn-default btn-block">Back</a>
-            </div>
+    <div class="form-group row">
+        <div class="offset-md-2 col-md-2">
+            <a asp-page="@DeckIndexModel.PageName" class="btn btn-outline-secondary btn-block">Back</a>
         </div>
     </div>
 </form>

@@ -12,7 +12,7 @@
 
 <hr />
 
-<dl class="dl-horizontal">
+<dl>
     <dt>
         @Resources.Collection
     </dt>
@@ -57,14 +57,14 @@
     <input type="hidden" asp-for="ReturnUrl" />
 
     <div class="form-group row">
-        <div class="col-md-offset-2 col-md-2">
-            <input type="submit" value="Delete" class="btn btn-danger" />
+        <div class="col-md-2">
+            <input type="submit" value="Delete" class="btn btn-danger btn-block" />
         </div>
     </div>
 
     <div class="form-group row">
-        <div class="col-md-offset-2 col-md-2">
-            <a href="@Model.ReturnUrl" class="btn btn-default btn-block">Back</a>
+        <div class="col-md-2">
+            <a href="@Model.ReturnUrl" class="btn btn-outline-secondary btn-block">Back</a>
         </div>
     </div>
 </form>

@@ -11,98 +11,95 @@
 <hr />
 
 <form method="post">
-    <div class="form-horizontal">
+    <input type="hidden" asp-for="Card.Type" />
+    <input type="hidden" asp-for="Card.CreationMode" />
+    <input type="hidden" asp-for="Card.ParentCardID" />
+    <input type="hidden" asp-for="Card.ParentCardUpdatedText" />
+    <input type="hidden" asp-for="Card.OldDeckID" />
 
-        <input type="hidden" asp-for="Card.Type" />
-        <input type="hidden" asp-for="Card.CreationMode" />
-        <input type="hidden" asp-for="Card.ParentCardID" />
-        <input type="hidden" asp-for="Card.ParentCardUpdatedText" />
-        <input type="hidden" asp-for="Card.OldDeckID" />
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-        @if (Model.Card.DeckListItems != null)
-        {
+    @if (Model.Card.DeckListItems != null)
+    {
         <div class="form-group row">
-            <label asp-for="Card.DeckID" class="control-label col-md-2"></label>
+            <label asp-for="Card.DeckID" class="col-form-label col-md-2"></label>
             <div class="col-md-8">
                 <select asp-for="Card.DeckID" asp-items="@(new SelectList(Model.Card.DeckListItems, "ID", "Title"))" class="form-control no-zoom">
                     @if (Model.Card.DeckID == null)
                     {
-                    <option></option>
+                        <option></option>
                     }
                 </select>
                 <span asp-validation-for="Card.DeckID" class="text-danger"></span>
             </div>
         </div>
-        }
-        else
-        {
+    }
+    else
+    {
         <input type="hidden" asp-for="Card.DeckID" />
         <input type="hidden" asp-for="Card.DeckTitle" />
 
         <div class="form-group row">
-            <label class="control-label col-md-2">@Resources.Collection</label>
+            <label class="col-form-label col-md-2">@Resources.Collection</label>
             <div class="col-md-8">
-                <p class="form-control-static">@Model.Card.DeckTitle</p>
+                <p class="form-control-plaintext">@Model.Card.DeckTitle</p>
             </div>
         </div>
-        }
+    }
 
-        <div class="form-group row">
-            <label asp-for="Card.Title" class="control-label col-md-2"></label>
-            <div class="col-md-8">
-                <input asp-for="Card.Title" class="form-control no-zoom" />
-                <span asp-validation-for="Card.Title" class="text-danger"></span>
-            </div>
+    <div class="form-group row">
+        <label asp-for="Card.Title" class="col-form-label col-md-2"></label>
+        <div class="col-md-8">
+            <input asp-for="Card.Title" class="form-control no-zoom" />
+            <span asp-validation-for="Card.Title" class="text-danger"></span>
         </div>
+    </div>
 
-        <div class="form-group row">
-            <label asp-for="Card.Text" class="control-label col-md-2"></label>
-            <div class="col-md-8">
-                <textarea asp-for="Card.Text" class="form-control no-zoom" autofocus></textarea>
-                <span asp-validation-for="Card.Text" class="text-danger"></span>
-            </div>
+    <div class="form-group row">
+        <label asp-for="Card.Text" class="col-form-label col-md-2"></label>
+        <div class="col-md-8">
+            <textarea asp-for="Card.Text" class="form-control no-zoom" autofocus></textarea>
+            <span asp-validation-for="Card.Text" class="text-danger"></span>
         </div>
+    </div>
 
-        <div class="form-group row">
-            <label asp-for="Card.Url" class="control-label col-md-2"></label>
-            <div class="col-md-8">
-                <input asp-for="Card.Url" class="form-control no-zoom" />
-                <span asp-validation-for="Card.Url" class="text-danger"></span>
-            </div>
+    <div class="form-group row">
+        <label asp-for="Card.Url" class="col-form-label col-md-2"></label>
+        <div class="col-md-8">
+            <input asp-for="Card.Url" class="form-control no-zoom" />
+            <span asp-validation-for="Card.Url" class="text-danger"></span>
         </div>
+    </div>
 
-        <div class="form-group row">
-            <label asp-for="Card.Priority" class="control-label col-md-2"></label>
-            <div class="col-md-8">
-                <select asp-for="Card.Priority" asp-items="@(new SelectList(Model.Card.PriorityList, "Key", "Value"))" class="form-control no-zoom">
-                    @if (Model.Card.Priority == null)
-                    {
+    <div class="form-group row">
+        <label asp-for="Card.Priority" class="col-form-label col-md-2"></label>
+        <div class="col-md-8">
+            <select asp-for="Card.Priority" asp-items="@(new SelectList(Model.Card.PriorityList, "Key", "Value"))" class="form-control no-zoom">
+                @if (Model.Card.Priority == null)
+                {
                     <option></option>
-                    }
-                </select>
-                <span asp-validation-for="Card.Priority" class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <div class="col-md-offset-2 col-md-2">
-                <input type="submit" value="Create" class="btn btn-success btn-block" />
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <div class="col-md-offset-2 col-md-2">
-                @if (Model.Card.DeckID.HasValue)
-                {
-                <a asp-page="@CardIndexModel.PageName" asp-route-deckId="@Model.Card.DeckID" class="btn btn-default btn-block">Back</a>
                 }
-                else
-                {
-                <a asp-page="@DeckIndexModel.PageName" class="btn btn-default btn-block">Back</a>
-                }
-            </div>
+            </select>
+            <span asp-validation-for="Card.Priority" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="offset-md-2 col-md-2">
+            <input type="submit" value="Create" class="btn btn-success btn-block" />
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="offset-md-2 col-md-2">
+            @if (Model.Card.DeckID.HasValue)
+            {
+                <a asp-page="@CardIndexModel.PageName" asp-route-deckId="@Model.Card.DeckID" class="btn btn-outline-secondary btn-block">Back</a>
+            }
+            else
+            {
+                <a asp-page="@DeckIndexModel.PageName" class="btn btn-outline-secondary btn-block">Back</a>
+            }
         </div>
     </div>
 </form>

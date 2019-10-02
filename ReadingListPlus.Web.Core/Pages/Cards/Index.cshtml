@@ -8,73 +8,87 @@
     ViewData[Constants.ViewTitle] = $"{@Model.Cards.First().DeckTitle} - Priority Queue";
 }
 
-<div class="topPanel">
-    <a asp-action="@nameof(DecksController.Read)" asp-controller="@DecksController.Name" asp-route-id="@Model.Cards.First().DeckID" class="btn btn-default">Back</a>
+<div class="row">
+    <div class="col-md-2 pt-2 pb-2">
+        <a asp-action="@nameof(DecksController.Read)" asp-controller="@DecksController.Name" asp-route-id="@Model.Cards.First().DeckID" class="btn btn-outline-secondary btn-block">Back</a>
+    </div>
 </div>
+
 
 <h2>Priority Queue for @Model.Cards.First().DeckTitle</h2>
 
-<div class="mainPanel">
-    <a asp-page="@CardCreateModel.PageName" asp-route-deckId="@Model.Cards.First().DeckID" class="btn btn-primary">Add @Resources.Item</a>
+<div class="row">
+    <div class="col-md-2 pt-2 pb-2">
+        <a asp-page="@CardCreateModel.PageName" asp-route-deckId="@Model.Cards.First().DeckID" class="btn btn-primary btn-block">Add @Resources.Item</a>
+    </div>
 </div>
 
-<table class="table notes-table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Cards.First().UserFriendlyPosition)
-        </th>
+<table class="table table-hover table-sm notes-table">
+    <thead class="thead-light">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Cards.First().UserFriendlyPosition)
+            </th>
 
-        <th>
-            @Html.DisplayNameFor(model => model.Cards.First().Text)
-        </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Cards.First().Text)
+            </th>
 
-        <th>
-        </th>
-    </tr>
-
-    @foreach (var item in Model.Cards)
-    {
-        <tr class="@(!settings.ShowHiddenCardsInIndex ? string.Empty : item.IsConnected ? "success" : "danger")">
-            <td>
-                @Html.DisplayFor(modelItem => item.UserFriendlyPosition)
-            </td>
-
-            <td>
-                @item.Text.Truncate(Constants.MaxIndexTextLength)
-            </td>
-
-            <td>
-                @{
-                    var id = $"menu-{item.ID}";
-                }
-
-                <div class="mainPanel">
-                    <a class="btn btn-default btn-block" data-toggle="collapse" href="#@(id)">&hellip;</a>
-                </div>
-
-                <div class="collapse" id="@(id)">
-                    <a asp-page="@CardReadModel.PageName" asp-route-id="@item.ID" class="btn btn-default btn-block">Read</a>
-
-                    @if (item.IsConnected)
-                    {
-                        <a asp-page="@CardEditModel.PageName" asp-route-id="@item.ID" asp-route-returnUrl="@Url.Page(CardIndexModel.PageName, new { item.DeckID })" class="btn btn-default btn-block">Edit</a>
-                        <a asp-controller="@CardsController.Name" asp-action="@nameof(CardsController.Hide)" asp-route-id="@item.ID" asp-route-returnUrl="@Url.Page(CardIndexModel.PageName, new { item.DeckID })" class="btn btn-default btn-block">Hide</a>
-                    }
-                    else
-                    {
-                        <a asp-page="@CardDeleteModel.PageName" asp-route-id="@item.ID" asp-route-returnUrl="@Url.Page(CardIndexModel.PageName, new { item.DeckID })" class="btn btn-danger btn-block">Delete</a>
-                    }
-
-                </div>
-            </td>
+            <th>
+            </th>
         </tr>
-    }
+    </thead>
 
+    <tbody>
+
+        @foreach (var item in Model.Cards)
+        {
+            <tr class="@(item.IsConnected ? string.Empty : "table-secondary")">
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserFriendlyPosition)
+                </td>
+
+                <td>
+                    @item.Text.Truncate(Constants.MaxIndexTextLength)
+                </td>
+
+                <td>
+
+                    @{
+                        var id = $"menu-{item.ID}";
+                        var returnUrl = Url.Page(CardIndexModel.PageName, new { item.DeckID });
+                    }
+
+                    <a class="btn btn-outline-secondary btn-block" data-toggle="collapse" href="#@(id)">&hellip;</a>
+
+                    <div class="collapse pt-2" id="@(id)">
+                        <a asp-page="@CardReadModel.PageName" asp-route-id="@item.ID" class="btn btn-outline-secondary btn-block">Read</a>
+
+                        @if (item.IsConnected)
+                        {
+                            <a asp-page="@CardEditModel.PageName" asp-route-id="@item.ID" asp-route-returnUrl="@returnUrl" class="btn btn-outline-secondary btn-block">Edit</a>
+                            <a asp-controller="@CardsController.Name" asp-action="@nameof(CardsController.Hide)" asp-route-id="@item.ID" asp-route-returnUrl="@returnUrl" class="btn btn-outline-secondary btn-block">Hide</a>
+                        }
+                        else
+                        {
+                            <a asp-page="@CardDeleteModel.PageName" asp-route-id="@item.ID" asp-route-returnUrl="@returnUrl" class="btn btn-danger btn-block">Delete</a>
+                        }
+
+                    </div>
+                </td>
+            </tr>
+        }
+
+    </tbody>
 </table>
 
 @if (User.HasClaim(Constants.FixClaim, Constants.FixClaim))
 {
     <hr />
 
-    <a asp-controller="@CardsController.Name" asp-action="@nameof(CardsController.Fix)" asp-route-deckId="@Model.Cards.First().DeckID" class="btn btn-default">Fix</a>
+    <div class="row">
+        <div class="col-md-2 pt-2 pb-2">
+            <a asp-controller="@CardsController.Name" asp-action="@nameof(CardsController.Fix)" asp-route-deckId="@Model.Cards.First().DeckID" class="btn btn-outline-secondary btn-block">Fix</a>
+        </div>
+    </div>
 }

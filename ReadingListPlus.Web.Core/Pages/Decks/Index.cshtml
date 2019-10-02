@@ -17,41 +17,47 @@
     <a asp-page="@TreeIndexModel.PageName" class="btn btn-primary">Tree</a>
 </div>
 
-<table class="table decks-table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Decks.First().Title)
-        </th>
-
-        <th>
-            @Resources.Items
-        </th>
-
-        <th>
-        </th>
-    </tr>
-
-    @foreach (var item in Model.Decks)
-    {
+<table class="table table-hover decks-table">
+    <thead>
         <tr>
-            <td>
-                <a asp-action="@nameof(DecksController.Read)" asp-controller="@DecksController.Name" asp-route-id="@item.ID">@item.Title</a>
-            </td>
+            <th>
+                @Html.DisplayNameFor(model => model.Decks.First().Title)
+            </th>
 
-            <td>
-                @item.CardCount
-            </td>
+            <th>
+                @Resources.Items
+            </th>
 
-            <td>
-                <a asp-page="@DeckEditModel.PageName" asp-route-id="@item.ID" class="btn btn-default btn-block">Options</a>
-            </td>
+            <th>
+            </th>
         </tr>
-    }
+    </thead>
+
+    <tbody>
+
+        @foreach (var item in Model.Decks)
+        {
+            <tr>
+                <td>
+                    <a asp-action="@nameof(DecksController.Read)" asp-controller="@DecksController.Name" asp-route-id="@item.ID">@item.Title</a>
+                </td>
+
+                <td>
+                    @item.CardCount
+                </td>
+
+                <td>
+                    <a asp-page="@DeckEditModel.PageName" asp-route-id="@item.ID" class="btn btn-outline-secondary btn-block">Options</a>
+                </td>
+            </tr>
+        }
+
+    </tbody>
 </table>
 
 @if (User.HasClaim(Constants.BackupClaim, Constants.BackupClaim))
 {
     <hr />
 
-    <a asp-page="@ImportModel.PageName" class="btn btn-default">Backup/Restore</a>
+    <a asp-page="@ImportModel.PageName" class="btn btn-outline-secondary">Backup/Restore</a>
 }
