@@ -6,14 +6,14 @@ namespace ReadingListPlus.Services
 {
     public interface ISchedulerService
     {
-        void ChangeFirstCardPosition(Deck deck, IEnumerable<Card> cards, Card card, Priority priority);
+        void ChangeFirstCardPosition(Card card, Priority priority);
 
         Priority ParsePriority(string text);
 
-        void PrepareForAdding(Deck deck, IEnumerable<Card> cards, Card card, Priority priority);
+        void PrepareForAdding(Deck deck, Card card, Priority priority);
 
-        void PrepareForDeletion(IEnumerable<Card> cards, Card card);
+        void PrepareForDeletion(Deck deck, Card card);
 
-        Card GetFirstCard(IEnumerable<Card> cards);
+        Card GetFirstCard(Deck deck);
     }
 }

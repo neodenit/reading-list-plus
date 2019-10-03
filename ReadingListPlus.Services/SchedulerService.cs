@@ -17,30 +17,32 @@ namespace ReadingListPlus.Services
             return (Priority)Enum.Parse(typeof(Priority), text, true);
         }
 
-        public void PrepareForAdding(Deck deck, IEnumerable<Card> cards, Card card, Priority priority)
+        public void PrepareForAdding(Deck deck, Card card, Priority priority)
         {
+            var cards = deck.ConnectedCards;
             var maxNewPosition = GetMaxNewPosition(cards);
             var position = GetStaticPosition(priority, maxNewPosition);
 
             PrepareForAdding(cards, card, position);
         }
 
-        public void PrepareForDeletion(IEnumerable<Card> cards, Card card)
+        public void PrepareForDeletion(Deck deck, Card card)
         {
-            ExcludePosition(cards, card.Position);
+            ExcludePosition(deck.ConnectedCards, card.Position);
         }
 
-        public void ChangeFirstCardPosition(Deck deck, IEnumerable<Card> cards, Card card, Priority priority)
+        public void ChangeFirstCardPosition(Card card, Priority priority)
         {
+            var cards = card.Deck.ConnectedCards;
             var maxPosition = GetMaxPosition(cards);
             var position = GetStaticPosition(priority, maxPosition);
 
             ChangeFirstCardPosition(cards, card, position);
         }
 
-        public Card GetFirstCard(IEnumerable<Card> cards)
+        public Card GetFirstCard(Deck deck)
         {
-            var card = cards.Single(item => item.Position == Constants.FirstCardPosition);
+            var card = deck.ConnectedCards.Single(item => item.Position == Constants.FirstCardPosition);
             return card;
         }
 

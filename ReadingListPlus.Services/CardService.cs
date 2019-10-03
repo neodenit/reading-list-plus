@@ -287,10 +287,7 @@ namespace ReadingListPlus.Services
             }
             else
             {
-                var deck = card.Deck;
-                var deckCards = deck.ConnectedCards;
-
-                schedulerService.ChangeFirstCardPosition(deck, deckCards, card, priority);
+                schedulerService.ChangeFirstCardPosition(card, priority);
 
                 await cardRepository.SaveChangesAsync();
 
@@ -343,7 +340,7 @@ namespace ReadingListPlus.Services
                 ParentCardID = card.ParentCardID,
             };
 
-            schedulerService.PrepareForAdding(deck, deck.ConnectedCards, newCard, priority);
+            schedulerService.PrepareForAdding(deck, newCard, priority);
 
             await cardRepository.AddAsync(newCard);
 
@@ -386,7 +383,7 @@ namespace ReadingListPlus.Services
         {
             Card card = await cardRepository.GetCardAsync(id);
 
-            schedulerService.PrepareForDeletion(card.Deck.ConnectedCards, card);
+            schedulerService.PrepareForDeletion(card.Deck, card);
 
             card.Position = Constants.DisconnectedCardPosition;
 

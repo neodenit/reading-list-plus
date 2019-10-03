@@ -108,8 +108,7 @@ namespace ReadingListPlus.Services
         public async Task<Guid> GetFirstCardIdOrDefaultAsync(Guid deckId)
         {
             Deck deck = await deckRepository.GetDeckAsync(deckId);
-            var cards = deck.ConnectedCards;
-            var result = cards.Any() ? schedulerService.GetFirstCard(cards).ID : Guid.Empty;
+            var result = deck.ConnectedCards.Any() ? schedulerService.GetFirstCard(deck).ID : Guid.Empty;
             return result;
         }
 
