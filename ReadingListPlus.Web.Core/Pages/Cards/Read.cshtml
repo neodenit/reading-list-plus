@@ -135,17 +135,23 @@
 
     @if (Model.Card.NewRepetitionCardState == NewRepetitionCardState.None)
     {
-        <hr />
 
-        <div id="bottomPanel" class="actions">
-            @if (Model.Card.IsConnected)
-            {
-                <a asp-controller="@CardsController.Name" asp-action="@nameof(CardsController.Hide)" asp-route-id="@Model.Card.ID" asp-route-returnUrl="@Url.Action(nameof(DecksController.Read), DecksController.Name, new { Id = Model.Card.DeckID })" class="btn btn-outline-secondary">Hide @Resources.Item</a>
-            }
-            else
-            {
-                <a asp-page="@CardDeleteModel.PageName" asp-route-id="@Model.Card.ID" asp-route-returnUrl="@Url.Action(nameof(DecksController.Read), DecksController.Name, new { Id = Model.Card.DeckID })" class="btn btn-danger">Delete @Resources.Item</a>
-            }
-        </div>
+    <hr />
+
+    <div id="bottomPanel" class="actions">
+
+        @if (Model.Card.IsConnected)
+        {
+        <a asp-controller="@CardsController.Name" asp-action="@nameof(CardsController.Hide)" asp-route-id="@Model.Card.ID" asp-route-returnUrl="@Url.Action(nameof(DecksController.Read), DecksController.Name, new { Id = Model.Card.DeckID })" class="btn btn-outline-secondary">Hide @Resources.Item</a>
+        }
+        else
+        {
+        <a asp-page="@CardRestoreModel.PageName" asp-route-id="@Model.Card.ID" asp-route-returnUrl="@Url.Action(nameof(DecksController.Read), DecksController.Name, new { Id = Model.Card.DeckID })" class="btn btn-success">Restore @Resources.Item</a>
+        <a asp-page="@CardDeleteModel.PageName" asp-route-id="@Model.Card.ID" asp-route-returnUrl="@Url.Action(nameof(DecksController.Read), DecksController.Name, new { Id = Model.Card.DeckID })" class="btn btn-danger">Delete @Resources.Item</a>
+        }
+
+    </div>
+
     }
+
 </form>

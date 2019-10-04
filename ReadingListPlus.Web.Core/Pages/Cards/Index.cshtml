@@ -71,6 +71,7 @@
                         }
                         else
                         {
+                            <a asp-page="@CardRestoreModel.PageName" asp-route-id="@item.ID" asp-route-returnUrl="@returnUrl" class="btn btn-success btn-block">Restore</a>
                             <a asp-page="@CardDeleteModel.PageName" asp-route-id="@item.ID" asp-route-returnUrl="@returnUrl" class="btn btn-danger btn-block">Delete</a>
                         }
 

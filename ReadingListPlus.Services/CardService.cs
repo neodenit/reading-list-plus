@@ -393,6 +393,23 @@ namespace ReadingListPlus.Services
             return viewModel;
         }
 
+        public async Task RestoreAsync(CardViewModel card)
+        {
+            Card dbCard = await cardRepository.GetCardAsync(card.ID);
+            Deck dbDeck = await deckRepository.GetDeckAsync(card.DeckID.Value);
+
+            if (dbCard.IsConnected)
+            {
+                throw new InvalidOperationException();
+            }
+
+            dbCard.DeckID = card.DeckID;
+
+            schedulerService.PrepareForAdding(dbDeck, dbCard, card.Priority.Value);
+
+            await cardRepository.SaveChangesAsync();
+        }
+
         public async Task RemoveAsync(Guid id)
         {
             Card card = await cardRepository.GetCardAsync(id);

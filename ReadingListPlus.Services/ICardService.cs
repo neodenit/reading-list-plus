@@ -46,6 +46,8 @@ namespace ReadingListPlus.Services
 
         Task<CardViewModel> HideCardAsync(Guid id);
 
+        Task RestoreAsync(CardViewModel card);
+
         Task RemoveAsync(Guid id);
     }
 }
