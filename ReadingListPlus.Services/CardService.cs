@@ -403,7 +403,10 @@ namespace ReadingListPlus.Services
                 throw new InvalidOperationException();
             }
 
-            dbCard.DeckID = card.DeckID;
+            if (dbCard.DeckID == null)
+            {
+                dbCard.DeckID = card.DeckID;
+            }
 
             schedulerService.PrepareForAdding(dbDeck, dbCard, card.Priority.Value);
 
