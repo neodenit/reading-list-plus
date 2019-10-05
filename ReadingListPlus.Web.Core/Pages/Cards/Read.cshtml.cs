@@ -57,27 +57,27 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
 
             switch (Card.NextAction)
             {
-                case "Extract":
+                case CardAction.Extract:
                     CreateCardViewModel viewModel = await cardService.ExtractAsync(Card.ID, Card.Selection, User.Identity.Name);
                     TempData[nameof(CreateCardViewModel)] = JsonConvert.SerializeObject(viewModel);
                     return RedirectToPage(CardCreateModel.PageName);
-                case "Cloze":
+                case CardAction.Cloze:
                     return RedirectToPage(PageName, new { Id = await cardService.ClozeAsync(Card.ID, Card.Selection) });
-                case "Highlight":
+                case CardAction.Highlight:
                     return RedirectToPage(PageName, new { Id = await cardService.HighlightAsync(Card.ID, Card.Selection) });
-                case "Bookmark":
+                case CardAction.Bookmark:
                     Card = await cardService.BookmarkAsync(Card.ID, Card.Selection);
                     return Page();
-                case "Remember":
+                case CardAction.Remember:
                     Uri uri = await cardService.RememberAsync(Card.ID, Card.Selection);
                     return Redirect(uri.AbsoluteUri);
-                case "DeleteRegion":
+                case CardAction.DeleteRegion:
                     return RedirectToPage(PageName, new { Id = await cardService.DeleteRegionAsync(Card.ID, Card.Selection) });
-                case "CancelRepetitionCardCreation":
+                case CardAction.CancelRepetitionCardCreation:
                     return RedirectToPage(PageName, new { Id = await cardService.CancelRepetitionCardCreationAsync(Card.ID) });
-                case "CompleteRepetitionCardCreation":
+                case CardAction.CompleteRepetitionCardCreation:
                     return RedirectToPage(PageName, new { Id = await cardService.CompleteRepetitionCardCreationAsync(Card.ID) });
-                case "Postpone":
+                case CardAction.Postpone:
                     CardViewModel cardViewModel = await cardService.PostponeAsync(Card.ID, Card.Priority.Value);
                     return RedirectToAction(nameof(DecksController.Read), DecksController.Name, new { Id = cardViewModel.DeckID });
                 default:

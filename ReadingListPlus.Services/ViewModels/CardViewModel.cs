@@ -44,7 +44,7 @@ namespace ReadingListPlus.Services.ViewModels
 
         public string Selection { get; set; }
 
-        public string NextAction { get; set; }
+        public CardAction NextAction { get; set; }
 
         public Priority? Priority { get; set; }
 

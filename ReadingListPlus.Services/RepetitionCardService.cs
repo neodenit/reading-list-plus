@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using ReadingListPlus.Common;
 using ReadingListPlus.DataAccess.Models;
 using ReadingListPlus.Repositories;
+using ReadingListPlus.Services.ViewModels;
 
 namespace ReadingListPlus.Services
 {
@@ -33,7 +34,7 @@ namespace ReadingListPlus.Services
             return isValid;
         }
 
-        public async Task<bool> IsActionValidAsync(Guid id, string action)
+        public async Task<bool> IsActionValidAsync(Guid id, CardAction action)
         {
             Card card = await cardRepository.GetCardAsync(id);
             string newRepetitionCardText = textConverterService.GetNewRepetitionCardText(card.Text);
@@ -43,7 +44,7 @@ namespace ReadingListPlus.Services
                 return true;
             }
 
-            var newRepetitionCardActions = new[] { "CancelRepetitionCardCreation", "CompleteRepetitionCardCreation" };
+            var newRepetitionCardActions = new[] { CardAction.CancelRepetitionCardCreation, CardAction.CompleteRepetitionCardCreation };
             var isValid = newRepetitionCardActions.Contains(action);
             return isValid;
         }

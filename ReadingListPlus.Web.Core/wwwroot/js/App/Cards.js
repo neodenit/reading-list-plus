@@ -1,6 +1,6 @@
 ﻿$(function () {
     var mainPanelHeight = $('#mainPanel').outerHeight(true);
-    var navbarHeight = $('div.navbar-header').height();
+    var navbarHeight = $('nav.fixed-top').outerHeight(true);
 
     var maxClozeWidth = Math.max.apply(null, $('.cloze').map(function () {
         return $(this).width();
@@ -35,9 +35,9 @@
             selection.toString();
 
         if (isValid) {
-            $('.selection-panel .act.btn-primary').removeClass('disabled');
+            $('.selection-panel a[data-act].btn-primary').removeClass('disabled');
         } else {
-            $('.selection-panel .act.btn-primary').addClass('disabled');
+            $('.selection-panel a[data-act].btn-primary').addClass('disabled');
         }
     };
 
@@ -61,8 +61,8 @@
         $(this).removeClass('cloze').addClass('clozeselected');
     });
 
-    $('.act').click(function () {
-        var action = this.id;
+    $('a[data-act]').click(function () {
+        var action = $(this).data('act');
 
         if (action === 'Extract' || action === 'Bookmark' || action === 'Remember') {
             var newNode = createSelectionSpan();

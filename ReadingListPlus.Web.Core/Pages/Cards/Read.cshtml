@@ -22,64 +22,90 @@
     <input type="hidden" asp-for="Card.Type" value="@Model.Card.Type.ToString("d")" />
     <input type="hidden" asp-for="Card.Priority" />
 
+    @{
+        var mobile = "d-md-none";
+        var desktop = "d-none d-md-inline-block";
+        var topPanelButton = "btn btn-outline-secondary";
+        var selectionButton = "act btn btn-primary disabled";
+    }
+
     @switch (Model.Card.NewRepetitionCardState)
     {
         case NewRepetitionCardState.None:
-            <div id="topPanel" class="actions topPanel">
-                <a asp-page="@CardEditModel.PageName" asp-route-id="@Model.Card.ID" asp-route-returnUrl="@Url.Action(nameof(DecksController.Read), DecksController.Name, new { Id = Model.Card.DeckID })" class="btn btn-outline-secondary">Edit @Resources.Item</a>
+            <div id="topPanel" class="actions topPanel pt-1">
+                <a asp-page="@DeckIndexModel.PageName" class="@mobile @topPanelButton oi oi-home"></a>
+                <a asp-page="@DeckIndexModel.PageName" class="@desktop @topPanelButton">Topics</a>
+
+                <a asp-page="@CardEditModel.PageName" asp-route-id="@Model.Card.ID" asp-route-returnUrl="@Url.Action(nameof(DecksController.Read), DecksController.Name, new { Id = Model.Card.DeckID })" class="@mobile @topPanelButton oi oi-pencil"></a>
+                <a asp-page="@CardEditModel.PageName" asp-route-id="@Model.Card.ID" asp-route-returnUrl="@Url.Action(nameof(DecksController.Read), DecksController.Name, new { Id = Model.Card.DeckID })" class="@desktop @topPanelButton">Edit @Resources.Item</a>
 
                 @if (Model.Card.ParentCardID != null)
                 {
-                    <a asp-page="@CardReadModel.PageName" asp-route-id="@Model.Card.ParentCardID" class="btn btn-outline-secondary">Parent @Resources.Item</a>
+                    <a asp-page="@CardReadModel.PageName" asp-route-id="@Model.Card.ParentCardID" class="@mobile @topPanelButton oi oi-caret-top"></a>
+                    <a asp-page="@CardReadModel.PageName" asp-route-id="@Model.Card.ParentCardID" class="@desktop @topPanelButton">Parent @Resources.Item</a>
                 }
 
-                <a asp-page="@CardIndexModel.PageName" asp-route-deckId="@Model.Card.DeckID" class="btn btn-outline-secondary">Queue</a>
+                <a asp-page="@CardIndexModel.PageName" asp-route-deckId="@Model.Card.DeckID" class="@mobile @topPanelButton oi oi-list"></a>
+                <a asp-page="@CardIndexModel.PageName" asp-route-deckId="@Model.Card.DeckID" class="@desktop @topPanelButton">Queue</a>
             </div>
 
-            <hr />
+            <div id="mainPanel" class="actions py-1">
+                <div class="row selection-panel">
+                    <div class="col-md-8 d-flex flex-nowrap">
+                        <div class="ml-auto ml-md-0 ">
 
-            <div id="mainPanel" class="actions mainPanel">
-                <div class="selection-panel">
-                    @if (settings.ExtractEnabled)
-                    {
-                        <a href="javascript:undefined" id="Extract" class="act btn btn-primary disabled">Extract</a>
-                    }
+                            @if (settings.ExtractEnabled)
+                            {
+                                <a href="javascript:undefined" data-act="@CardAction.Extract" class="@mobile @selectionButton oi oi-file"></a>
+                                <a href="javascript:undefined" data-act="@CardAction.Extract" class="@desktop @selectionButton">Extract</a>
+                            }
 
-                    @if (settings.BookmarkEnabled)
-                    {
-                        <a href="javascript:undefined" id="Bookmark" class="act btn btn-primary disabled">Bookmark</a>
-                    }
+                            @if (settings.BookmarkEnabled)
+                            {
+                                <a href="javascript:undefined" data-act="@CardAction.Bookmark" class="@mobile @selectionButton oi oi-bookmark"></a>
+                                <a href="javascript:undefined" data-act="@CardAction.Bookmark" class="@desktop @selectionButton">Bookmark</a>
+                            }
 
-                    @if (settings.RememberEnabled)
-                    {
-                        <a href="javascript:undefined" id="Remember" class="act btn btn-primary disabled">Remember</a>
-                    }
+                            @if (settings.RememberEnabled)
+                            {
+                                <a href="javascript:undefined" data-act="@CardAction.Remember" class="@mobile @selectionButton oi oi-eye"></a>
+                                <a href="javascript:undefined" data-act="@CardAction.Remember" class="@desktop @selectionButton">Remember</a>
+                            }
 
-                    @if (settings.HighlightEnabled)
-                    {
-                        <a href="javascript:undefined" id="Highlight" class="act btn btn-primary disabled">Highlight</a>
-                    }
+                            @if (settings.HighlightEnabled)
+                            {
+                                <a href="javascript:undefined" data-act="@CardAction.Highlight" class="@mobile @selectionButton oi oi-brush"></a>
+                                <a href="javascript:undefined" data-act="@CardAction.Highlight" class="@desktop @selectionButton">Highlight</a>
+                            }
 
-                    @if (settings.ClozeEnabled)
-                    {
-                        <a href="javascript:undefined" id="Cloze" class="act btn btn-primary disabled">Cloze</a>
-                    }
+                            @if (settings.ClozeEnabled)
+                            {
+                                <a href="javascript:undefined" data-act="@CardAction.Cloze" class="@mobile @selectionButton oi oi-lock-locked"></a>
+                                <a href="javascript:undefined" data-act="@CardAction.Cloze" class="@desktop @selectionButton">Cloze</a>
+                            }
 
-                    @if (settings.DropEnabled)
-                    {
-                        <a href="javascript:undefined" id="DeleteRegion" class="act btn btn-danger">Drop</a>
-                    }
-                </div>
+                            @if (settings.DropEnabled)
+                            {
+                                <a href="javascript:undefined" data-act="@CardAction.DeleteRegion" class="@mobile act btn btn-danger d-md-none oi oi-x"></a>
+                                <a href="javascript:undefined" data-act="@CardAction.DeleteRegion" class="@desktop act btn btn-danger d-none d-md-inline-block">Drop</a>
+                            }
 
-                <div class="postpone-panel">
-                    <label>New priority:</label>
-                    <div class="btn-group">
-                        <a href="javascript:undefined" id="PostponeHigh" class="act btn btn-primary">@Resources.HighPriority</a>
-                        <a href="javascript:undefined" id="PostponeMedium" class="act btn btn-primary">@Resources.MediumPriority</a>
-                        <a href="javascript:undefined" id="PostponeLow" class="act btn btn-primary">@Resources.LowPriority</a>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 d-flex">
+                        <div class="ml-auto">
+                            <label class="col-form-label">Priority</label>
+                            <div class="btn-group">
+                                <a href="javascript:undefined" id="PostponeHigh" class="act btn btn-primary">@Resources.HighPriority</a>
+                                <a href="javascript:undefined" id="PostponeMedium" class="act btn btn-primary">@Resources.MediumPriority</a>
+                                <a href="javascript:undefined" id="PostponeLow" class="act btn btn-primary">@Resources.LowPriority</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+
             break;
         case NewRepetitionCardState.Pending:
             <h4>Please finish the new repetition card creation.</h4>
@@ -136,21 +162,21 @@
     @if (Model.Card.NewRepetitionCardState == NewRepetitionCardState.None)
     {
 
-    <hr />
+        <hr />
 
-    <div id="bottomPanel" class="actions">
+        <div id="bottomPanel" class="actions">
 
-        @if (Model.Card.IsConnected)
-        {
-        <a asp-controller="@CardsController.Name" asp-action="@nameof(CardsController.Hide)" asp-route-id="@Model.Card.ID" asp-route-returnUrl="@Url.Action(nameof(DecksController.Read), DecksController.Name, new { Id = Model.Card.DeckID })" class="btn btn-outline-secondary">Hide @Resources.Item</a>
-        }
-        else
-        {
-        <a asp-page="@CardRestoreModel.PageName" asp-route-id="@Model.Card.ID" asp-route-returnUrl="@Url.Action(nameof(DecksController.Read), DecksController.Name, new { Id = Model.Card.DeckID })" class="btn btn-success">Restore @Resources.Item</a>
-        <a asp-page="@CardDeleteModel.PageName" asp-route-id="@Model.Card.ID" asp-route-returnUrl="@Url.Action(nameof(DecksController.Read), DecksController.Name, new { Id = Model.Card.DeckID })" class="btn btn-danger">Delete @Resources.Item</a>
-        }
+            @if (Model.Card.IsConnected)
+            {
+                <a asp-controller="@CardsController.Name" asp-action="@nameof(CardsController.Hide)" asp-route-id="@Model.Card.ID" asp-route-returnUrl="@Url.Action(nameof(DecksController.Read), DecksController.Name, new { Id = Model.Card.DeckID })" class="btn btn-outline-secondary">Hide @Resources.Item</a>
+            }
+            else
+            {
+                <a asp-page="@CardRestoreModel.PageName" asp-route-id="@Model.Card.ID" asp-route-returnUrl="@Url.Action(nameof(DecksController.Read), DecksController.Name, new { Id = Model.Card.DeckID })" class="btn btn-success">Restore @Resources.Item</a>
+                <a asp-page="@CardDeleteModel.PageName" asp-route-id="@Model.Card.ID" asp-route-returnUrl="@Url.Action(nameof(DecksController.Read), DecksController.Name, new { Id = Model.Card.DeckID })" class="btn btn-danger">Delete @Resources.Item</a>
+            }
 
-    </div>
+        </div>
 
     }
 
