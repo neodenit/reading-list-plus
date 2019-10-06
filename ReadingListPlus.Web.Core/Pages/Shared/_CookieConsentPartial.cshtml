@@ -8,23 +8,20 @@
 
 @if (showBanner)
 {
-    <nav id="cookieConsent" class="navbar navbar-default navbar-fixed-top" role="alert">
+    <nav id="cookieConsent" class="navbar navbar-expand-md navbar-light bg-light fixed-top">
         <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#cookieConsent .navbar-collapse">
-                    <span class="sr-only">Toggle cookie consent banner</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <span class="navbar-brand"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></span>
-            </div>
+            <span class="navbar-brand"><span class="oi oi-info"></span></span>
+
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#cookieConsent .navbar-collapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
             <div class="collapse navbar-collapse">
-                <p class="navbar-text">
+                <span class="navbar-text">
                     This site uses cookies.
-                </p>
-                <div class="navbar-right">
-                    <a asp-page="@PrivacyModel.PageName" class="btn btn-info navbar-btn">Learn More</a>
+                </span>
+                <div class="navbar-nav ml-auto">
+                    <a asp-page="@PrivacyModel.PageName" class="btn btn-info navbar-btn mr-md-2">Learn More</a>
                     <button type="button" class="btn btn-outline-secondary navbar-btn" data-cookie-string="@cookieString">Accept</button>
                 </div>
             </div>
