@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Boilerpipe.Net.Core" Version="1.0.1" />
+    <PackageReference Include="SmartReader" Version="0.6.3" />
   </ItemGroup>
 
   <ItemGroup>

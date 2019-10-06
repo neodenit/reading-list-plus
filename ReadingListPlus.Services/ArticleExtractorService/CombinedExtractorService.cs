@@ -14,15 +14,15 @@ namespace ReadingListPlus.Services.ArticleExtractorService
             this.localExtractor = localExtractor ?? throw new ArgumentNullException(nameof(localExtractor));
         }
 
-        public async Task<string> GetArticleText(string url)
+        public async Task<string> GetArticleTextAsync(string url)
         {
             try
             {
-                return await remoteExtractor.GetArticleText(url);
+                return await remoteExtractor.GetArticleTextAsync(url);
             }
             catch (Exception)
             {
-                return await localExtractor.GetArticleText(url);
+                return await localExtractor.GetArticleTextAsync(url);
             }
         }
     }

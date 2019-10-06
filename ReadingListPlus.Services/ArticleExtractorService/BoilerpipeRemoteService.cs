@@ -3,16 +3,16 @@ using System.Threading.Tasks;
 
 namespace ReadingListPlus.Services.ArticleExtractorService
 {
-    public class RemoteExtractorService : IRemoteExtractorService
+    public class BoilerpipeRemoteService : IRemoteExtractorService
     {
         private readonly IHttpClientWrapper httpClientWrapper;
 
-        public RemoteExtractorService(IHttpClientWrapper httpClientWrapper)
+        public BoilerpipeRemoteService(IHttpClientWrapper httpClientWrapper)
         {
             this.httpClientWrapper = httpClientWrapper ?? throw new ArgumentNullException(nameof(httpClientWrapper));
         }
 
-        public async Task<string> GetArticleText(string url)
+        public async Task<string> GetArticleTextAsync(string url)
         {
             var urlParameter = Uri.EscapeDataString(url);
             var fullUrl = $"https://boilerpipe-web.appspot.com/extract?url={urlParameter}&output=text";

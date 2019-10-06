@@ -4,6 +4,6 @@ namespace ReadingListPlus.Services.ArticleExtractorService
 {
     public interface IArticleExtractorService
     {
-        Task<string> GetArticleText(string url);
+        Task<string> GetArticleTextAsync(string url);
     }
 }

@@ -55,7 +55,7 @@ namespace ReadingListPlus.Web.Core.Controllers
             {
                 DeckListItems = deckListItems,
                 DeckID = deckService.GetUserLastDeck(UserName),
-                Text = await articleExtractor.GetArticleText(url),
+                Text = await articleExtractor.GetArticleTextAsync(url),
                 Url = url,
                 PriorityList = cardService.GetFullPriorityList(),
                 Type = CardType.Article,

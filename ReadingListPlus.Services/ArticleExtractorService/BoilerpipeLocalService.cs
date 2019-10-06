@@ -4,16 +4,16 @@ using Boilerpipe.Net.Extractors;
 
 namespace ReadingListPlus.Services.ArticleExtractorService
 {
-    public class LocalExtractorService : ILocalExtractorService
+    public class BoilerpipeLocalService : ILocalExtractorService
     {
         private readonly IHttpClientWrapper httpClientWrapper;
 
-        public LocalExtractorService(IHttpClientWrapper httpClientWrapper)
+        public BoilerpipeLocalService(IHttpClientWrapper httpClientWrapper)
         {
             this.httpClientWrapper = httpClientWrapper ?? throw new ArgumentNullException(nameof(httpClientWrapper));
         }
 
-        public async Task<string> GetArticleText(string url)
+        public async Task<string> GetArticleTextAsync(string url)
         {
             var uri = new Uri(url);
             var response = await httpClientWrapper.GetAsync(uri);
