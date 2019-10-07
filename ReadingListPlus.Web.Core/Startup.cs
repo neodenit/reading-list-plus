@@ -63,7 +63,11 @@ namespace ReadingListPlus.Web.Core
                     policy => policy.RequireClaim(Constants.FixClaim, Constants.FixClaim));                
             });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                .AddSessionStateTempDataProvider();
+
+            services.AddSession();
 
             services.AddScoped<IApplicationContext, ApplicationContext>();
             AddRepositories(services);
@@ -90,8 +94,8 @@ namespace ReadingListPlus.Web.Core
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
-
             app.UseAuthentication();
+            app.UseSession();
 
             app.UseMvc(routes =>
             {
