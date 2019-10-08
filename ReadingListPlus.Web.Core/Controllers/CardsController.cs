@@ -51,11 +51,14 @@ namespace ReadingListPlus.Web.Core.Controllers
                 .OrderBy(d => d.Title)
                 .ToList();
 
+            (string text, string title) = await articleExtractor.GetTextAndTitleAsync(url);
+
             var viewModel = new CreateCardViewModel
             {
                 DeckListItems = deckListItems,
                 DeckID = deckService.GetUserLastDeck(UserName),
-                Text = await articleExtractor.GetArticleTextAsync(url),
+                Title = title,
+                Text = text,
                 Url = url,
                 PriorityList = cardService.GetFullPriorityList(),
                 Type = CardType.Article,

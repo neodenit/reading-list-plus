@@ -13,7 +13,7 @@ namespace ReadingListPlus.Services.ArticleExtractorService
             this.httpClientWrapper = httpClientWrapper ?? throw new ArgumentNullException(nameof(httpClientWrapper));
         }
 
-        public async Task<string> GetArticleTextAsync(string url)
+        public async Task<(string text, string title)> GetTextAndTitleAsync(string url)
         {
             var uri = new Uri(url);
             var response = await httpClientWrapper.GetAsync(uri);
@@ -22,7 +22,7 @@ namespace ReadingListPlus.Services.ArticleExtractorService
             var text = CommonExtractors.ArticleExtractor.GetText(html);
 
             var formattedText = text.Replace("\n", Environment.NewLine + Environment.NewLine);
-            return formattedText;
+            return (formattedText, string.Empty);
         }
     }
 }

@@ -12,7 +12,7 @@ namespace ReadingListPlus.Services.ArticleExtractorService
             this.httpClientWrapper = httpClientWrapper ?? throw new ArgumentNullException(nameof(httpClientWrapper));
         }
 
-        public async Task<string> GetArticleTextAsync(string url)
+        public async Task<(string text, string title)> GetTextAndTitleAsync(string url)
         {
             var urlParameter = Uri.EscapeDataString(url);
             var fullUrl = $"https://boilerpipe-web.appspot.com/extract?url={urlParameter}&output=text";
@@ -22,7 +22,7 @@ namespace ReadingListPlus.Services.ArticleExtractorService
             var text = await response.Content.ReadAsStringAsync();
 
             var formattedText = text.Replace("\n", Environment.NewLine + Environment.NewLine);
-            return formattedText;
+            return (formattedText, string.Empty);
         }
     }
 }

@@ -3,20 +3,20 @@ using SmartReader;
 
 namespace ReadingListPlus.Services.ArticleExtractorService
 {
-    public class ReadabilityService : IArticleExtractorService
+    public class SmartReaderService : IArticleExtractorService
     {
-        public async Task<string> GetArticleTextAsync(string url)
+        public async Task<(string text, string title)> GetTextAndTitleAsync(string url)
         {
             var reader = new Reader(url);
             var article = await reader.GetArticleAsync();
 
             if (article.IsReadable)
             {
-                return article.TextContent;
+                return (article.TextContent.Trim(), article.Title);
             }
             else
             {
-                return url;
+                return (url, string.Empty);
             }
         }
     }
