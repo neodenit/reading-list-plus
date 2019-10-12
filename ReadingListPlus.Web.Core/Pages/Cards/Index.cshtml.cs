@@ -47,7 +47,7 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
             Cards = cards
                 .OrderByDescending(c => c.IsConnected)
                 .ThenBy(c => c.Position)
-                .ThenBy(c => c.Text);
+                .ThenBy(c => c.DisplayText);
 
             return Page();
         }

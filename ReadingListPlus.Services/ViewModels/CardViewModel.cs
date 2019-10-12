@@ -26,6 +26,8 @@ namespace ReadingListPlus.Services.ViewModels
 
         public string Text { get; set; }
 
+        public string DisplayText => string.IsNullOrEmpty(Title) ? Text : $"{Title} - {Text}";
+
         public string HtmlText { get; set; }
 
         public string Url { get; set; }
@@ -36,7 +38,7 @@ namespace ReadingListPlus.Services.ViewModels
 
         [Display(Name = "#")]
         [DisplayFormat(NullDisplayText = "-")]
-        public int? UserFriendlyPosition => IsConnected
+        public int? DisplayPosition => IsConnected
             ? Position + 1
             : null as int?;
 

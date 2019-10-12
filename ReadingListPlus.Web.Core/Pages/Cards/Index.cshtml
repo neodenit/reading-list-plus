@@ -27,7 +27,7 @@
     <thead class="thead-light">
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Cards.First().UserFriendlyPosition)
+                @Html.DisplayNameFor(model => model.Cards.First().DisplayPosition)
             </th>
 
             <th>
@@ -45,11 +45,11 @@
         {
             <tr class="@(item.IsConnected ? string.Empty : "table-secondary")">
                 <td>
-                    @Html.DisplayFor(modelItem => item.UserFriendlyPosition)
+                    @Html.DisplayFor(modelItem => item.DisplayPosition)
                 </td>
 
                 <td>
-                    @item.Text.Truncate(Constants.MaxIndexTextLength)
+                    @item.DisplayText.Truncate(Constants.MaxIndexTextLength)
                 </td>
 
                 <td>
