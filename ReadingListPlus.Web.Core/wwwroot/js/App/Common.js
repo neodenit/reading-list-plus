@@ -30,7 +30,11 @@
 
     function preventDoubleSubmit() {
         $('form').submit(function () {
-            $(this).find('input[type="submit"]').prop('disabled', true);
+            var form = $(this);
+
+            if (form.valid()) {
+                form.find('input[type="submit"]').prop('disabled', true);
+            }
         });
     }
 
