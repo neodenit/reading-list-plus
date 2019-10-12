@@ -28,6 +28,7 @@ namespace ReadingListPlus.DataAccess.Models
 
         public int Position { get; set; }
 
+        [JsonIgnore]
         public bool IsConnected => Position != Constants.DisconnectedCardPosition;
 
         public string Url { get; set; }
