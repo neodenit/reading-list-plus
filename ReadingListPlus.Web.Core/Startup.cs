@@ -118,7 +118,7 @@ namespace ReadingListPlus.Web.Core
             services.AddTransient<IDeckService, DeckService>();
             services.AddTransient<ICardService, CardService>();
 
-            services.AddTransient<IArticleExtractorService, NReadabilityService>();
+            services.AddTransient<IArticleExtractorService, BoilerpipeRemoteService>();
 
             services.AddTransient<ISchedulerService, SchedulerService>();
             services.AddTransient<ITextConverterService, TextConverterService>();
