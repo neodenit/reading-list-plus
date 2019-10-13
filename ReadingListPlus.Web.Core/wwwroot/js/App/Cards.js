@@ -113,9 +113,9 @@
         $('#Card_Priority').val(priority);
 
         var isBookmarked = $('#Card_IsBookmarked').val();
-        var cardType = parseInt($('#Card_Type').val());
+        var cardType = $('#Card_Type').val();
 
-        if (cardType !== Enums.CardType.Article || isBookmarked === 'True') {
+        if (cardType !== 'Article' || isBookmarked === 'True') {
             SubmitSelection("", "Postpone");
         } else if (isBookmarked === 'False') {
             $('#ModalDialog').modal();
