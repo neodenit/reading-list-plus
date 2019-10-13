@@ -46,10 +46,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
         public async Task<ActionResult> CreateFromUrl(string url)
         {
-            IEnumerable<DeckViewModel> deckListItems = await deckService
-                .GetUserDecks(UserName)
-                .OrderBy(d => d.Title)
-                .ToList();
+            IEnumerable<DeckViewModel> deckListItems = await deckService.GetUserDecks(UserName).ToList();
 
             (string text, string title) = await articleExtractor.GetTextAndTitleAsync(url);
 

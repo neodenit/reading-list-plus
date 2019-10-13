@@ -56,9 +56,7 @@ namespace ReadingListPlus.Web.Core.Controllers
             _ = id;
 
             IEnumerable<DeckViewModel> decks = await deckService.GetUserDecks(UserName).ToList();
-            var json = decks
-                .OrderBy(d => d.Title)
-                .Select(d => new { d.ID, Text = d.Title, Children = true });
+            var json = decks.Select(d => new { d.ID, Text = d.Title, Children = true });
 
             return Json(json);
         }

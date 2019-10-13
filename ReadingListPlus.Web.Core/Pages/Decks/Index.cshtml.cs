@@ -24,9 +24,7 @@ namespace ReadingListPlus.Web.Core.Pages.Decks
 
         public async Task OnGet()
         {
-            IAsyncEnumerable<DeckViewModel> decks = deckService.GetUserDecks(User.Identity.Name);
-            var orderedDecks = await decks.OrderBy(d => d.Title).ToList();
-            Decks = orderedDecks;
+            Decks = await deckService.GetUserDecks(User.Identity.Name).ToList();
         }
     }
 }

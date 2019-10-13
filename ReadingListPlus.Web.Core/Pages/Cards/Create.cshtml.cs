@@ -83,10 +83,7 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
             else
             {
                 Card.DeckListItems = settings.AllowDeckSelection && Card.CreationMode != CreationMode.Add
-                    ? await deckService
-                            .GetUserDecks(User.Identity.Name)
-                            .OrderBy(d => d.Title)
-                            .ToList()
+                    ? await deckService.GetUserDecks(User.Identity.Name).ToList()
                     : null;
 
                 Card.PriorityList = Card.CreationMode == CreationMode.Extract

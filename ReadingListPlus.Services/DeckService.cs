@@ -29,9 +29,10 @@ namespace ReadingListPlus.Services
 
         public IAsyncEnumerable<DeckViewModel> GetUserDecks(string userName)
         {
-            var items = deckRepository.GetUserDecks(userName);
+            IAsyncEnumerable<Deck> decks = deckRepository.GetUserDecks(userName);
 
-            var viewModel = items
+            var viewModel = decks
+                .OrderBy(d => d.Title)
                 .Select(d => new DeckViewModel
                 {
                     ID = d.ID,
