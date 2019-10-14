@@ -93,8 +93,6 @@ namespace ReadingListPlus.Services
 
             string selection = textConverterService.GetSelection(text);
 
-            IEnumerable<KeyValuePair<string, string>> priorities = GetShortPriorityList();
-
             var newCard = new CreateCardViewModel
             {
                 Url = card.Url,
@@ -102,37 +100,11 @@ namespace ReadingListPlus.Services
                 OldDeckID = card.DeckID,
                 Text = selection,
                 ParentCardUpdatedText = text,
-                PriorityList = priorities,
                 Type = CardType.Extract,
                 CreationMode = CreationMode.Extract
             };
 
-            if (settings.AllowDeckSelection)
-            {
-                IEnumerable<DeckViewModel> userDecks = await deckRepository
-                    .GetUserDecks(userName)
-                    .OrderBy(d => d.Title)
-                    .Select(d => new DeckViewModel
-                    {
-                        ID = d.ID,
-                        Title = d.Title
-                    })
-                    .ToList();
-
-                if (card.Deck.DependentDeckID.HasValue)
-                {
-                    newCard.DeckID = card.Deck.DependentDeckID;
-                    newCard.DeckListItems = userDecks;
-                }
-                else
-                {
-                    newCard.DeckListItems = userDecks;
-                }
-            }
-            else
-            {
-                newCard.DeckID = card.DeckID;
-            }
+            newCard.DeckID = card.Deck?.DependentDeckID;
 
             return newCard;
         }

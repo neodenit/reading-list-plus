@@ -12,15 +12,11 @@ namespace ReadingListPlus.Services.ViewModels
         [Required]
         public Priority? Priority { get; set; }
 
-        public IEnumerable<KeyValuePair<string, string>> PriorityList { get; set; }
-
         [Required]
         [DeckFound]
         [DeckOwned]
         [Display(ResourceType = typeof(Resources), Name = nameof(Resources.Collection))]
         public Guid? DeckID { get; set; }
-
-        public IEnumerable<DeckViewModel> DeckListItems { get; set; }
 
         public string DeckTitle { get; set; }
 

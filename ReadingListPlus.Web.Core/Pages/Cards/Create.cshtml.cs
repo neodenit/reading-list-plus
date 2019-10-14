@@ -42,6 +42,14 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
             {
                 var viewModelJson = viewModel as string;
                 Card = JsonConvert.DeserializeObject<CreateCardViewModel>(viewModelJson);
+
+                DeckListItems = settings.AllowDeckSelection && Card.CreationMode != CreationMode.Add
+                    ? await deckService.GetUserDecks(User.Identity.Name).ToList()
+                    : null;
+
+                PriorityList = Card.CreationMode == CreationMode.Extract
+                    ? cardService.GetShortPriorityList()
+                    : cardService.GetFullPriorityList();
             }
             else
             {
@@ -53,7 +61,6 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
                 {
                     DeckID = deck.ID,
                     DeckTitle = deck.Title,
-                    PriorityList = priorities,
                     Type = CardType.Common,
                     CreationMode = CreationMode.Add
                 };
@@ -64,6 +71,10 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
 
         [BindProperty]
         public CreateCardViewModel Card { get; set; }
+
+        public IEnumerable<DeckViewModel> DeckListItems { get; set; }
+
+        public IEnumerable<KeyValuePair<string, string>> PriorityList { get; set; }
 
         public async Task<ActionResult> OnPostAsync()
         {
@@ -82,11 +93,11 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
             }
             else
             {
-                Card.DeckListItems = settings.AllowDeckSelection && Card.CreationMode != CreationMode.Add
+                DeckListItems = settings.AllowDeckSelection && Card.CreationMode != CreationMode.Add
                     ? await deckService.GetUserDecks(User.Identity.Name).ToList()
                     : null;
 
-                Card.PriorityList = Card.CreationMode == CreationMode.Extract
+                PriorityList = Card.CreationMode == CreationMode.Extract
                     ? cardService.GetShortPriorityList()
                     : cardService.GetFullPriorityList();
 
