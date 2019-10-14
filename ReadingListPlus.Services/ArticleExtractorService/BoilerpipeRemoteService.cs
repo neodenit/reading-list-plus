@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
@@ -7,6 +9,13 @@ namespace ReadingListPlus.Services.ArticleExtractorService
     public class BoilerpipeRemoteService : IRemoteExtractorService
     {
         private readonly IHttpClientWrapper httpClientWrapper;
+
+        private readonly Dictionary<string, string> replacements = new Dictionary<string, string>
+        {
+            { "\n", Environment.NewLine + Environment.NewLine },
+            { " ,", "," },
+            { " .", "." }
+        };
 
         public BoilerpipeRemoteService(IHttpClientWrapper httpClientWrapper)
         {
@@ -33,7 +42,9 @@ namespace ReadingListPlus.Services.ArticleExtractorService
 
             var title = json.response.title;
             var text = json.response.content;
-            var formattedText = text.Replace("\n", Environment.NewLine + Environment.NewLine);
+
+            var formattedText = replacements.Aggregate(text, (s, r) =>
+                s.Replace(r.Key, r.Value));
 
             return (formattedText, title);
         }
