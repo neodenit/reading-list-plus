@@ -46,10 +46,6 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
                 DeckListItems = settings.AllowDeckSelection && Card.CreationMode != CreationMode.Add
                     ? await deckService.GetUserDecks(User.Identity.Name).ToList()
                     : null;
-
-                PriorityList = Card.CreationMode == CreationMode.Extract
-                    ? cardService.GetShortPriorityList()
-                    : cardService.GetFullPriorityList();
             }
             else
             {
@@ -65,6 +61,10 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
                     CreationMode = CreationMode.Add
                 };
             }
+
+            PriorityList = Card.CreationMode == CreationMode.Extract
+                ? cardService.GetShortPriorityList()
+                : cardService.GetFullPriorityList();
 
             return Page();
         }
