@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Boilerpipe.Net.Extractors;
+using HtmlAgilityPack;
 
 namespace ReadingListPlus.Services.ArticleExtractorService
 {
@@ -20,9 +21,13 @@ namespace ReadingListPlus.Services.ArticleExtractorService
             var html = await response.Content.ReadAsStringAsync();
 
             var text = CommonExtractors.ArticleExtractor.GetText(html);
-
             var formattedText = text.Replace("\n", Environment.NewLine + Environment.NewLine);
-            return (formattedText, string.Empty);
+
+            var doc = new HtmlDocument();
+            doc.LoadHtml(html);
+            var title = doc.DocumentNode.SelectSingleNode("//title").InnerText;
+
+            return (formattedText, title);
         }
     }
 }
