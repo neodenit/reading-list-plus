@@ -12,7 +12,7 @@ namespace ReadingListPlus.Services
 
         Task<EditCardViewModel> GetCardForEditingAsync(Guid id);
 
-        Task<CardViewModel> GetCardForReadingAsync(Guid id);
+        Task<ReadCardViewModel> GetCardForReadingAsync(Guid id);
 
         Task<IEnumerable<CardViewModel>> GetAllCardsAsync(Guid deckId);
 
@@ -20,7 +20,7 @@ namespace ReadingListPlus.Services
 
         Task<CreateCardViewModel> ExtractAsync(Guid id, string text, string userName);
 
-        Task<CardViewModel> BookmarkAsync(Guid id, string text);
+        Task<ReadCardViewModel> BookmarkAsync(Guid id, string text);
 
         Task<Uri> RememberAsync(Guid id, string text);
 

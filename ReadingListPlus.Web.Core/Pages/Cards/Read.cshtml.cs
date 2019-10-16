@@ -39,7 +39,7 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
         }
 
         [BindProperty]
-        public CardViewModel Card { get; set; }
+        public ReadCardViewModel Card { get; set; }
 
         public async Task<IActionResult> OnPostAsync()
         {

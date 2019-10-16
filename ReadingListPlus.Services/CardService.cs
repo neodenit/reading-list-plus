@@ -44,7 +44,7 @@ namespace ReadingListPlus.Services
             return viewModel;
         }
 
-        public async Task<CardViewModel> GetCardForReadingAsync(Guid id)
+        public async Task<ReadCardViewModel> GetCardForReadingAsync(Guid id)
         {
             Card card = await cardRepository.GetCardAsync(id);
 
@@ -52,7 +52,7 @@ namespace ReadingListPlus.Services
 
             if (string.IsNullOrEmpty(newRepetitionCardText))
             {
-                CardViewModel viewModel = MapCardToHtmlViewModel(card, NewRepetitionCardState.None);
+                ReadCardViewModel viewModel = MapCardToHtmlViewModel(card, NewRepetitionCardState.None);
                 return viewModel;
             }
             else
@@ -63,7 +63,7 @@ namespace ReadingListPlus.Services
 
                 var newRepetitionCardState = isValid ? NewRepetitionCardState.Done : NewRepetitionCardState.Pending;
 
-                CardViewModel viewModel = MapCardToHtmlViewModel(card, newRepetitionCardState);
+                ReadCardViewModel viewModel = MapCardToHtmlViewModel(card, newRepetitionCardState);
                 return viewModel;
             }
         }
@@ -109,7 +109,7 @@ namespace ReadingListPlus.Services
             return newCard;
         }
 
-        public async Task<CardViewModel> BookmarkAsync(Guid id, string text)
+        public async Task<ReadCardViewModel> BookmarkAsync(Guid id, string text)
         {
             if (!settings.BookmarkEnabled)
             {
@@ -126,7 +126,7 @@ namespace ReadingListPlus.Services
 
             await cardRepository.SaveChangesAsync();
 
-            CardViewModel viewModel = MapCardToHtmlViewModel(card, NewRepetitionCardState.None);
+            ReadCardViewModel viewModel = MapCardToHtmlViewModel(card, NewRepetitionCardState.None);
 
             viewModel.IsBookmarked = true;
 
@@ -419,7 +419,7 @@ namespace ReadingListPlus.Services
                 Position = card.Position
             };
 
-        private CardViewModel MapCardToHtmlViewModel(Card card, NewRepetitionCardState newRepetitionCardState)
+        private ReadCardViewModel MapCardToHtmlViewModel(Card card, NewRepetitionCardState newRepetitionCardState)
         {
             var cardUrlTemplate = $"/Cards/Read/${{{Constants.IdGroup}}}";
 
@@ -433,7 +433,7 @@ namespace ReadingListPlus.Services
                 ? Constants.RepetitionCardLabel
                 : Constants.NewRepetitionCardLabel;
 
-            var model = new CardViewModel
+            var model = new ReadCardViewModel
             {
                 ID = card.ID,
                 DeckID = card.DeckID,

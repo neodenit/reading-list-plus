@@ -1,12 +1,11 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 using ReadingListPlus.Common;
 using ReadingListPlus.Common.Enums;
 using ReadingListPlus.Services.Attributes;
 
 namespace ReadingListPlus.Services.ViewModels
 {
-    public class CardViewModel
+    public class ReadCardViewModel
     {
         [CardFound]
         [CardOwned]
@@ -26,7 +25,7 @@ namespace ReadingListPlus.Services.ViewModels
 
         public string Text { get; set; }
 
-        public string DisplayText => string.IsNullOrEmpty(Title) ? Text : $"{Title} - {Text}";
+        public string HtmlText { get; set; }
 
         public string Url { get; set; }
 
@@ -34,12 +33,14 @@ namespace ReadingListPlus.Services.ViewModels
 
         public bool IsConnected => Position != Constants.DisconnectedCardPosition;
 
-        [Display(Name = "#")]
-        [DisplayFormat(NullDisplayText = "-")]
-        public int? DisplayPosition => IsConnected
-            ? Position + 1
-            : null as int?;
+        public bool IsBookmarked { get; set; }
+
+        public string Selection { get; set; }
+
+        public CardAction NextAction { get; set; }
 
         public Priority? Priority { get; set; }
+
+        public NewRepetitionCardState NewRepetitionCardState { get; set; }
     }
 }
