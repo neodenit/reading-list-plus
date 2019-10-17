@@ -13,34 +13,34 @@ namespace ReadingListPlus.Services
 {
     public class CardService : ICardService
     {
-        private readonly ISettings settings;
         private readonly ICardRepository cardRepository;
         private readonly IDeckRepository deckRepository;
         private readonly ITextConverterService textConverterService;
         private readonly IRepetitionCardService repetitionCardService;
         private readonly ISchedulerService schedulerService;
+        private readonly IMappingService mappingService;
 
-        public CardService(ISettings settings, ICardRepository cardRepository, IDeckRepository deckRepository, ITextConverterService textConverterService, IRepetitionCardService repetitionCardService, ISchedulerService schedulerService)
+        public CardService(ICardRepository cardRepository, IDeckRepository deckRepository, ITextConverterService textConverterService, IRepetitionCardService repetitionCardService, ISchedulerService schedulerService, IMappingService mappingService)
         {
-            this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
             this.cardRepository = cardRepository ?? throw new System.ArgumentNullException(nameof(cardRepository));
             this.deckRepository = deckRepository ?? throw new ArgumentNullException(nameof(deckRepository));
             this.textConverterService = textConverterService ?? throw new ArgumentNullException(nameof(textConverterService));
             this.repetitionCardService = repetitionCardService ?? throw new ArgumentNullException(nameof(repetitionCardService));
             this.schedulerService = schedulerService ?? throw new ArgumentNullException(nameof(schedulerService));
+            this.mappingService = mappingService ?? throw new ArgumentNullException(nameof(mappingService));
         }
 
         public async Task<CardViewModel> GetCardAsync(Guid id)
         {
             Card card = await cardRepository.GetCardAsync(id);
-            CardViewModel viewModel = MapCardToViewModel(card);
+            CardViewModel viewModel = mappingService.MapCardToViewModel(card);
             return viewModel;
         }
 
         public async Task<EditCardViewModel> GetCardForEditingAsync(Guid id)
         {
             Card card = await cardRepository.GetCardAsync(id);
-            EditCardViewModel viewModel = MapCardToEditViewModel(card);
+            EditCardViewModel viewModel = mappingService.MapCardToEditViewModel(card);
             return viewModel;
         }
 
@@ -52,7 +52,7 @@ namespace ReadingListPlus.Services
 
             if (string.IsNullOrEmpty(newRepetitionCardText))
             {
-                ReadCardViewModel viewModel = MapCardToHtmlViewModel(card, NewRepetitionCardState.None);
+                ReadCardViewModel viewModel = mappingService.MapCardToHtmlViewModel(card, NewRepetitionCardState.None);
                 return viewModel;
             }
             else
@@ -63,7 +63,7 @@ namespace ReadingListPlus.Services
 
                 var newRepetitionCardState = isValid ? NewRepetitionCardState.Done : NewRepetitionCardState.Pending;
 
-                ReadCardViewModel viewModel = MapCardToHtmlViewModel(card, newRepetitionCardState);
+                ReadCardViewModel viewModel = mappingService.MapCardToHtmlViewModel(card, newRepetitionCardState);
                 return viewModel;
             }
         }
@@ -71,181 +71,15 @@ namespace ReadingListPlus.Services
         public async Task<IEnumerable<CardViewModel>> GetAllCardsAsync(Guid deckId)
         {
             Deck deck = await deckRepository.GetDeckAsync(deckId);
-            IEnumerable<CardViewModel> result = deck.Cards.Select(c => MapCardToViewModel(c));
+            IEnumerable<CardViewModel> result = deck.Cards.Select(c => mappingService.MapCardToViewModel(c));
             return result;
         }
 
         public async Task<IEnumerable<CardViewModel>> GetConnectedCardsAsync(Guid deckId)
         {
             Deck deck = await deckRepository.GetDeckAsync(deckId);
-            IEnumerable<CardViewModel> result = deck.ConnectedCards.Select(c => MapCardToViewModel(c));
+            IEnumerable<CardViewModel> result = deck.ConnectedCards.Select(c => mappingService.MapCardToViewModel(c));
             return result;
-        }
-
-        public async Task<CreateCardViewModel> ExtractAsync(Guid id, string text, string userName)
-        {
-            if (!settings.ExtractEnabled)
-            {
-                throw new InvalidOperationException();
-            }
-
-            Card card = await cardRepository.GetCardAsync(id);
-
-            string selection = textConverterService.GetSelection(text);
-
-            var newCard = new CreateCardViewModel
-            {
-                Url = card.Url,
-                ParentCardID = card.ID,
-                OldDeckID = card.DeckID,
-                Text = selection,
-                ParentCardUpdatedText = text,
-                Type = CardType.Extract,
-                CreationMode = CreationMode.Extract
-            };
-
-            newCard.DeckID = card.Deck?.DependentDeckID;
-
-            return newCard;
-        }
-
-        public async Task<ReadCardViewModel> BookmarkAsync(Guid id, string text)
-        {
-            if (!settings.BookmarkEnabled)
-            {
-                throw new InvalidOperationException();
-            }
-
-            Card card = await cardRepository.GetCardAsync(id);
-
-            string textWithoutBookmarks = textConverterService.DeleteTagByName(text, "bookmark");
-
-            string newText = textConverterService.ReplaceTag(textWithoutBookmarks, Constants.SelectionLabel, "bookmark");
-
-            card.Text = newText;
-
-            await cardRepository.SaveChangesAsync();
-
-            ReadCardViewModel viewModel = MapCardToHtmlViewModel(card, NewRepetitionCardState.None);
-
-            viewModel.IsBookmarked = true;
-
-            return viewModel;
-        }
-
-        public async Task<Uri> RememberAsync(Guid cardId, string text)
-        {
-            if (!settings.RememberEnabled)
-            {
-                throw new InvalidOperationException();
-            }
-
-            Card card = await cardRepository.GetCardAsync(cardId);
-
-            string repetitionCardText = textConverterService.GetSelection(text);
-            var encodedRepetitionCardText = Uri.EscapeDataString(repetitionCardText);
-
-            string textWithNewRepetitionCard = textConverterService.ReplaceTag(text, Constants.SelectionLabel, Constants.NewRepetitionCardLabel);
-            var repetitionCardId = Guid.NewGuid().ToString();
-            string textWithNewRepetitionCardId = textConverterService.AddParameter(textWithNewRepetitionCard, Constants.NewRepetitionCardLabel, repetitionCardId);
-
-            card.Text = textWithNewRepetitionCardId;
-
-            await cardRepository.SaveChangesAsync();
-
-            var baseUri = new Uri(settings.SpacedRepetitionServer);
-            var uri = new Uri(baseUri, $"Cards/Create?readingCardId={cardId}&repetitionCardId={repetitionCardId}&text={encodedRepetitionCardText}");
-            return uri;
-        }
-
-        public async Task<Guid> CancelRepetitionCardCreationAsync(Guid id)
-        {
-            if (!settings.RememberEnabled)
-            {
-                throw new InvalidOperationException();
-            }
-
-            Card card = await cardRepository.GetCardAsync(id);
-
-            string newText = textConverterService.DeleteTagByName(card.Text, Constants.NewRepetitionCardLabel);
-
-            card.Text = newText;
-
-            await cardRepository.SaveChangesAsync();
-
-            return card.ID;
-        }
-
-        public async Task<Guid> CompleteRepetitionCardCreationAsync(Guid id)
-        {
-            if (!settings.RememberEnabled)
-            {
-                throw new InvalidOperationException();
-            }
-
-            Card card = await cardRepository.GetCardAsync(id);
-
-            string newText = textConverterService.ReplaceTag(card.Text, Constants.NewRepetitionCardLabel, Constants.RepetitionCardLabel);
-
-            card.Text = newText;
-
-            await cardRepository.SaveChangesAsync();
-
-            return card.ID;
-        }
-
-        public async Task<Guid> HighlightAsync(Guid id, string text)
-        {
-            if (!settings.HighlightEnabled)
-            {
-                throw new InvalidOperationException();
-            }
-
-            Card card = await cardRepository.GetCardAsync(id);
-
-            string newText = textConverterService.AddHighlight(card.Text, text);
-
-            card.Text = newText;
-
-            await cardRepository.SaveChangesAsync();
-
-            return card.ID;
-        }
-
-        public async Task<Guid> ClozeAsync(Guid id, string text)
-        {
-            if (!settings.ClozeEnabled)
-            {
-                throw new InvalidOperationException();
-            }
-
-            Card card = await cardRepository.GetCardAsync(id);
-
-            string newText = textConverterService.AddCloze(card.Text, text);
-
-            card.Text = newText;
-
-            await cardRepository.SaveChangesAsync();
-
-            return card.ID;
-        }
-
-        public async Task<Guid> DeleteRegionAsync(Guid id, string text)
-        {
-            if (!settings.DropEnabled)
-            {
-                throw new InvalidOperationException();
-            }
-
-            Card card = await cardRepository.GetCardAsync(id);
-
-            string newText = textConverterService.DeleteTagByText(card.Text, text);
-
-            card.Text = newText;
-
-            await cardRepository.SaveChangesAsync();
-
-            return card.ID;
         }
 
         public async Task<CardViewModel> PostponeAsync(Guid id, Priority priority)
@@ -254,7 +88,7 @@ namespace ReadingListPlus.Services
 
             if (card.Position != Constants.FirstCardPosition)
             {
-                CardViewModel viewModel = MapCardToViewModel(card);
+                CardViewModel viewModel = mappingService.MapCardToViewModel(card);
                 return viewModel;
             }
             else
@@ -263,7 +97,7 @@ namespace ReadingListPlus.Services
 
                 await cardRepository.SaveChangesAsync();
 
-                CardViewModel viewModel = MapCardToViewModel(card);
+                CardViewModel viewModel = mappingService.MapCardToViewModel(card);
                 return viewModel;
             }
         }
@@ -347,7 +181,7 @@ namespace ReadingListPlus.Services
 
             await cardRepository.SaveChangesAsync();
 
-            CardViewModel viewModel = MapCardToViewModel(dbCard);
+            CardViewModel viewModel = mappingService.MapCardToViewModel(dbCard);
             return viewModel;
         }
 
@@ -361,7 +195,7 @@ namespace ReadingListPlus.Services
 
             await cardRepository.SaveChangesAsync();
 
-            CardViewModel viewModel = MapCardToViewModel(card);
+            CardViewModel viewModel = mappingService.MapCardToViewModel(card);
             return viewModel;
         }
 
@@ -405,68 +239,6 @@ namespace ReadingListPlus.Services
 
             await cardRepository.SaveChangesAsync();
         }
-
-        private CardViewModel MapCardToViewModel(Card card) =>
-            new CardViewModel
-            {
-                ID = card.ID,
-                DeckID = card.DeckID,
-                DeckTitle = card.Deck.Title,
-                Type = card.Type,
-                Title = card.Title,
-                Text = card.Text,
-                Url = card.Url,
-                Position = card.Position
-            };
-
-        private ReadCardViewModel MapCardToHtmlViewModel(Card card, NewRepetitionCardState newRepetitionCardState)
-        {
-            var cardUrlTemplate = $"/Cards/Read/${{{Constants.IdGroup}}}";
-
-            var repetitionCardUrlTemplate = new Uri(new Uri(settings.SpacedRepetitionServer), $"Cards/Edit/{textConverterService.GetIdParameter(card.Text, Constants.RepetitionCardLabel)}").AbsoluteUri;
-
-            var newRepetitionCardUrlTemplate = newRepetitionCardState == NewRepetitionCardState.Done
-                ? new Uri(new Uri(settings.SpacedRepetitionServer), $"Cards/Edit/{textConverterService.GetIdParameter(card.Text, Constants.NewRepetitionCardLabel)}").AbsoluteUri
-                : new Uri(new Uri(settings.SpacedRepetitionServer), $"Cards/Create?readingCardId={card.ID}&repetitionCardId={textConverterService.GetIdParameter(card.Text, Constants.NewRepetitionCardLabel)}&text={Uri.EscapeDataString(textConverterService.GetNewRepetitionCardText(card.Text))}").AbsoluteUri;
-
-            var newRepetitionCardClass = newRepetitionCardState == NewRepetitionCardState.Done
-                ? Constants.RepetitionCardLabel
-                : Constants.NewRepetitionCardLabel;
-
-            var model = new ReadCardViewModel
-            {
-                ID = card.ID,
-                DeckID = card.DeckID,
-                ParentCardID = card.ParentCardID,
-                DeckTitle = card.Deck.Title,
-                Type = card.Type,
-                Title = card.Title,
-                Text = card.Text,
-                HtmlText = textConverterService.GetHtml(
-                    card.Text,
-                    cardUrlTemplate,
-                    repetitionCardUrlTemplate,
-                    newRepetitionCardUrlTemplate,
-                    newRepetitionCardClass),
-                Url = card.Url,
-                Position = card.Position,
-                NewRepetitionCardState = newRepetitionCardState
-            };
-
-            return model;
-        }
-
-        private EditCardViewModel MapCardToEditViewModel(Card card) =>
-            new EditCardViewModel
-            {
-                ID = card.ID,
-                DeckID = card.DeckID,
-                DeckTitle = card.Deck.Title,
-                Type = card.Type,
-                Title = card.Title,
-                Text = card.Text,
-                Url = card.Url
-            };
 
         private IEnumerable<KeyValuePair<string, string>> GetPriorities(IEnumerable<Priority> priorities) =>
             priorities.Select(p => new KeyValuePair<string, string>(p.ToString("d"), GetPriorityLabel(p)));
