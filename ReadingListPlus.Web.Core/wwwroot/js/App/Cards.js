@@ -41,30 +41,41 @@
         }
     };
 
-    $('.bookmark').click(function () {
+    $('#article').on('click', '.bookmark', function () {
         DropSelections();
-        $(this).removeClass('bookmark').addClass('bookmarkselected');
+        switchClass($(this), 'bookmark', 'bookmarkselected');
+        $('#delete-panel').removeClass('d-none');
     });
 
-    $('.highlight').click(function () {
+    $('#article').on('click', '.highlight', function () {
         DropSelections();
-        $(this).removeClass('highlight').addClass('highlightselected');
+        switchClass($(this), 'highlight', 'highlightselected');
+        $('#delete-panel').removeClass('d-none');
     });
 
-    $('span.extract').click(function () {
+    $('#article').on('click', '.cloze', function () {
         DropSelections();
-        $(this).removeClass('extract').addClass('extractselected');
+        switchClass($(this), 'cloze', 'clozeselected');
+        $('#delete-panel').removeClass('d-none');
     });
 
-    $('.cloze').click(function () {
+    $('#article').on('click', 'span.extract', function () {
         DropSelections();
-        $(this).removeClass('cloze').addClass('clozeselected');
+        switchClass($(this), 'extract', 'extractselected');
+        $('#delete-panel').removeClass('d-none');
+    });
+
+    $('#article').on('click', '.bookmarkselected, .highlightselected, .clozeselected, span.extractselected', function () {
+        DropSelections();
+        $('#delete-panel').addClass('d-none');
     });
 
     $('a[data-act]').click(function () {
         var action = $(this).data('act');
 
         if (action === 'Extract' || action === 'Bookmark' || action === 'Remember') {
+            DropSelections();
+
             var newNode = createSelectionSpan();
 
             surroundSelection(newNode);
