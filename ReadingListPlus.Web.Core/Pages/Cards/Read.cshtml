@@ -23,7 +23,7 @@
     <input type="hidden" asp-for="Card.Priority" />
 
     @{
-        var mobile = "d-md-none";
+        var mobile = "d-md-none btn-lg";
         var desktop = "d-none d-md-inline-block";
         var topPanelButton = "btn btn-outline-secondary";
         var selectionButton = "act btn btn-primary disabled";
@@ -32,21 +32,23 @@
     @switch (Model.Card.NewRepetitionCardState)
     {
         case NewRepetitionCardState.None:
-            <div id="topPanel" class="actions topPanel pt-1">
-                <a asp-page="@DeckIndexModel.PageName" class="@mobile @topPanelButton btn-lg oi oi-home"></a>
-                <a asp-page="@DeckIndexModel.PageName" class="@desktop @topPanelButton">Topics</a>
+            <div id="topPanel" class="actions topPanel d-flex pt-1">
+                <div class="ml-auto ml-md-0">
+                    <a asp-page="@DeckIndexModel.PageName" class="@mobile @topPanelButton oi oi-home"></a>
+                    <a asp-page="@DeckIndexModel.PageName" class="@desktop @topPanelButton">Topics</a>
 
-                <a asp-page="@CardEditModel.PageName" asp-route-id="@Model.Card.ID" asp-route-returnUrl="@Url.Action(nameof(DecksController.Read), DecksController.Name, new { Id = Model.Card.DeckID })" class="@mobile @topPanelButton btn-lg oi oi-pencil"></a>
-                <a asp-page="@CardEditModel.PageName" asp-route-id="@Model.Card.ID" asp-route-returnUrl="@Url.Action(nameof(DecksController.Read), DecksController.Name, new { Id = Model.Card.DeckID })" class="@desktop @topPanelButton">Edit @Resources.Item</a>
+                    <a asp-page="@CardEditModel.PageName" asp-route-id="@Model.Card.ID" asp-route-returnUrl="@Url.Action(nameof(DecksController.Read), DecksController.Name, new { Id = Model.Card.DeckID })" class="@mobile @topPanelButton oi oi-pencil"></a>
+                    <a asp-page="@CardEditModel.PageName" asp-route-id="@Model.Card.ID" asp-route-returnUrl="@Url.Action(nameof(DecksController.Read), DecksController.Name, new { Id = Model.Card.DeckID })" class="@desktop @topPanelButton">Edit @Resources.Item</a>
 
-                @if (Model.Card.ParentCardID != null)
-                {
-                    <a asp-page="@CardReadModel.PageName" asp-route-id="@Model.Card.ParentCardID" class="@mobile @topPanelButton btn-lg oi oi-caret-top"></a>
-                    <a asp-page="@CardReadModel.PageName" asp-route-id="@Model.Card.ParentCardID" class="@desktop @topPanelButton">Parent @Resources.Item</a>
-                }
+                    @if (Model.Card.ParentCardID != null)
+                    {
+                        <a asp-page="@CardReadModel.PageName" asp-route-id="@Model.Card.ParentCardID" class="@mobile @topPanelButton oi oi-caret-top"></a>
+                        <a asp-page="@CardReadModel.PageName" asp-route-id="@Model.Card.ParentCardID" class="@desktop @topPanelButton">Parent @Resources.Item</a>
+                    }
 
-                <a asp-page="@CardIndexModel.PageName" asp-route-deckId="@Model.Card.DeckID" class="@mobile @topPanelButton btn-lg oi oi-list"></a>
-                <a asp-page="@CardIndexModel.PageName" asp-route-deckId="@Model.Card.DeckID" class="@desktop @topPanelButton">Queue</a>
+                    <a asp-page="@CardIndexModel.PageName" asp-route-deckId="@Model.Card.DeckID" class="@mobile @topPanelButton oi oi-list"></a>
+                    <a asp-page="@CardIndexModel.PageName" asp-route-deckId="@Model.Card.DeckID" class="@desktop @topPanelButton">Queue</a>
+                </div>
             </div>
 
             <div id="mainPanel" class="actions">
