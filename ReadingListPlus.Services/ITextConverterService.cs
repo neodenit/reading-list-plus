@@ -25,5 +25,7 @@ namespace ReadingListPlus.Services
         string GetIdParameter(string text, string tagName);
 
         string GetNewRepetitionCardText(string text);
+
+        string GetTextPattern(string text);
     }
 }

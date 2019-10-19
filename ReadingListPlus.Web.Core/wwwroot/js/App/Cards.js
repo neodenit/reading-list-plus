@@ -1,4 +1,6 @@
-﻿$(function () {
+﻿"use strict";
+
+$(function () {
     var mainPanelHeight = $('#mainPanel').outerHeight(true);
     var navbarHeight = $('nav.fixed-top').outerHeight(true);
 
@@ -8,7 +10,132 @@
 
     $('.cloze').width(maxClozeWidth);
 
-    document.onselectionchange = function () {
+    document.onselectionchange = checkSelection;
+
+    $('#article').on('click', '.bookmark', function () {
+        dropSelection();
+        switchClass($(this), 'bookmark', 'bookmarkselected');
+        $('#delete-panel').removeClass('d-none');
+    });
+
+    $('#article').on('click', '.highlight', function () {
+        dropSelection();
+        switchClass($(this), 'highlight', 'highlightselected');
+        $('#delete-panel').removeClass('d-none');
+    });
+
+    $('#article').on('click', '.cloze', function () {
+        dropSelection();
+        switchClass($(this), 'cloze', 'clozeselected');
+        $('#delete-panel').removeClass('d-none');
+    });
+
+    $('#article').on('click', 'span.extract', function () {
+        dropSelection();
+        switchClass($(this), 'extract', 'extractselected');
+        $('#delete-panel').removeClass('d-none');
+    });
+
+    $('#article').on('click', '.bookmarkselected, .highlightselected, .clozeselected, span.extractselected', function () {
+        dropSelection();
+        $('#delete-panel').addClass('d-none');
+    });
+
+    $('a[data-act]').click(function () {
+        var button = $(this);
+        var action = button.data('act');
+
+        switch (action) {
+            case 'Extract':
+            case 'Bookmark':
+            case 'Remember':
+                dropSelection();
+
+                var newNode = createSelectionSpan();
+                surroundSelection(newNode);
+
+                removeChildSpans();
+
+                var htmlText = $('#article').html();
+                var convertedText = HtmlToText(htmlText);
+                var trimmedText = convertedText.trim();
+
+                submitSelection(trimmedText, action);
+
+                break;
+            case 'DeleteRegion':
+                var regionTypes = ['.bookmarkselected', '.highlightselected', '.extractselected', '.clozeselected'];
+
+                for (var i in regionTypes) {
+                    var regionType = regionTypes[i];
+
+                    if ($(regionType).length) {
+                        var regionText = $(regionType).text();
+                        submitSelection(regionText, action);
+                        break;
+                    }
+                }
+
+                break;
+            case 'CancelRepetitionCardCreation':
+            case 'CompleteRepetitionCardCreation':
+                submitSelection('', action);
+                break;
+            case 'Highlight':
+            case 'Cloze':
+                var selectionText = getSelectionText();
+                submitSelection(selectionText, action);
+                break;
+            case 'Postpone':
+                var priority = button.data('priority');
+                $('#Card_Priority').val(priority);
+
+                var isBookmarked = $('#Card_IsBookmarked').val();
+                var cardType = $('#Card_Type').val();
+
+                if (cardType !== 'Article' || isBookmarked === 'True') {
+                    submitSelection('', action);
+                } else if (isBookmarked === 'False') {
+                    $('#ModalDialog').modal();
+
+                    $('#YesButton').unbind('click').click(function () {
+                        submitSelection('', action);
+                    });
+                }
+
+                break;
+        }
+    });
+
+    $('#mainPanel').sticky({ topSpacing: navbarHeight });
+
+    if ($('.bookmark').length) {
+        var position = $('.bookmark').offset().top - navbarHeight - mainPanelHeight;
+
+        $('html, body').animate({
+            scrollTop: position
+        }, 'slow');
+    }
+
+    function dropSelection() {
+        $('.bookmarkselected').removeClass('bookmarkselected').addClass('bookmark');
+        $('.highlightselected').removeClass('highlightselected').addClass('highlight');
+        $('.extractselected').removeClass('extractselected').addClass('extract');
+        $('.clozeselected').removeClass('clozeselected').addClass('cloze');
+    }
+
+    function submitSelection(selection, action) {
+        $('#Card_Selection').val(selection);
+        $('#Card_NextAction').val(action);
+
+        $('#myForm').submit();
+    }
+
+    function getSelectionText() {
+        return window.getSelection().toString();
+    }
+
+    function checkSelection() {
         var selection = window.getSelection();
 
         var anchorNodeClassName =
@@ -39,217 +166,29 @@
         } else {
             $('.selection-panel a[data-act].btn-primary').addClass('disabled');
         }
-    };
-
-    $('#article').on('click', '.bookmark', function () {
-        DropSelections();
-        switchClass($(this), 'bookmark', 'bookmarkselected');
-        $('#delete-panel').removeClass('d-none');
-    });
-
-    $('#article').on('click', '.highlight', function () {
-        DropSelections();
-        switchClass($(this), 'highlight', 'highlightselected');
-        $('#delete-panel').removeClass('d-none');
-    });
-
-    $('#article').on('click', '.cloze', function () {
-        DropSelections();
-        switchClass($(this), 'cloze', 'clozeselected');
-        $('#delete-panel').removeClass('d-none');
-    });
-
-    $('#article').on('click', 'span.extract', function () {
-        DropSelections();
-        switchClass($(this), 'extract', 'extractselected');
-        $('#delete-panel').removeClass('d-none');
-    });
-
-    $('#article').on('click', '.bookmarkselected, .highlightselected, .clozeselected, span.extractselected', function () {
-        DropSelections();
-        $('#delete-panel').addClass('d-none');
-    });
-
-    $('a[data-act]').click(function () {
-        var button = $(this);
-        var action = button.data('act');
-
-        switch (action) {
-            case 'Extract':
-            case 'Bookmark':
-            case 'Remember':
-                DropSelections();
-
-                var newNode = createSelectionSpan();
-
-                surroundSelection(newNode);
-
-                clean();
-
-                var selection = getSelectionSpan();
-
-                var isSelectionExists = checkForExistence(selection);
-
-                if (isSelectionExists) {
-                    var htmlText = $('#article').html();
-                    var convertedText = HtmlToText(htmlText);
-                    var trimmedText = convertedText.trim();
-
-                    SubmitSelection(trimmedText, action);
-                }
-
-                break;
-            case 'DeleteRegion':
-                var regionTypes = ['.bookmarkselected', '.highlightselected', '.extractselected', '.clozeselected'];
-
-                for (var i in regionTypes) {
-                    var regionType = regionTypes[i];
-
-                    if ($(regionType).length) {
-                        var pattern = getPatternFromTag(regionType);
-                        SubmitSelection(pattern, action);
-                        break;
-                    }
-                }
-
-                break;
-            case 'CancelRepetitionCardCreation':
-            case 'CompleteRepetitionCardCreation':
-                SubmitSelection('', action);
-                break;
-            case 'Highlight':
-            case 'Cloze':
-                var text = getSelectionText();
-
-                var trimmed = $.trim(text);
-
-                if (trimmed.length > 0) {
-                    var escaped = GetWords(trimmed);
-
-                    SubmitSelection(escaped, action);
-                }
-
-                break;
-            case 'Postpone':
-                var priority = button.data('priority');
-                $('#Card_Priority').val(priority);
-
-                var isBookmarked = $('#Card_IsBookmarked').val();
-                var cardType = $('#Card_Type').val();
-
-                if (cardType !== 'Article' || isBookmarked === 'True') {
-                    SubmitSelection('', action);
-                } else if (isBookmarked === 'False') {
-                    $('#ModalDialog').modal();
-
-                    $('#YesButton').unbind('click').click(function () {
-                        SubmitSelection('', action);
-                    });
-                }
-
-                break;
-        }
-    });
-
-    $('#mainPanel').sticky({ topSpacing: navbarHeight });
-
-    if ($('.bookmark').length) {
-        var position = $('.bookmark').offset().top - navbarHeight - mainPanelHeight;
-
-        $('html, body').animate({
-            scrollTop: position
-        }, 'slow');
-    }
-
-    function ReplaceBR(text) {
-        return text.replace(/<\s*br\s*\/?\s*>/ig, '\r\n');
-    }
-
-    function GetWords(text) {
-        return text.replace(/\W+/g, '\\W+');
-    }
-
-    function htmlDecode(value) {
-        return value.replace('&lt;', '<').replace('&gt;', '>').replace('&amp;', '&');
-    }
-
-    function DropSelections() {
-        $('.bookmarkselected').removeClass('bookmarkselected').addClass('bookmark');
-        $('.highlightselected').removeClass('highlightselected').addClass('highlight');
-        $('.extractselected').removeClass('extractselected').addClass('extract');
-        $('.clozeselected').removeClass('clozeselected').addClass('cloze');
-    }
-
-    function SubmitSelection(selection, action) {
-        $('#Card_Selection').val(selection);
-        $('#Card_NextAction').val(action);
-
-        $('#myForm').submit();
-    }
-
-    function getSelectionText() {
-        if (window.getSelection) {
-            return window.getSelection().toString();
-        } else if (document.selection && document.selection.type !== 'Control') {
-            return document.selection.createRange().text;
-        } else {
-            return '';
-        }
-    }
-
-    function getPatternFromTag(selector) {
-        var selected = $(selector);
-        var html = selected.html();
-        var text = htmlDecode(html);
-        var noBR = ReplaceBR(text);
-        var escaped = GetWords(noBR);
-
-        return escaped;
-    }
-
-    function checkSelection() {
-        var node = window.getSelection().focusNode.parentNode;
-        return node.id === 'article';
     }
 
     function createSelectionSpan() {
         var newNode = document.createElement('span');
-
         newNode.className = 'selection';
-
         return newNode;
     }
 
     function surroundSelection(element) {
-        try {
-            if (window.getSelection) {
-                var sel = window.getSelection();
-                if (sel.rangeCount) {
-                    var range = sel.getRangeAt(0).cloneRange();
-                    range.surroundContents(element);
-                    sel.removeAllRanges();
-                    sel.addRange(range);
-                }
-            }
-        } catch (e) {
-            console.log(e.message);
+        var sel = window.getSelection();
+
+        if (sel.rangeCount) {
+            var range = sel.getRangeAt(0).cloneRange();
+            range.surroundContents(element);
+            sel.removeAllRanges();
+            sel.addRange(range);
         }
     }
 
-    function clean() {
+    function removeChildSpans() {
         $('span > span').each(function () {
             $(this).replaceWith(this.childNodes);
         });
-    }
-
-    function getSelectionSpan() {
-        var result = $('.selection');
-        return result;
-    }
-
-    function checkForExistence(element) {
-        var result = !!element.length;
-        return result;
     }
 
     function switchClass(element, from, to) {

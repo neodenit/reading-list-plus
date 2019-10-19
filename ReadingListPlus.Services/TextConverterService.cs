@@ -91,6 +91,9 @@ namespace ReadingListPlus.Services
              Regex.Match(text,
                 $"{{{{{Constants.NewRepetitionCardLabel}::(?<{Constants.IdGroup}>{Constants.GuidRegex})::(?s)(?<{Constants.TextGroup}>.+?)(?m)}}}}").Groups[Constants.TextGroup].Value;
 
+        public string GetTextPattern(string text) =>
+            Regex.Replace(text.Trim(), @"\W+", @"\W+");
+
         private bool Validate(string text)
         {
             var letters = Regex.IsMatch(text, @"\w");

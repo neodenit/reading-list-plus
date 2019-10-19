@@ -144,7 +144,8 @@ namespace ReadingListPlus.Services
 
             Card card = await cardRepository.GetCardAsync(id);
 
-            string newText = textConverterService.AddHighlight(card.Text, text);
+            string pattern = textConverterService.GetTextPattern(text);
+            string newText = textConverterService.AddHighlight(card.Text, pattern);
 
             card.Text = newText;
 
@@ -162,7 +163,8 @@ namespace ReadingListPlus.Services
 
             Card card = await cardRepository.GetCardAsync(id);
 
-            string newText = textConverterService.AddCloze(card.Text, text);
+            string pattern = textConverterService.GetTextPattern(text);
+            string newText = textConverterService.AddCloze(card.Text, pattern);
 
             card.Text = newText;
 
@@ -180,7 +182,8 @@ namespace ReadingListPlus.Services
 
             Card card = await cardRepository.GetCardAsync(id);
 
-            string newText = textConverterService.DeleteTagByText(card.Text, text);
+            string pattern = textConverterService.GetTextPattern(text);
+            string newText = textConverterService.DeleteTagByText(card.Text, pattern);
 
             card.Text = newText;
 
