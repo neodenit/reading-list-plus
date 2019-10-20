@@ -115,12 +115,12 @@
             break;
         case NewRepetitionCardState.Pending:
             <h4>Please finish the new repetition card creation.</h4>
-            <a href="javascript:undefined" id="CancelRepetitionCardCreation" class="act btn btn-danger">Cancel</a>
+            <a href="javascript:undefined" data-act="CancelRepetitionCardCreation" class="act btn btn-danger">Cancel</a>
             <hr />
             break;
         case NewRepetitionCardState.Done:
             <h4>The new repetition card has been created.</h4>
-            <a href="javascript:undefined" id="CompleteRepetitionCardCreation" class="act btn btn-success">OK</a>
+            <a href="javascript:undefined" data-act="CompleteRepetitionCardCreation" class="act btn btn-success">OK</a>
             <hr />
             break;
         default:
