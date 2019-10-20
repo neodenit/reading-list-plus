@@ -9,14 +9,14 @@ namespace ReadingListPlus.Services
 {
     public class TextConverterService : ITextConverterService
     {
-        public string AddHighlight(string initialText, string htmlSelection)
+        public string AddHighlight(string initialText, string selectionPattern)
         {
-            return GetReplacement(initialText, htmlSelection, "highlight");
+            return GetReplacement(initialText, selectionPattern, "highlight");
         }
 
-        public string AddCloze(string initialText, string htmlSelection)
+        public string AddCloze(string initialText, string selectionPattern)
         {
-            return GetReplacement(initialText, htmlSelection, "cloze");
+            return GetReplacement(initialText, selectionPattern, "cloze");
         }
 
         public string GetHtml(string text, string cardUrlTemplate, string repetitionCardUrlTemplate, string newRepetitionCardUrlTemplate, string newRepetitionCardClass)
@@ -55,9 +55,9 @@ namespace ReadingListPlus.Services
                 $"{{{{{tagName}::(?<{Constants.IdGroup}>{param}::)(?s)(?<{Constants.TextGroup}>.+?)(?m)}}}}",
                 $"${{{Constants.TextGroup}}}");
 
-        private string GetReplacement(string initialText, string htmlSelection, string tag)
+        private string GetReplacement(string initialText, string selectionPattern, string tag)
         {
-            var isValid = Validate(htmlSelection);
+            var isValid = ValidateSelectionPattern(selectionPattern);
 
             if (!isValid)
             {
@@ -67,13 +67,9 @@ namespace ReadingListPlus.Services
             {
                 var matches = from Match match in Regex.Matches(initialText, @"{{\w+::.+?}}") select match;
 
-                var trimmedSelection = Regex.Replace(htmlSelection, @"\\W\+(.+)\\W\+", "$1");
-
-                var pattern = string.Format(@"\b{0}\b", htmlSelection);
-
                 var finalText = Regex.Replace(
                     initialText,
-                    pattern,
+                    selectionPattern,
                     match => MatchEvaluator(match, matches, tag),
                     RegexOptions.IgnoreCase);
 
@@ -91,15 +87,17 @@ namespace ReadingListPlus.Services
              Regex.Match(text,
                 $"{{{{{Constants.NewRepetitionCardLabel}::(?<{Constants.IdGroup}>{Constants.GuidRegex})::(?s)(?<{Constants.TextGroup}>.+?)(?m)}}}}").Groups[Constants.TextGroup].Value;
 
-        public string GetTextPattern(string text) =>
-            Regex.Replace(text.Trim(), @"\W+", @"\W+");
-
-        private bool Validate(string text)
+        public string GetTextPattern(string text)
         {
-            var letters = Regex.IsMatch(text, @"\w");
+            var wordsPattern = Regex.Replace(text, @"\W+", @"\W+");
+            var trimmedPattern = Regex.Replace(wordsPattern, @"^\\W\+(.+)\\W\+$", "$1");
+            var pattern = $@"\b{trimmedPattern}\b";
+            return pattern;
+        }
 
-            var isValid = letters;
-
+        private bool ValidateSelectionPattern(string text)
+        {
+            var isValid = Regex.IsMatch(text, @"\w");
             return isValid;
         }
 
@@ -123,32 +121,30 @@ namespace ReadingListPlus.Services
             return htmlText5;
         }
 
-        private string MatchEvaluator(Match match, IEnumerable<Match> matches, string tag)
+        private string MatchEvaluator(Match newTagCandidate, IEnumerable<Match> existingTags, string tag)
         {
-            var start1 = match.Index;
-            var end1 = match.Index + match.Length;
+            var newTagStart = newTagCandidate.Index;
+            var newTagEnd = newTagCandidate.Index + newTagCandidate.Length;
 
-            foreach (var item in matches)
+            foreach (var existingTag in existingTags)
             {
-                var start2 = item.Index;
-                var end2 = item.Index + item.Length;
+                var existingTagStart = existingTag.Index;
+                var existingTagEnd = existingTag.Index + existingTag.Length;
 
-                if (Math.Max(start1, start2) < Math.Min(end1, end2))
+                if (Overlap(newTagStart, newTagEnd, existingTagStart, existingTagEnd))
                 {
-                    return match.Value;
+                    return newTagCandidate.Value;
                 }
             }
 
-            var matchWithoutTags = Regex.Replace(match.Value, @"{{\w+::(.+?)}}", "$1");
-
-            var result = GetTag(matchWithoutTags, tag);
-
+            string result = GetTag(newTagCandidate.Value, tag);
             return result;
         }
 
-        private string GetTag(string text, string tag)
-        {
-            return "{{" + tag + "::" + text + "}}";
-        }
+        private static bool Overlap(int start1, int end1, int start2, int end2) =>
+            Math.Max(start1, start2) < Math.Min(end1, end2);
+
+        private string GetTag(string text, string tag) =>
+            $"{{{{{tag}::{text}}}}}";
     }
 }
