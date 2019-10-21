@@ -90,7 +90,7 @@ $(function () {
                 var priority = button.data('priority');
                 $('#Card_Priority').val(priority);
 
-                var isBookmarked = $('#Card_IsBookmarked').val();
+                var isBookmarked = $('#IsBookmarked').val();
                 var cardType = $('#Card_Type').val();
 
                 if (cardType !== 'Article' || isBookmarked === 'True') {

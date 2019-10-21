@@ -28,7 +28,7 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
             this.repetitionCardService = repetitionCardService ?? throw new ArgumentNullException(nameof(repetitionCardService));
         }
 
-        public async Task<ActionResult> OnGetAsync([Required, CardFound, CardOwned]Guid? id)
+        public async Task<ActionResult> OnGetAsync([Required, CardFound, CardOwned]Guid? id, bool? isBookmarked)
         {
             if (!ModelState.IsValid)
             {
@@ -37,11 +37,16 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
 
             Card = await cardService.GetCardForReadingAsync(id.Value);
 
+            IsBookmarked = isBookmarked.GetValueOrDefault();
+
             return Page();
         }
 
         [BindProperty]
         public ReadCardViewModel Card { get; set; }
+
+        [BindProperty]
+        public bool IsBookmarked { get; set; }
 
         public async Task<IActionResult> OnPostAsync()
         {
@@ -64,12 +69,11 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
                     TempData[nameof(CreateCardViewModel)] = JsonConvert.SerializeObject(viewModel);
                     return RedirectToPage(CardCreateModel.PageName);
                 case CardAction.Cloze:
-                    return RedirectToPage(PageName, new { Id = await textActionService.ClozeAsync(Card.ID, Card.Selection) });
+                    return RedirectToPage(PageName, new { Id = await textActionService.ClozeAsync(Card.ID, Card.Selection), IsBookmarked });
                 case CardAction.Highlight:
-                    return RedirectToPage(PageName, new { Id = await textActionService.HighlightAsync(Card.ID, Card.Selection) });
+                    return RedirectToPage(PageName, new { Id = await textActionService.HighlightAsync(Card.ID, Card.Selection), IsBookmarked });
                 case CardAction.Bookmark:
-                    Card = await textActionService.BookmarkAsync(Card.ID, Card.Selection);
-                    return Page();
+                    return RedirectToPage(PageName, new { Id = await textActionService.BookmarkAsync(Card.ID, Card.Selection), IsBookmarked = true });
                 case CardAction.Remember:
                     Uri uri = await textActionService.RememberAsync(Card.ID, Card.Selection);
                     return Redirect(uri.AbsoluteUri);

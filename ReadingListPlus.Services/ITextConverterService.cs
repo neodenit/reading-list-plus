@@ -26,6 +26,8 @@ namespace ReadingListPlus.Services
 
         string GetNewRepetitionCardText(string text);
 
-        string GetTextPattern(string text);
+        string GetPatternForSelection(string text);
+
+        string GetPatternForDeletion(string text);
     }
 }

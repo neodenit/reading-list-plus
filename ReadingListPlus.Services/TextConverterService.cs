@@ -87,13 +87,28 @@ namespace ReadingListPlus.Services
              Regex.Match(text,
                 $"{{{{{Constants.NewRepetitionCardLabel}::(?<{Constants.IdGroup}>{Constants.GuidRegex})::(?s)(?<{Constants.TextGroup}>.+?)(?m)}}}}").Groups[Constants.TextGroup].Value;
 
-        public string GetTextPattern(string text)
+        public string GetPatternForSelection(string text)
         {
-            var wordsPattern = Regex.Replace(text, @"\W+", @"\W+");
-            var trimmedPattern = Regex.Replace(wordsPattern, @"^\\W\+(.+)\\W\+$", "$1");
-            var pattern = $@"\b{trimmedPattern}\b";
+            var trimmedString = TrimSpecialCharacters(text);
+            var wordPattern = GetWordPattern(trimmedString);
+            var pattern = $@"\b{wordPattern}\b";
             return pattern;
         }
+
+        public string GetPatternForDeletion(string text)
+        {
+            var trimmedString = TrimSpecialCharacters(text);
+            var wordPattern = GetWordPattern(trimmedString);
+            var pattern = $@"\W*{wordPattern}\W*";
+            return pattern;
+        }
+
+        private string TrimSpecialCharacters(string text) =>
+            Regex.Replace(text, @"^\W*(.+?)\W*$", "$1");
+
+        private string GetWordPattern(string text) =>
+            Regex.Replace(text, @"\W+", @"\W+");
+
 
         private bool ValidateSelectionPattern(string text)
         {
@@ -137,14 +152,14 @@ namespace ReadingListPlus.Services
                 }
             }
 
-            string result = GetTag(newTagCandidate.Value, tag);
+            string result = GenerateTag(newTagCandidate.Value, tag);
             return result;
         }
 
         private static bool Overlap(int start1, int end1, int start2, int end2) =>
             Math.Max(start1, start2) < Math.Min(end1, end2);
 
-        private string GetTag(string text, string tag) =>
+        private string GenerateTag(string text, string tag) =>
             $"{{{{{tag}::{text}}}}}";
     }
 }

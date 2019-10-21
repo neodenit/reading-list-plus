@@ -8,7 +8,7 @@ namespace ReadingListPlus.Services
     {
         Task<CreateCardViewModel> ExtractAsync(Guid id, string text, string userName);
 
-        Task<ReadCardViewModel> BookmarkAsync(Guid id, string text);
+        Task<Guid> BookmarkAsync(Guid id, string text);
 
         Task<Uri> RememberAsync(Guid id, string text);
 

@@ -50,7 +50,7 @@ namespace ReadingListPlus.Services
             return newCard;
         }
 
-        public async Task<ReadCardViewModel> BookmarkAsync(Guid id, string text)
+        public async Task<Guid> BookmarkAsync(Guid id, string text)
         {
             if (!settings.BookmarkEnabled)
             {
@@ -67,11 +67,7 @@ namespace ReadingListPlus.Services
 
             await cardRepository.SaveChangesAsync();
 
-            ReadCardViewModel viewModel = mappingService.MapCardToHtmlViewModel(card, NewRepetitionCardState.None);
-
-            viewModel.IsBookmarked = true;
-
-            return viewModel;
+            return card.ID;
         }
 
         public async Task<Uri> RememberAsync(Guid cardId, string text)
@@ -144,7 +140,7 @@ namespace ReadingListPlus.Services
 
             Card card = await cardRepository.GetCardAsync(id);
 
-            string pattern = textConverterService.GetTextPattern(text);
+            string pattern = textConverterService.GetPatternForSelection(text);
             string newText = textConverterService.AddHighlight(card.Text, pattern);
 
             card.Text = newText;
@@ -163,7 +159,7 @@ namespace ReadingListPlus.Services
 
             Card card = await cardRepository.GetCardAsync(id);
 
-            string pattern = textConverterService.GetTextPattern(text);
+            string pattern = textConverterService.GetPatternForSelection(text);
             string newText = textConverterService.AddCloze(card.Text, pattern);
 
             card.Text = newText;
@@ -182,7 +178,7 @@ namespace ReadingListPlus.Services
 
             Card card = await cardRepository.GetCardAsync(id);
 
-            string pattern = textConverterService.GetTextPattern(text);
+            string pattern = textConverterService.GetPatternForDeletion(text);
             string newText = textConverterService.DeleteTagByText(card.Text, pattern);
 
             card.Text = newText;

@@ -33,8 +33,6 @@ namespace ReadingListPlus.Services.ViewModels
 
         public bool IsConnected => Position != Constants.DisconnectedCardPosition;
 
-        public bool IsBookmarked { get; set; }
-
         public string Selection { get; set; }
 
         public CardAction NextAction { get; set; }
