@@ -8,18 +8,18 @@ namespace ReadingListPlus.Services
     {
         Task<CreateCardViewModel> ExtractAsync(Guid id, string text, string userName);
 
-        Task<Guid> BookmarkAsync(Guid id, string text);
+        Task BookmarkAsync(Guid id, string text);
+
+        Task HighlightAsync(Guid id, string selection);
+
+        Task ClozeAsync(Guid id, string selection);
+
+        Task DeleteRegionAsync(Guid id, string text);
 
         Task<Uri> RememberAsync(Guid id, string text);
 
-        Task<Guid> CancelRepetitionCardCreationAsync(Guid id);
+        Task CancelRepetitionCardCreationAsync(Guid id);
 
-        Task<Guid> CompleteRepetitionCardCreationAsync(Guid id);
-
-        Task<Guid> HighlightAsync(Guid id, string selection);
-
-        Task<Guid> ClozeAsync(Guid id, string selection);
-
-        Task<Guid> DeleteRegionAsync(Guid id, string text);
+        Task CompleteRepetitionCardCreationAsync(Guid id);
     }
 }

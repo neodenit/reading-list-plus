@@ -64,28 +64,34 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
 
             switch (Card.NextAction)
             {
+                case CardAction.Postpone:
+                    CardViewModel cardViewModel = await cardService.PostponeAsync(Card.ID, Card.Priority.Value);
+                    return RedirectToAction(nameof(DecksController.Read), DecksController.Name, new { Id = cardViewModel.DeckID });
                 case CardAction.Extract:
                     CreateCardViewModel viewModel = await textActionService.ExtractAsync(Card.ID, Card.Selection, User.Identity.Name);
                     TempData[nameof(CreateCardViewModel)] = JsonConvert.SerializeObject(viewModel);
                     return RedirectToPage(CardCreateModel.PageName);
-                case CardAction.Cloze:
-                    return RedirectToPage(PageName, new { Id = await textActionService.ClozeAsync(Card.ID, Card.Selection), IsBookmarked });
-                case CardAction.Highlight:
-                    return RedirectToPage(PageName, new { Id = await textActionService.HighlightAsync(Card.ID, Card.Selection), IsBookmarked });
                 case CardAction.Bookmark:
-                    return RedirectToPage(PageName, new { Id = await textActionService.BookmarkAsync(Card.ID, Card.Selection), IsBookmarked = true });
+                    await textActionService.BookmarkAsync(Card.ID, Card.Selection);
+                    return RedirectToPage(PageName, new { Id = Card.ID, IsBookmarked = true });
+                case CardAction.Highlight:
+                    await textActionService.HighlightAsync(Card.ID, Card.Selection);
+                    return RedirectToPage(PageName, new { Id = Card.ID, IsBookmarked });
+                case CardAction.Cloze:
+                    await textActionService.ClozeAsync(Card.ID, Card.Selection);
+                    return RedirectToPage(PageName, new { Id = Card.ID, IsBookmarked });
+                case CardAction.DeleteRegion:
+                    await textActionService.DeleteRegionAsync(Card.ID, Card.Selection);
+                    return RedirectToPage(PageName, new { Id = Card.ID });
                 case CardAction.Remember:
                     Uri uri = await textActionService.RememberAsync(Card.ID, Card.Selection);
                     return Redirect(uri.AbsoluteUri);
-                case CardAction.DeleteRegion:
-                    return RedirectToPage(PageName, new { Id = await textActionService.DeleteRegionAsync(Card.ID, Card.Selection) });
                 case CardAction.CancelRepetitionCardCreation:
-                    return RedirectToPage(PageName, new { Id = await textActionService.CancelRepetitionCardCreationAsync(Card.ID) });
+                    await textActionService.CancelRepetitionCardCreationAsync(Card.ID);
+                    return RedirectToPage(PageName, new { Id = Card.ID });
                 case CardAction.CompleteRepetitionCardCreation:
-                    return RedirectToPage(PageName, new { Id = await textActionService.CompleteRepetitionCardCreationAsync(Card.ID) });
-                case CardAction.Postpone:
-                    CardViewModel cardViewModel = await cardService.PostponeAsync(Card.ID, Card.Priority.Value);
-                    return RedirectToAction(nameof(DecksController.Read), DecksController.Name, new { Id = cardViewModel.DeckID });
+                    await textActionService.CompleteRepetitionCardCreationAsync(Card.ID);
+                    return RedirectToPage(PageName, new { Id = Card.ID });
                 default:
                     return BadRequest();
             }

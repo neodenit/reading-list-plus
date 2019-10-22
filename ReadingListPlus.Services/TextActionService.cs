@@ -13,14 +13,12 @@ namespace ReadingListPlus.Services
         private readonly ISettings settings;
         private readonly ICardRepository cardRepository;
         private readonly ITextConverterService textConverterService;
-        private readonly IMappingService mappingService;
 
-        public TextActionService(ISettings settings, ICardRepository cardRepository, ITextConverterService textConverterService, IMappingService mappingService)
+        public TextActionService(ISettings settings, ICardRepository cardRepository, ITextConverterService textConverterService)
         {
             this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
             this.cardRepository = cardRepository ?? throw new System.ArgumentNullException(nameof(cardRepository));
             this.textConverterService = textConverterService ?? throw new ArgumentNullException(nameof(textConverterService));
-            this.mappingService = mappingService ?? throw new ArgumentNullException(nameof(mappingService));
         }
 
         public async Task<CreateCardViewModel> ExtractAsync(Guid id, string text, string userName)
@@ -50,7 +48,7 @@ namespace ReadingListPlus.Services
             return newCard;
         }
 
-        public async Task<Guid> BookmarkAsync(Guid id, string text)
+        public async Task BookmarkAsync(Guid id, string text)
         {
             if (!settings.BookmarkEnabled)
             {
@@ -66,8 +64,6 @@ namespace ReadingListPlus.Services
             card.Text = newText;
 
             await cardRepository.SaveChangesAsync();
-
-            return card.ID;
         }
 
         public async Task<Uri> RememberAsync(Guid cardId, string text)
@@ -95,7 +91,7 @@ namespace ReadingListPlus.Services
             return uri;
         }
 
-        public async Task<Guid> CancelRepetitionCardCreationAsync(Guid id)
+        public async Task CancelRepetitionCardCreationAsync(Guid id)
         {
             if (!settings.RememberEnabled)
             {
@@ -109,11 +105,9 @@ namespace ReadingListPlus.Services
             card.Text = newText;
 
             await cardRepository.SaveChangesAsync();
-
-            return card.ID;
         }
 
-        public async Task<Guid> CompleteRepetitionCardCreationAsync(Guid id)
+        public async Task CompleteRepetitionCardCreationAsync(Guid id)
         {
             if (!settings.RememberEnabled)
             {
@@ -127,11 +121,9 @@ namespace ReadingListPlus.Services
             card.Text = newText;
 
             await cardRepository.SaveChangesAsync();
-
-            return card.ID;
         }
 
-        public async Task<Guid> HighlightAsync(Guid id, string text)
+        public async Task HighlightAsync(Guid id, string text)
         {
             if (!settings.HighlightEnabled)
             {
@@ -146,11 +138,9 @@ namespace ReadingListPlus.Services
             card.Text = newText;
 
             await cardRepository.SaveChangesAsync();
-
-            return card.ID;
         }
 
-        public async Task<Guid> ClozeAsync(Guid id, string text)
+        public async Task ClozeAsync(Guid id, string text)
         {
             if (!settings.ClozeEnabled)
             {
@@ -165,11 +155,9 @@ namespace ReadingListPlus.Services
             card.Text = newText;
 
             await cardRepository.SaveChangesAsync();
-
-            return card.ID;
         }
 
-        public async Task<Guid> DeleteRegionAsync(Guid id, string text)
+        public async Task DeleteRegionAsync(Guid id, string text)
         {
             if (!settings.DropEnabled)
             {
@@ -184,8 +172,6 @@ namespace ReadingListPlus.Services
             card.Text = newText;
 
             await cardRepository.SaveChangesAsync();
-
-            return card.ID;
         }
     }
 }
