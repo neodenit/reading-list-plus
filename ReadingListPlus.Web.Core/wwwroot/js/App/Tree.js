@@ -1,4 +1,6 @@
-﻿$(function () {
+﻿"use strict"
+
+$(function () {
     $('#tree').jstree({
         'core': {
             'data': {
@@ -12,5 +14,9 @@
                 }
             }
         }
+    });
+
+    $('#tree').on('click', 'a[href]', function () {
+        location = $(this).prop('href');
     });
 });

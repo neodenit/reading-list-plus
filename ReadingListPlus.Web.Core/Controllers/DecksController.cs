@@ -56,7 +56,13 @@ namespace ReadingListPlus.Web.Core.Controllers
             _ = id;
 
             IEnumerable<DeckViewModel> decks = await deckService.GetUserDecks(UserName).ToList();
-            var json = decks.Select(d => new { d.ID, Text = d.Title, Children = true });
+            var json = decks.Select(d => new
+            {
+                d.ID,
+                Text = d.Title,
+                a_attr = new { href = Url.Action(nameof(Read), Name, new { d.ID }) },
+                Children = true
+            });
 
             return Json(json);
         }

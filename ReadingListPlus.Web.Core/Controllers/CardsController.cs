@@ -88,7 +88,12 @@ namespace ReadingListPlus.Web.Core.Controllers
             IEnumerable<CardViewModel> cards = await cardService.GetConnectedCardsAsync(id);
             var json = cards
                 .OrderBy(d => d.Text)
-                .Select(c => new { c.ID, Text = c.Text.Truncate(Constants.MaxTreeTextLength) });
+                .Select(c => new
+                {
+                    c.ID,
+                    Text = c.Text.Truncate(Constants.MaxTreeTextLength),
+                    a_attr = new { href = Url.Page(CardReadModel.PageName, new { c.ID }) }
+                });
 
             return Json(json);
         }
