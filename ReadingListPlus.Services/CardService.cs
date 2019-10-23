@@ -93,12 +93,39 @@ namespace ReadingListPlus.Services
             }
             else
             {
+                var initialCardNumber = card.Deck.Cards.Count();
+
                 schedulerService.ChangeFirstCardPosition(card, priority);
+
+                ValidateCardNumber(initialCardNumber, card.Deck);
+                ValidatePositions(card.Deck);
 
                 await cardRepository.SaveChangesAsync();
 
                 CardViewModel viewModel = mappingService.MapCardToViewModel(card);
                 return viewModel;
+            }
+        }
+        private void ValidateCardNumber(int initialCardNumber, Deck deck)
+        {
+            if (deck.Cards.Count != initialCardNumber)
+            {
+                throw new InvalidOperationException("Card number is incorrect.");
+            }
+        }
+
+        private void ValidatePositions(Deck deck)
+        {
+            var connectedCards = deck.ConnectedCards;
+            var connectedCardCount = connectedCards.Count();
+            var expectedPositions = Enumerable.Range(Constants.FirstCardPosition, connectedCardCount);
+            var actualPositions = connectedCards.Select(c => c.Position).OrderBy(x => x);
+
+            var isValid = actualPositions.SequenceEqual(expectedPositions);
+
+            if (!isValid)
+            {
+                throw new InvalidOperationException("Card positions are incorrect.");
             }
         }
 
