@@ -12,31 +12,29 @@ $(function () {
 
     document.onselectionchange = checkSelection;
 
-    $('#article').on('click', '.bookmark', function () {
-        dropSelection();
-        switchClass($(this), 'bookmark', 'bookmarkselected');
-        $('#delete-panel').removeClass('d-none');
-    });
+    var selectionClassMapping = {
+        "bookmark": "bookmarkselected",
+        "highlight": "highlightselected",
+        "cloze": "clozeselected",
+        "extract": "extractselected"
+    };
 
-    $('#article').on('click', '.highlight', function () {
-        dropSelection();
-        switchClass($(this), 'highlight', 'highlightselected');
-        $('#delete-panel').removeClass('d-none');
-    });
+    function bindSelectionEvent(unselectedClass, selectedClass) {
+        var selector = 'span' + '.' + unselectedClass;
 
-    $('#article').on('click', '.cloze', function () {
-        dropSelection();
-        switchClass($(this), 'cloze', 'clozeselected');
-        $('#delete-panel').removeClass('d-none');
-    });
+        $('#article').on('click', selector, function () {
+            dropSelection();
+            switchClass($(this), unselectedClass, selectedClass);
+            $('#delete-panel').removeClass('d-none');
+        });
+    }
 
-    $('#article').on('click', 'span.extract', function () {
-        dropSelection();
-        switchClass($(this), 'extract', 'extractselected');
-        $('#delete-panel').removeClass('d-none');
-    });
+    for (var oldClass in selectionClassMapping) {
+        var newClass = selectionClassMapping[oldClass];
+        bindSelectionEvent(oldClass, newClass);
+    }
 
-    $('#article').on('click', '.bookmarkselected, .highlightselected, .clozeselected, span.extractselected', function () {
+    $('#article').on('click', 'span.bookmarkselected, span.highlightselected, span.clozeselected, span.extractselected', function () {
         dropSelection();
         $('#delete-panel').addClass('d-none');
     });
