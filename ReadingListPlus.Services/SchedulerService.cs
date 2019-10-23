@@ -23,7 +23,9 @@ namespace ReadingListPlus.Services
             var maxNewPosition = GetMaxNewPosition(cards);
             var position = GetStaticPosition(priority, maxNewPosition);
 
-            PrepareForAdding(cards, card, position);
+            ReservePosition(cards, position);
+
+            card.Position = position;
         }
 
         public void PrepareForDeletion(Deck deck, Card card)
@@ -34,10 +36,29 @@ namespace ReadingListPlus.Services
         public void ChangeFirstCardPosition(Card card, Priority priority)
         {
             var cards = card.Deck.ConnectedCards;
-            var maxPosition = GetMaxPosition(cards);
-            var position = GetStaticPosition(priority, maxPosition);
+            var maxPosition = GetMaxExistingPosition(cards);
+            var newPosition = GetStaticPosition(priority, maxPosition);
 
-            ChangeFirstCardPosition(cards, card, position);
+            PrepareFirstCardMove(cards, newPosition);
+
+            card.Position = newPosition;
+        }
+
+        public void ChangeCardPosition(Card card, Priority priority)
+        {
+            var allCards = card.Deck.ConnectedCards;
+            var maxPosition = GetMaxExistingPosition(allCards);
+
+            var oldPosition = card.Position;
+            var newPosition = GetStaticPosition(priority, maxPosition);
+
+            card.Position = Constants.DisconnectedCardPosition;
+
+            var otherCards = card.Deck.ConnectedCards;
+
+            PrepareCardMove(otherCards, oldPosition, newPosition);
+
+            card.Position = newPosition;
         }
 
         public Card GetFirstCard(Deck deck)
@@ -52,7 +73,7 @@ namespace ReadingListPlus.Services
         /// <param name="priority">Priority of the card.</param>
         /// <param name="max">Max position to return.</param>
         /// <returns>Position of the card.</returns>
-        private int GetStaticPosition(Priority priority, int max, bool verbose = false)
+        private int GetStaticPosition(Priority priority, int max)
         {
             if (max <= 1)
             {
@@ -76,20 +97,6 @@ namespace ReadingListPlus.Services
             }
         }
 
-        private void PrepareForAdding(IEnumerable<Card> cards, Card card, int position)
-        {
-            ReservePosition(cards, position);
-
-            card.Position = position;
-        }
-
-        private void PrepareForDeletion(IEnumerable<Card> cards, Card card, int position)
-        {
-            ExcludePosition(cards, position);
-
-            card.Position = Constants.DisconnectedCardPosition;
-        }
-
         private void ShuffleCards(IEnumerable<Card> cards)
         {
             var positions = from item in cards select item.Position;
@@ -101,21 +108,20 @@ namespace ReadingListPlus.Services
             zip.ToList().ForEach(item => item.card.Position = item.newPos);
         }
 
-        private void ChangeFirstCardPosition(IEnumerable<Card> cards, Card card, int newPosition)
+        private void PrepareFirstCardMove(IEnumerable<Card> otherCards, int newPosition)
         {
-            PrepareFirstCardMove(cards, newPosition);
+            var highPriorityCards = GetHighPriorityCards(otherCards, newPosition);
 
-            card.Position = newPosition;
+            DecreasePositions(highPriorityCards);
         }
 
-        private void PrepareFirstCardMove(IEnumerable<Card> cards, int newPosition)
+        private void PrepareCardMove(IEnumerable<Card> otherCards, int oldPosition, int newPosition)
         {
-            var highPriorityCards = GetHighPriorityCards(cards, newPosition);
-
-            DecreasePositions(highPriorityCards, newPosition);
+            ExcludePosition(otherCards, oldPosition);
+            ReservePosition(otherCards, newPosition);
         }
 
-        private void IncreasePositions(IEnumerable<Card> cards, int position)
+        private void IncreasePositions(IEnumerable<Card> cards)
         {
             foreach (var item in cards)
             {
@@ -123,7 +129,7 @@ namespace ReadingListPlus.Services
             }
         }
 
-        private void DecreasePositions(IEnumerable<Card> cards, int position)
+        private void DecreasePositions(IEnumerable<Card> cards)
         {
             foreach (var item in cards)
             {
@@ -165,11 +171,11 @@ namespace ReadingListPlus.Services
             }
         }
 
-        private int GetMaxPosition(IEnumerable<Card> cards)
+        private int GetMaxExistingPosition(IEnumerable<Card> allCards)
         {
-            if (cards.Any())
+            if (allCards.Any())
             {
-                var max = cards.Max(item => item.Position);
+                var max = allCards.Max(item => item.Position);
                 return max;
             }
             else
@@ -178,18 +184,18 @@ namespace ReadingListPlus.Services
             }
         }
 
-        private void ReservePosition(IEnumerable<Card> cards, int position)
+        private void ReservePosition(IEnumerable<Card> otherCards, int position)
         {
-            var lowPriorityCards = GetLowPriorityCards(cards, position);
+            var lowPriorityCards = GetLowPriorityCards(otherCards, position);
 
-            IncreasePositions(lowPriorityCards, position);
+            IncreasePositions(lowPriorityCards);
         }
 
-        private void ExcludePosition(IEnumerable<Card> cards, int position)
+        private void ExcludePosition(IEnumerable<Card> otherCards, int position)
         {
-            var lowPriorityCards = GetLowPriorityCardsExclusive(cards, position);
+            var lowPriorityCards = GetLowPriorityCardsExclusive(otherCards, position);
 
-            DecreasePositions(lowPriorityCards, position);
+            DecreasePositions(lowPriorityCards);
         }
     }
 }

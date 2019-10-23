@@ -8,6 +8,8 @@ namespace ReadingListPlus.Services
     {
         void ChangeFirstCardPosition(Card card, Priority priority);
 
+        void ChangeCardPosition(Card card, Priority priority);
+
         Priority ParsePriority(string text);
 
         void PrepareForAdding(Deck deck, Card card, Priority priority);

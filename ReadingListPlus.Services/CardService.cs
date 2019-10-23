@@ -86,26 +86,19 @@ namespace ReadingListPlus.Services
         {
             Card card = await cardRepository.GetCardAsync(id);
 
-            if (card.Position != Constants.FirstCardPosition)
-            {
-                CardViewModel viewModel = mappingService.MapCardToViewModel(card);
-                return viewModel;
-            }
-            else
-            {
-                var initialCardNumber = card.Deck.Cards.Count();
+            var initialCardNumber = card.Deck.Cards.Count();
 
-                schedulerService.ChangeFirstCardPosition(card, priority);
+            schedulerService.ChangeCardPosition(card, priority);
 
-                ValidateCardNumber(initialCardNumber, card.Deck);
-                ValidatePositions(card.Deck);
+            ValidateCardNumber(initialCardNumber, card.Deck);
+            ValidatePositions(card.Deck);
 
-                await cardRepository.SaveChangesAsync();
+            await cardRepository.SaveChangesAsync();
 
-                CardViewModel viewModel = mappingService.MapCardToViewModel(card);
-                return viewModel;
-            }
+            CardViewModel viewModel = mappingService.MapCardToViewModel(card);
+            return viewModel;
         }
+
         private void ValidateCardNumber(int initialCardNumber, Deck deck)
         {
             if (deck.Cards.Count != initialCardNumber)
