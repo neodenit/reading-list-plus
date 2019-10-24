@@ -28,7 +28,7 @@ namespace ReadingListPlus.Web.Core.Controllers
             this.deckService = deckService ?? throw new ArgumentNullException(nameof(deckService));
         }
 
-        public async Task<ActionResult> Read([Required, DeckFound, DeckOwned]Guid? id)
+        public async Task<ActionResult> Read([Required, DeckFound, DeckOwned]Guid? id, bool? isBookmarked)
         {
             if (!ModelState.IsValid)
             {
@@ -39,7 +39,7 @@ namespace ReadingListPlus.Web.Core.Controllers
 
             return cardId == Guid.Empty
                 ? RedirectToPage(CardCreateModel.PageName, new { DeckId = id })
-                : RedirectToPage(CardReadModel.PageName, new { Id = cardId });
+                : RedirectToPage(CardReadModel.PageName, new { Id = cardId, IsBookmarked = isBookmarked });
         }
 
         [Authorize(Policy = Constants.BackupPolicy)]

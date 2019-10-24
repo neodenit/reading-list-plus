@@ -88,7 +88,7 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
                 }
 
                 return Card.CreationMode == CreationMode.Extract
-                    ? RedirectToAction(nameof(DecksController.Read), DecksController.Name, new { Id = Card.OldDeckID }) as ActionResult
+                    ? RedirectToAction(nameof(DecksController.Read), DecksController.Name, new { Id = Card.OldDeckID, IsBookmarked = true }) as ActionResult
                     : RedirectToPage(CardIndexModel.PageName, new { DeckId = newCardDeckId });
             }
             else
