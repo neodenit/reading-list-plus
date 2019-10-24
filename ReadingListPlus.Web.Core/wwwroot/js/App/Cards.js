@@ -19,16 +19,6 @@ $(function () {
         "extract": "extractselected"
     };
 
-    function bindSelectionEvent(unselectedClass, selectedClass) {
-        var selector = 'span' + '.' + unselectedClass;
-
-        $('#article').on('click', selector, function () {
-            dropSelection();
-            switchClass($(this), unselectedClass, selectedClass);
-            $('#delete-panel').removeClass('d-none');
-        });
-    }
-
     for (var oldClass in selectionClassMapping) {
         var newClass = selectionClassMapping[oldClass];
         bindSelectionEvent(oldClass, newClass);
@@ -107,12 +97,40 @@ $(function () {
 
     $('#mainPanel').sticky({ topSpacing: navbarHeight });
 
-    if ($('.bookmark').length) {
-        var position = $('.bookmark').offset().top - navbarHeight - mainPanelHeight;
+    scrollToLastSelection();
+
+    function scrollToLastSelection() {
+        var bookmark = $('.bookmark');
+        var bookmarkOffset = bookmark.length && bookmark.offset().top;
+
+        var extractOffset = Math.max.apply(null, $('.extract').map(function () {
+            return $(this).offset().top;
+        }));
+
+        var maxOffset = Math.max(bookmarkOffset, extractOffset);
+
+        if (maxOffset) {
+            scrollTo(maxOffset);
+        }
+    }
+
+    function scrollTo(offset) {
+        var position = offset - navbarHeight - mainPanelHeight;
 
         $('html, body').animate({
             scrollTop: position
         }, 'slow');
+
+    }
+
+    function bindSelectionEvent(unselectedClass, selectedClass) {
+        var selector = 'span' + '.' + unselectedClass;
+
+        $('#article').on('click', selector, function () {
+            dropSelection();
+            switchClass($(this), unselectedClass, selectedClass);
+            $('#delete-panel').removeClass('d-none');
+        });
     }
 
     function dropSelection() {
