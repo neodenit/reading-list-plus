@@ -15,8 +15,7 @@ $(function () {
     var selectionClassMapping = {
         "bookmark": "bookmarkselected",
         "highlight": "highlightselected",
-        "cloze": "clozeselected",
-        "extract": "extractselected"
+        "cloze": "clozeselected"
     };
 
     for (var oldClass in selectionClassMapping) {
@@ -27,6 +26,15 @@ $(function () {
     $('#article').on('click', 'span.bookmarkselected, span.highlightselected, span.clozeselected, span.extractselected', function () {
         dropSelection();
         $('#delete-panel').addClass('d-none');
+    });
+
+    $('#article').on('click', 'span.extract', function () {
+        dropSelection();
+        switchClass($(this), 'extract', 'selection');
+
+        var articleText = getArticleText();
+
+        submitSelection(articleText, 'Extract');
     });
 
     $('a[data-act]').click(function () {
@@ -44,11 +52,9 @@ $(function () {
 
                 removeChildSpans();
 
-                var htmlText = $('#article').html();
-                var convertedText = HtmlToText(htmlText);
-                var trimmedText = convertedText.trim();
+                var articleText = getArticleText();
 
-                submitSelection(trimmedText, action);
+                submitSelection(articleText, action);
 
                 break;
             case 'DeleteRegion':
@@ -136,7 +142,6 @@ $(function () {
     function dropSelection() {
         $('.bookmarkselected').removeClass('bookmarkselected').addClass('bookmark');
         $('.highlightselected').removeClass('highlightselected').addClass('highlight');
-        $('.extractselected').removeClass('extractselected').addClass('extract');
         $('.clozeselected').removeClass('clozeselected').addClass('cloze');
     }
 
@@ -149,6 +154,13 @@ $(function () {
 
     function getSelectionText() {
         return window.getSelection().toString();
+    }
+
+    function getArticleText() {
+        var htmlText = $('#article').html();
+        var convertedText = HtmlToText(htmlText);
+        var trimmedText = convertedText.trim();
+        return trimmedText;
     }
 
     function checkSelection() {
