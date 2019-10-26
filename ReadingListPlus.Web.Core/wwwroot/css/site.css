@@ -23,49 +23,54 @@
     }
 }
 
-span.extract {
-    color: black;
-    background-color: cyan;
+.article span {
+    background-color: lightgray;
+    cursor: pointer;
 }
 
-.extractselected {
-    color: black;
-    background-color: lime;
-}
+    .article span.extract {
+        color: black;
+        background-color: cyan;
+    }
 
-.cloze {
-    color: black;
-    background-color: black;
-    display: inline-block;
-    text-align: center;
-}
+    .article span.extractselected {
+        color: black;
+        background-color: lime;
+    }
 
-.clozeselected {
-    color: black;
-    background-color: lime;
-    display: inline-block;
-    text-align: center;
-}
+    .article span.cloze {
+        color: black;
+        background-color: black;
+        display: inline-block;
+        text-align: center;
+    }
 
-.bookmark {
-    color: black;
-    background-color: orange;
-}
+    .article span.clozeselected {
+        color: black;
+        background-color: lime;
+        display: inline-block;
+        text-align: center;
+    }
 
-.bookmarkselected {
-    color: black;
-    background-color: lime;
-}
+    .article span.bookmark {
+        color: black;
+        background-color: orange;
+    }
 
-.highlight {
-    color: black;
-    background-color: yellow;
-}
+    .article span.bookmarkselected {
+        color: black;
+        background-color: lime;
+    }
 
-.highlightselected {
-    color: black;
-    background-color: lime;
-}
+    .article span.highlight {
+        color: black;
+        background-color: yellow;
+    }
+
+    .article span.highlightselected {
+        color: black;
+        background-color: lime;
+    }
 
 .newRepetition {
     color: red;
@@ -76,7 +81,7 @@ span.extract {
 }
 
 .url {
-    word-break: break-all;            
+    word-break: break-all;
 }
 
 input.no-zoom, textarea.no-zoom, select.no-zoom {
