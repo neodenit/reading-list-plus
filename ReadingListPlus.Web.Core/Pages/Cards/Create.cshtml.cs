@@ -31,7 +31,7 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
             this.deckService = deckService ?? throw new ArgumentNullException(nameof(deckService));
         }
 
-        public async Task<ActionResult> OnGetAsync([DeckFound, DeckOwned]Guid? deckId)
+        public async Task<ActionResult> OnGetAsync([DeckFound, DeckOwned]Guid? deckId, string text)
         {
             if (!ModelState.IsValid)
             {
@@ -42,25 +42,35 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
             {
                 var viewModelJson = viewModel as string;
                 Card = JsonConvert.DeserializeObject<CreateCardViewModel>(viewModelJson);
-
-                DeckListItems = settings.AllowDeckSelection && Card.CreationMode != CreationMode.Add
-                    ? await deckService.GetUserDecks(User.Identity.Name).ToList()
-                    : null;
+            }
+            else if(!string.IsNullOrEmpty(text))
+            {
+                Card = new CreateCardViewModel
+                {
+                    Type = CardType.Common,
+                    CreationMode = CreationMode.FromUrl,
+                    Text = text
+                };
             }
             else
             {
                 DeckViewModel deck = await deckService.GetDeckAsync(deckId.Value);
-
-                IEnumerable<KeyValuePair<string, string>> priorities = cardService.GetFullPriorityList();
 
                 Card = new CreateCardViewModel
                 {
                     DeckID = deck.ID,
                     DeckTitle = deck.Title,
                     Type = CardType.Common,
-                    CreationMode = CreationMode.Add
+                    CreationMode = CreationMode.Add,
+                    Text = text
                 };
             }
+
+            AllowDeckSelection = settings.AllowDeckSelection && deckId == null;
+
+            DeckListItems = AllowDeckSelection
+                ? await deckService.GetUserDecks(User.Identity.Name).ToList()
+                : null;
 
             PriorityList = Card.CreationMode == CreationMode.Extract
                 ? cardService.GetShortPriorityList()
@@ -71,6 +81,9 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
 
         [BindProperty]
         public CreateCardViewModel Card { get; set; }
+
+        [BindProperty]
+        public bool AllowDeckSelection { get; set; }
 
         public IEnumerable<DeckViewModel> DeckListItems { get; set; }
 
@@ -93,7 +106,7 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
             }
             else
             {
-                DeckListItems = settings.AllowDeckSelection && Card.CreationMode != CreationMode.Add
+                DeckListItems = AllowDeckSelection
                     ? await deckService.GetUserDecks(User.Identity.Name).ToList()
                     : null;
 

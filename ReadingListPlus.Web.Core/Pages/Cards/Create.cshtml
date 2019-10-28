@@ -6,11 +6,16 @@
     ViewData[Constants.ViewTitle] = "Create";
 }
 
+@section scripts {
+    <script src="~/js/App/CreateCard.js"></script>
+}
+
 <h2>Create @Resources.Item</h2>
 
 <hr />
 
 <form method="post">
+    <input type="hidden" asp-for="AllowDeckSelection" />
     <input type="hidden" asp-for="Card.Type" />
     <input type="hidden" asp-for="Card.CreationMode" />
     <input type="hidden" asp-for="Card.ParentCardID" />
@@ -19,7 +24,7 @@
 
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-    @if (Model.DeckListItems != null)
+    @if (Model.AllowDeckSelection)
     {
         <div class="form-group row">
             <label asp-for="Card.DeckID" class="col-form-label col-md-2"></label>
@@ -48,6 +53,22 @@
     }
 
     <div class="form-group row">
+        <label asp-for="Card.Url" class="col-form-label col-md-2"></label>
+        <div class="col-md-8">
+            <input asp-for="Card.Url" class="form-control no-zoom" />
+            <span asp-validation-for="Card.Url" class="text-danger"></span>
+        </div>
+
+        @if (!Model.AllowDeckSelection)
+        {
+            <div class="col-md-2">
+                <a href="javascript:undefined" id="import-button" class="btn btn-outline-secondary btn-block">Import</a>
+            </div>
+        }
+
+    </div>
+
+    <div class="form-group row">
         <label asp-for="Card.Title" class="col-form-label col-md-2"></label>
         <div class="col-md-8">
             <input asp-for="Card.Title" class="form-control no-zoom" />
@@ -60,14 +81,6 @@
         <div class="col-md-8">
             <textarea asp-for="Card.Text" class="form-control no-zoom" autofocus></textarea>
             <span asp-validation-for="Card.Text" class="text-danger"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <label asp-for="Card.Url" class="col-form-label col-md-2"></label>
-        <div class="col-md-8">
-            <input asp-for="Card.Url" class="form-control no-zoom" />
-            <span asp-validation-for="Card.Url" class="text-danger"></span>
         </div>
     </div>
 

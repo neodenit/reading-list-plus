@@ -44,13 +44,14 @@ namespace ReadingListPlus.Web.Core.Controllers
             return RedirectToPage(CardIndexModel.PageName, new { DeckId = deckId });
         }
 
-        public async Task<ActionResult> CreateFromUrl(string url)
+        public async Task<ActionResult> CreateFromUrl(string url, [DeckFound, DeckOwned]Guid? deckId)
         {
             (string text, string title) = await articleExtractor.GetTextAndTitleAsync(url);
 
             var viewModel = new CreateCardViewModel
             {
-                DeckID = deckService.GetUserLastDeck(UserName),
+                DeckID = deckId ?? deckService.GetUserLastDeck(UserName),
+                DeckTitle = deckId.HasValue ? (await deckService.GetDeckAsync(deckId.Value)).Title : null,
                 Title = title,
                 Text = text,
                 Url = url,
@@ -59,7 +60,8 @@ namespace ReadingListPlus.Web.Core.Controllers
             };
 
             TempData[nameof(CreateCardViewModel)] = JsonConvert.SerializeObject(viewModel);
-            return RedirectToPage(CardCreateModel.PageName);
+
+            return RedirectToPage(CardCreateModel.PageName, new { DeckId = deckId });
         }
 
         public async Task<ActionResult> Hide([Required, CardFound, CardOwned]Guid? id, string returnUrl)
