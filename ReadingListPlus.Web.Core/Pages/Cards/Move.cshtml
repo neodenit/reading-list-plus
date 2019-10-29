@@ -1,0 +1,81 @@
+﻿@page
+
+@model CardMoveModel
+
+@{
+    ViewData[Constants.ViewTitle] = "Move";
+}
+
+<h2>Move @Resources.Item</h2>
+
+<hr />
+
+<form method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <input type="hidden" asp-for="Card.ID" />
+    <input type="hidden" asp-for="Card.DeckID" />
+
+    <div class="form-group row">
+        <label class="col-form-label col-md-2">From</label>
+        <div class="col-md-8">
+            <p class="form-control-plaintext">@Model.Card.DeckTitle</p>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-form-label col-md-2">To</label>
+        <div class="col-md-8">
+            <select asp-for="NewDeckId" asp-items="@(new SelectList(Model.DeckListItems, "ID", "Title"))" class="form-control no-zoom">
+                <option></option>
+            </select>
+            <span asp-validation-for="NewDeckId" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label asp-for="Card.Title" class="col-form-label col-md-2"></label>
+        <div class="col-md-8">
+            <input asp-for="Card.Title" readonly class="form-control-plaintext" />
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label asp-for="Card.Text" class="col-form-label col-md-2"></label>
+        <div class="col-md-8">
+            <textarea asp-for="Card.Text" readonly class="form-control-plaintext"></textarea>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label asp-for="Card.Url" class="col-form-label col-md-2"></label>
+        <div class="col-md-8">
+            <input asp-for="Card.Url" readonly class="form-control-plaintext" />
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label asp-for="Priority" class="col-form-label col-md-2"></label>
+        <div class="col-md-8">
+            <select asp-for="Priority" asp-items="@(new SelectList(Model.PriorityList, "Key", "Value"))" class="form-control">
+                @if (Model.Priority == null)
+                {
+                    <option></option>
+                }
+            </select>
+            <span asp-validation-for="Priority" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="offset-md-2 col-md-2">
+            <input type="submit" value="Move" class="btn btn-success btn-block" />
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="offset-md-2 col-md-2">
+            <a asp-page="@CardEditModel.PageName" asp-route-id="@Model.Card.ID" class="btn btn-outline-secondary btn-block">Back</a>
+        </div>
+    </div>
+</form>

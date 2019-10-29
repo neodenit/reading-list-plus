@@ -30,7 +30,9 @@ namespace ReadingListPlus.Services
 
         Task<CardViewModel> HideCardAsync(Guid id);
 
-        Task RestoreAsync(CardViewModel card);
+        Task RestoreAsync(CardViewModel card, Priority priority);
+
+        Task MoveAsync(Guid cardId, Guid newDeckId, Priority priority);
 
         Task RemoveAsync(Guid id);
     }

@@ -91,7 +91,7 @@ namespace ReadingListPlus.Services
             schedulerService.ChangeCardPosition(card, priority);
 
             ValidateCardNumber(initialCardNumber, card.Deck);
-            ValidatePositions(card.Deck);
+            ValidatePositions(card.Deck.ConnectedCards);
 
             await cardRepository.SaveChangesAsync();
 
@@ -107,12 +107,11 @@ namespace ReadingListPlus.Services
             }
         }
 
-        private void ValidatePositions(Deck deck)
+        private void ValidatePositions(IEnumerable<Card> cards)
         {
-            var connectedCards = deck.ConnectedCards;
-            var connectedCardCount = connectedCards.Count();
-            var expectedPositions = Enumerable.Range(Constants.FirstCardPosition, connectedCardCount);
-            var actualPositions = connectedCards.Select(c => c.Position).OrderBy(x => x);
+            var cardCount = cards.Count();
+            var expectedPositions = Enumerable.Range(Constants.FirstCardPosition, cardCount);
+            var actualPositions = cards.Select(c => c.Position).OrderBy(x => x);
 
             var isValid = actualPositions.SequenceEqual(expectedPositions);
 
@@ -209,9 +208,7 @@ namespace ReadingListPlus.Services
         {
             Card card = await cardRepository.GetCardAsync(id);
 
-            schedulerService.PrepareForDeletion(card.Deck, card);
-
-            card.Position = Constants.DisconnectedCardPosition;
+            schedulerService.PrepareForDeletion(card);
 
             await cardRepository.SaveChangesAsync();
 
@@ -219,7 +216,7 @@ namespace ReadingListPlus.Services
             return viewModel;
         }
 
-        public async Task RestoreAsync(CardViewModel card)
+        public async Task RestoreAsync(CardViewModel card, Priority priority)
         {
             Card dbCard = await cardRepository.GetCardAsync(card.ID);
             Deck dbDeck = await deckRepository.GetDeckAsync(card.DeckID.Value);
@@ -234,7 +231,23 @@ namespace ReadingListPlus.Services
                 dbCard.DeckID = card.DeckID;
             }
 
-            schedulerService.PrepareForAdding(dbDeck, dbCard, card.Priority.Value);
+            schedulerService.PrepareForAdding(dbDeck, dbCard, priority);
+
+            await cardRepository.SaveChangesAsync();
+        }
+
+        public async Task MoveAsync(Guid cardId, Guid newDeckId, Priority priority)
+        {
+            Card dbCard = await cardRepository.GetCardAsync(cardId);
+            Deck newDeck = await deckRepository.GetDeckAsync(newDeckId);
+
+            schedulerService.PrepareForDeletion(dbCard);
+            ValidatePositions(dbCard.Deck.ConnectedCards);
+
+            schedulerService.PrepareForAdding(newDeck, dbCard, priority);
+            ValidatePositions(newDeck.ConnectedCards.Concat(Enumerable.Repeat(dbCard, 1)));
+
+            dbCard.DeckID = newDeck.ID;
 
             await cardRepository.SaveChangesAsync();
         }

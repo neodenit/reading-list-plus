@@ -39,7 +39,5 @@ namespace ReadingListPlus.Services.ViewModels
         public int? DisplayPosition => IsConnected
             ? Position + 1
             : null as int?;
-
-        public Priority? Priority { get; set; }
     }
 }

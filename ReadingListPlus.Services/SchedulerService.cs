@@ -28,9 +28,13 @@ namespace ReadingListPlus.Services
             card.Position = position;
         }
 
-        public void PrepareForDeletion(Deck deck, Card card)
+        public void PrepareForDeletion(Card card)
         {
+            var deck = card.Deck;
+
             ExcludePosition(deck.ConnectedCards, card.Position);
+
+            card.Position = Constants.DisconnectedCardPosition;
         }
 
         public void ChangeFirstCardPosition(Card card, Priority priority)

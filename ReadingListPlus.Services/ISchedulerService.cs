@@ -14,7 +14,7 @@ namespace ReadingListPlus.Services
 
         void PrepareForAdding(Deck deck, Card card, Priority priority);
 
-        void PrepareForDeletion(Deck deck, Card card);
+        void PrepareForDeletion(Card card);
 
         Card GetFirstCard(Deck deck);
     }

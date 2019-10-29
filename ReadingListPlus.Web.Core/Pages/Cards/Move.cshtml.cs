@@ -16,41 +16,37 @@ using ReadingListPlus.Web.Core.Pages.Decks;
 namespace ReadingListPlus.Web.Core.Pages.Cards
 {
     [Authorize]
-    public class CardRestoreModel : PageModel
+    public class CardMoveModel : PageModel
     {
-        public const string PageName = "/Cards/Restore";
+        public const string PageName = "/Cards/Move";
 
         private readonly ICardService cardService;
         private readonly IDeckService deckService;
 
-        public CardRestoreModel(ICardService cardService, IDeckService deckService)
+        public CardMoveModel(ICardService cardService, IDeckService deckService)
         {
             this.cardService = cardService ?? throw new ArgumentNullException(nameof(cardService));
             this.deckService = deckService ?? throw new ArgumentNullException(nameof(deckService));
         }
 
-        public async Task<ActionResult> OnGetAsync([Required, CardFound, CardOwned]Guid? id, string returnUrl)
+        public async Task<ActionResult> OnGetAsync([Required, CardFound, CardOwned]Guid? id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-
             Card = await cardService.GetCardAsync(id.Value);
 
-            if (Card.DeckID == null)
-            {
-                DeckListItems = await deckService.GetUserDecks(User.Identity.Name).ToList();
-            }
+            DeckListItems = await deckService
+                .GetUserDecks(User.Identity.Name)
+                .Where(d => d.ID != Card.DeckID)
+                .ToList();
 
-            PriorityList = cardService.GetFullPriorityList();
+            PriorityList = cardService.GetShortPriorityList();
 
             return Page();
         }
-
-        [BindProperty]
-        public string ReturnUrl { get; set; }
 
         [BindProperty]
         public CardViewModel Card { get; set; }
@@ -61,24 +57,26 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
 
         [Required]
         [BindProperty]
+        public Guid? NewDeckId { get; set; }
+
+        [Required]
+        [BindProperty]
         public Priority? Priority { get; set; }
 
         public async Task<ActionResult> OnPostAsync()
         {
             if (ModelState.IsValid)
             {
-                await cardService.RestoreAsync(Card, Priority.Value);
+                await cardService.MoveAsync(Card.ID, NewDeckId.Value, Priority.Value);
 
-                return string.IsNullOrEmpty(ReturnUrl)
-                    ? RedirectToPage(DeckIndexModel.PageName) as ActionResult
-                    : Redirect(ReturnUrl);
+                return RedirectToPage(DeckIndexModel.PageName);
             }
             else
             {
-                if (Card.DeckID == null)
-                {
-                    DeckListItems = await deckService.GetUserDecks(User.Identity.Name).ToList();
-                }
+                DeckListItems = await deckService
+                    .GetUserDecks(User.Identity.Name)
+                    .Where(d => d.ID != Card.DeckID)
+                    .ToList();
 
                 PriorityList = cardService.GetFullPriorityList();
 

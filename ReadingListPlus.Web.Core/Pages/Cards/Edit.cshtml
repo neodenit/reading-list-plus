@@ -14,7 +14,19 @@
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
     <input type="hidden" asp-for="Card.ID" />
+    <input type="hidden" asp-for="Card.DeckID" />
+    <input type="hidden" asp-for="Card.DeckTitle" />
     <input type="hidden" asp-for="ReturnUrl" />
+
+    <div class="form-group row">
+        <label class="col-form-label col-md-2">@Resources.Collection</label>
+        <div class="col-md-8">
+            <p class="form-control-plaintext">@Model.Card.DeckTitle</p>
+        </div>
+        <div class="col-md-2">
+            <a asp-page="@CardMoveModel.PageName" asp-route-id="@Model.Card.ID" class="btn btn-outline-secondary btn-block">Change</a>
+        </div>
+    </div>
 
     <div class="form-group row">
         <label asp-for="Card.Title" class="col-form-label col-md-2"></label>
