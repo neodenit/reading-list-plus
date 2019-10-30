@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="Boilerpipe.Net.Core" Version="1.0.1" />
     <PackageReference Include="NReadabilityCore" Version="1.0.0" />
     <PackageReference Include="SmartReader" Version="0.6.3" />

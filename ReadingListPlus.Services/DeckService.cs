@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using ReadingListPlus.Common;
@@ -18,13 +19,15 @@ namespace ReadingListPlus.Services
         private readonly ICardRepository cardRepository;
         private readonly IUserRepository userRepository;
         private readonly ISchedulerService schedulerService;
+        private readonly IMapper mapper;
 
-        public DeckService(IDeckRepository deckRepository, ICardRepository cardRepository, IUserRepository userRepository, ISchedulerService schedulerService)
+        public DeckService(IDeckRepository deckRepository, ICardRepository cardRepository, IUserRepository userRepository, ISchedulerService schedulerService, IMapper mapper)
         {
             this.deckRepository = deckRepository ?? throw new System.ArgumentNullException(nameof(deckRepository));
             this.cardRepository = cardRepository ?? throw new ArgumentNullException(nameof(cardRepository));
             this.userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
             this.schedulerService = schedulerService ?? throw new ArgumentNullException(nameof(schedulerService));
+            this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public IAsyncEnumerable<DeckViewModel> GetUserDecks(string userName)
@@ -57,12 +60,12 @@ namespace ReadingListPlus.Services
 
         public async Task<string> GetExportDataAsync()
         {
-            IAsyncEnumerable<Deck> decks = deckRepository.GetAllDecks();
+            IEnumerable<Deck> decks = await deckRepository.GetAllDecks().ToList();
+            var exportDecks = mapper.Map<IEnumerable<ImportExportDeck>>(decks);
 
-            var orderedDecks = await decks
+            var orderedDecks = exportDecks
                 .OrderBy(d => d.OwnerID)
-                .ThenBy(d => d.Title)
-                .ToList();
+                .ThenBy(d => d.Title);
 
             foreach (var deck in orderedDecks)
             {
@@ -82,7 +85,9 @@ namespace ReadingListPlus.Services
             {
                 var jsonSerializer = new JsonSerializer();
                 var jsonReader = new JsonTextReader(streamReader);
-                var newDecks = jsonSerializer.Deserialize<IEnumerable<Deck>>(jsonReader);
+                var importDecks = jsonSerializer.Deserialize<IEnumerable<ImportExportDeck>>(jsonReader);
+
+                var newDecks = mapper.Map<IEnumerable<Deck>>(importDecks);
 
                 if (resetKeysOnImport)
                 {
