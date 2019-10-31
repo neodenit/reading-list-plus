@@ -161,7 +161,7 @@ namespace ReadingListPlus.Services
                 Title = card.Title,
                 Text = card.Text,
                 Url = card.Url,
-                Type = card.Type,
+                CardType = card.Type,
                 ParentCardID = card.ParentCardID,
             };
 
@@ -196,7 +196,7 @@ namespace ReadingListPlus.Services
             dbCard.Title = card.Title;
             dbCard.Text = card.Text;
             dbCard.Url = card.Url;
-            dbCard.Type = card.Type;
+            dbCard.CardType = card.Type;
 
             await cardRepository.SaveChangesAsync();
 

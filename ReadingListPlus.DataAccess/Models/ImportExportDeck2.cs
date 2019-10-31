@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ReadingListPlus.DataAccess.Models
 {
-    public class ImportExportDeck : IImportExportDeck
+    public class ImportExportDeck2 : IImportExportDeck
     {
         public Guid ID { get; set; }
 
@@ -13,6 +13,6 @@ namespace ReadingListPlus.DataAccess.Models
 
         public string OwnerID { get; set; }
 
-        public ICollection<ImportExportCard> Cards { get; set; }
+        public ICollection<ImportExportCard2> Cards { get; set; }
     }
 }

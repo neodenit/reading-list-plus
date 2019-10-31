@@ -34,7 +34,7 @@ namespace ReadingListPlus.Web.Core.Pages.Decks
                 return BadRequest(ModelState);
             }
 
-            await deckService.ImportAsync(ImportFile, settings.ResetKeysOnImport);
+            await deckService.ImportAsync(ImportFile.OpenReadStream(), settings.ResetKeysOnImport);
 
             return RedirectToPage(DeckIndexModel.PageName);
         }

@@ -49,7 +49,8 @@ namespace ReadingListPlus.Services
         public async Task<DeckViewModel> GetDeckAsync(Guid id)
         {
             Deck deck = await deckRepository.GetDeckAsync(id);
-            var viewModel = new DeckViewModel {
+            var viewModel = new DeckViewModel
+            {
                 ID = deck.ID,
                 Title = deck.Title,
                 CardCount = deck.ConnectedCards.Count()
@@ -79,36 +80,59 @@ namespace ReadingListPlus.Services
             return result;
         }
 
-        public async Task ImportAsync(IFormFile file, bool resetKeysOnImport)
+        public async Task ImportAsync(Stream stream, bool resetKeysOnImport)
         {
-            using (var streamReader = new StreamReader(file.OpenReadStream()))
+            IEnumerable<IImportExportDeck> GetDecksFromStream()
             {
-                var jsonSerializer = new JsonSerializer();
-                var jsonReader = new JsonTextReader(streamReader);
-                var importDecks = jsonSerializer.Deserialize<IEnumerable<ImportExportDeck>>(jsonReader);
-
-                var newDecks = mapper.Map<IEnumerable<Deck>>(importDecks);
-
-                if (resetKeysOnImport)
+                using (var streamReader = new StreamReader(stream))
                 {
-                    foreach (var deck in newDecks)
-                    {
-                        deck.ID = Guid.NewGuid();
+                    var jsonSerializer = new JsonSerializer { MissingMemberHandling = MissingMemberHandling.Error };
 
-                        foreach (var card in deck.Cards)
+                    try
+                    {
+                        using (var jsonReader = new JsonTextReader(streamReader) { CloseInput = false })
                         {
-                            card.ID = Guid.NewGuid();
-                            card.ParentCardID = null;
+                            var decks = jsonSerializer.Deserialize<IEnumerable<ImportExportDeck2>>(jsonReader);
+                            return decks;
+                        }
+
+                    }
+                    catch (JsonSerializationException)
+                    {
+                        streamReader.BaseStream.Position = 0;
+                        streamReader.DiscardBufferedData();
+
+                        using (var jsonReader = new JsonTextReader(streamReader))
+                        {
+                            var decks = jsonSerializer.Deserialize<IEnumerable<ImportExportDeck>>(jsonReader);
+                            return decks;
                         }
                     }
                 }
-
-                cardRepository.RemoveAll();
-                deckRepository.RemoveAll();
-                deckRepository.AddRange(newDecks);
-
-                await deckRepository.SaveChangesAsync();
             }
+
+            IEnumerable<IImportExportDeck> importDecks = GetDecksFromStream();
+            var newDecks = mapper.Map<IEnumerable<Deck>>(importDecks);
+
+            if (resetKeysOnImport)
+            {
+                foreach (var deck in newDecks)
+                {
+                    deck.ID = Guid.NewGuid();
+
+                    foreach (var card in deck.Cards)
+                    {
+                        card.ID = Guid.NewGuid();
+                        card.ParentCardID = null;
+                    }
+                }
+            }
+
+            cardRepository.RemoveAll();
+            deckRepository.RemoveAll();
+            deckRepository.AddRange(newDecks);
+
+            await deckRepository.SaveChangesAsync();
         }
 
         public async Task<Guid> GetFirstCardIdOrDefaultAsync(Guid deckId)

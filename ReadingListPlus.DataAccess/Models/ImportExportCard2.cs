@@ -3,13 +3,13 @@ using ReadingListPlus.Common.Enums;
 
 namespace ReadingListPlus.DataAccess.Models
 {
-    public class ImportExportCard : IImportExportCard
+    public class ImportExportCard2 : IImportExportCard
     {
         public Guid ID { get; set; }
 
         public Guid? DeckID { get; set; }
 
-        public CardType Type { get; set; }
+        public CardType CardType { get; set; }
 
         public string Title { get; set; }
 
