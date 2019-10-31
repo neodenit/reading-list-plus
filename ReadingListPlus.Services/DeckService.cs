@@ -62,7 +62,7 @@ namespace ReadingListPlus.Services
         public async Task<string> GetExportDataAsync()
         {
             IEnumerable<Deck> decks = await deckRepository.GetAllDecks().ToList();
-            var exportDecks = mapper.Map<IEnumerable<ImportExportDeck>>(decks);
+            var exportDecks = mapper.Map<IEnumerable<ImportExportDeck2>>(decks);
 
             var orderedDecks = exportDecks
                 .OrderBy(d => d.OwnerID)
