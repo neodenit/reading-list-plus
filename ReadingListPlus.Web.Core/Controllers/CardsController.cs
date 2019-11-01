@@ -55,7 +55,7 @@ namespace ReadingListPlus.Web.Core.Controllers
                 Title = title,
                 Text = text,
                 Url = url,
-                Type = CardType.Article,
+                CardType = CardType.Article,
                 CreationMode = CreationMode.FromUrl
             };
 

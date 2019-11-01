@@ -39,7 +39,7 @@ namespace ReadingListPlus.Services
                 OldDeckID = card.DeckID,
                 Text = selection,
                 ParentCardUpdatedText = text,
-                Type = CardType.Extract,
+                CardType = CardType.Extract,
                 CreationMode = CreationMode.Extract
             };
 

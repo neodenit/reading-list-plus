@@ -1,4 +1,4 @@
-﻿"use strict";
+﻿'use strict';
 
 $(function () {
     var mainPanelHeight = $('#mainPanel').outerHeight(true);
@@ -85,7 +85,7 @@ $(function () {
                 $('#Card_Priority').val(priority);
 
                 var isBookmarked = $('#IsBookmarked').val();
-                var cardType = $('#Card_Type').val();
+                var cardType = $('#Card_CardType').val();
 
                 if (cardType !== 'Article' || isBookmarked === 'True') {
                     submitSelection('', action);

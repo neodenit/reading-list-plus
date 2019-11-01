@@ -53,10 +53,10 @@
     </div>
 
     <div class="form-group row">
-        <label asp-for="Card.Type" class="col-form-label col-md-2"></label>
+        <label asp-for="Card.CardType" class="col-form-label col-md-2"></label>
         <div class="col-md-8">
-            <select asp-for="Card.Type" asp-items="Html.GetEnumSelectList(Model.Card.Type.GetType())" class="form-control no-zoom"></select>
-            <span asp-validation-for="Card.Type" class="text-danger"></span>
+            <select asp-for="Card.CardType" asp-items="Html.GetEnumSelectList(Model.Card.CardType.GetType())" class="form-control no-zoom"></select>
+            <span asp-validation-for="Card.CardType" class="text-danger"></span>
         </div>
     </div>
 

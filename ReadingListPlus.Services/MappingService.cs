@@ -23,7 +23,7 @@ namespace ReadingListPlus.Services
                 ID = card.ID,
                 DeckID = card.DeckID,
                 DeckTitle = card.Deck.Title,
-                Type = card.CardType,
+                CardType = card.CardType,
                 Title = card.Title,
                 Text = card.Text,
                 Url = card.Url,
@@ -36,7 +36,7 @@ namespace ReadingListPlus.Services
                 ID = card.ID,
                 DeckID = card.DeckID,
                 DeckTitle = card.Deck.Title,
-                Type = card.CardType,
+                CardType = card.CardType,
                 Title = card.Title,
                 Text = card.Text,
                 Url = card.Url
@@ -62,7 +62,7 @@ namespace ReadingListPlus.Services
                 DeckID = card.DeckID,
                 ParentCardID = card.ParentCardID,
                 DeckTitle = card.Deck.Title,
-                Type = card.CardType,
+                CardType = card.CardType,
                 Title = card.Title,
                 Text = card.Text,
                 HtmlText = textConverterService.GetHtml(

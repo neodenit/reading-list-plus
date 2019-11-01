@@ -47,7 +47,7 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
             {
                 Card = new CreateCardViewModel
                 {
-                    Type = CardType.Common,
+                    CardType = CardType.Common,
                     CreationMode = CreationMode.FromUrl,
                     Text = text
                 };
@@ -60,7 +60,7 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
                 {
                     DeckID = deck.ID,
                     DeckTitle = deck.Title,
-                    Type = CardType.Common,
+                    CardType = CardType.Common,
                     CreationMode = CreationMode.Add,
                     Text = text
                 };

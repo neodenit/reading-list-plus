@@ -17,7 +17,7 @@ namespace ReadingListPlus.Services.ViewModels
 
         public Guid? ParentCardID { get; set; }
 
-        public CardType Type { get; set; }
+        public CardType CardType { get; set; }
 
         public string DeckTitle { get; set; }
 
