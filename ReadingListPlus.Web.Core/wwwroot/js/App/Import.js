@@ -1,4 +1,6 @@
-﻿$(function () {
+﻿'use strict';
+
+$(function () {
     var fileElement = $('input[type="file"]');
 
     fileElement.change(function () {

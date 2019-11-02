@@ -1,4 +1,6 @@
-﻿$(function () {
+﻿'use strict';
+
+$(function () {
     function isMobile() {
         var minDesktopSize = 768;
         return screen.width < minDesktopSize;

@@ -1,4 +1,6 @@
-﻿var newLineRegex = /\r|\n/g;
+﻿'use strict';
+
+var newLineRegex = /\r|\n/g;
 var extractRegex = /<a href=".+?" class="(\w+)" data-id-param="([0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12})">([\s\S]+?)<\/a>/g;
 var spanRegex = /<span class="(\w+)">([\s\S]+?)<\/span>/g;
 var brRegex = /<br\s*\/?>/g;
