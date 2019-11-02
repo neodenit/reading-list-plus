@@ -40,14 +40,15 @@
                     <a asp-page="@CardEditModel.PageName" asp-route-id="@Model.Card.ID" asp-route-returnUrl="@Url.Action(nameof(DecksController.Read), DecksController.Name, new { Id = Model.Card.DeckID })" class="@mobile @topPanelButton oi oi-pencil"></a>
                     <a asp-page="@CardEditModel.PageName" asp-route-id="@Model.Card.ID" asp-route-returnUrl="@Url.Action(nameof(DecksController.Read), DecksController.Name, new { Id = Model.Card.DeckID })" class="@desktop @topPanelButton">Edit @Resources.Item</a>
 
+                    <a asp-page="@CardIndexModel.PageName" asp-route-deckId="@Model.Card.DeckID" class="@mobile @topPanelButton oi oi-list"></a>
+                    <a asp-page="@CardIndexModel.PageName" asp-route-deckId="@Model.Card.DeckID" class="@desktop @topPanelButton">Queue</a>
+
                     @if (Model.Card.ParentCardID != null)
                     {
                         <a asp-page="@CardReadModel.PageName" asp-route-id="@Model.Card.ParentCardID" class="@mobile @topPanelButton oi oi-caret-top"></a>
                         <a asp-page="@CardReadModel.PageName" asp-route-id="@Model.Card.ParentCardID" class="@desktop @topPanelButton">Parent @Resources.Item</a>
                     }
 
-                    <a asp-page="@CardIndexModel.PageName" asp-route-deckId="@Model.Card.DeckID" class="@mobile @topPanelButton oi oi-list"></a>
-                    <a asp-page="@CardIndexModel.PageName" asp-route-deckId="@Model.Card.DeckID" class="@desktop @topPanelButton">Queue</a>
                 </div>
             </div>
 
