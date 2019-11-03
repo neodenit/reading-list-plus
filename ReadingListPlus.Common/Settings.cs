@@ -8,6 +8,8 @@
 
         public bool AllowDeckSelection { get; set; }
 
+        public bool AllowHighestPriority { get; set; }
+
         public bool ShowHiddenCardsInIndex { get; set; }
 
         public bool ResetKeysOnImport { get; set; }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
+using ReadingListPlus.Common;
 using ReadingListPlus.Common.Enums;
 using ReadingListPlus.Services;
 using ReadingListPlus.Services.Attributes;
@@ -19,12 +20,13 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
     public class CardMoveModel : PageModel
     {
         public const string PageName = "/Cards/Move";
-
+        private readonly ISettings settings;
         private readonly ICardService cardService;
         private readonly IDeckService deckService;
 
-        public CardMoveModel(ICardService cardService, IDeckService deckService)
+        public CardMoveModel(ISettings settings, ICardService cardService, IDeckService deckService)
         {
+            this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
             this.cardService = cardService ?? throw new ArgumentNullException(nameof(cardService));
             this.deckService = deckService ?? throw new ArgumentNullException(nameof(deckService));
         }
@@ -43,7 +45,9 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
                 .Where(d => d.ID != Card.DeckID)
                 .ToList();
 
-            PriorityList = cardService.GetShortPriorityList();
+            PriorityList = settings.AllowHighestPriority
+                ? cardService.GetFullPriorityList()
+                : cardService.GetShortPriorityList();
 
             return Page();
         }
@@ -78,7 +82,9 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
                     .Where(d => d.ID != Card.DeckID)
                     .ToList();
 
-                PriorityList = cardService.GetFullPriorityList();
+                PriorityList = settings.AllowHighestPriority
+                    ? cardService.GetFullPriorityList()
+                    : cardService.GetShortPriorityList();
 
                 return Page();
             }

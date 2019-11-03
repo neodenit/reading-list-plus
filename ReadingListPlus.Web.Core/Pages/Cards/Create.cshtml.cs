@@ -72,7 +72,7 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
                 ? await deckService.GetUserDecks(User.Identity.Name).ToList()
                 : null;
 
-            PriorityList = Card.CreationMode == CreationMode.Extract
+            PriorityList = Card.CreationMode == CreationMode.Extract || !settings.AllowHighestPriority
                 ? cardService.GetShortPriorityList()
                 : cardService.GetFullPriorityList();
 
@@ -110,7 +110,7 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
                     ? await deckService.GetUserDecks(User.Identity.Name).ToList()
                     : null;
 
-                PriorityList = Card.CreationMode == CreationMode.Extract
+                PriorityList = Card.CreationMode == CreationMode.Extract || !settings.AllowHighestPriority
                     ? cardService.GetShortPriorityList()
                     : cardService.GetFullPriorityList();
 
