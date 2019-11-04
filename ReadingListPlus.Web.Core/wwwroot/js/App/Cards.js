@@ -84,18 +84,7 @@ $(function () {
                 var priority = button.data('priority');
                 $('#Card_Priority').val(priority);
 
-                var isBookmarked = $('#IsBookmarked').val();
-                var cardType = $('#Card_CardType').val();
-
-                if (cardType !== 'Article' || isBookmarked === 'True') {
-                    submitSelection('', action);
-                } else if (isBookmarked === 'False') {
-                    $('#ModalDialog').modal();
-
-                    $('#YesButton').unbind('click').click(function () {
-                        submitSelection('', action);
-                    });
-                }
+                checkPosition(action);
 
                 break;
         }
@@ -104,6 +93,52 @@ $(function () {
     $('#mainPanel').sticky({ topSpacing: navbarHeight });
 
     scrollToLastSelection();
+
+    function checkPosition(action) {
+        var position = parseInt($('#Card_Position').val());
+
+        if (position !== 0) {
+            var positionMessage = $('#PositionMessage').val();
+
+            showModal(positionMessage, function () {
+                checkBookmark(action);
+            });
+        } else {
+            checkBookmark(action);
+        }
+    }
+
+    function checkBookmark(action) {
+        var isBookmarked = $('#IsBookmarked').val();
+        var cardType = $('#Card_CardType').val();
+
+        if (cardType !== 'Article' || isBookmarked === 'True') {
+            submitSelection('', action);
+        } else if (isBookmarked === 'False') {
+            var bookmarkMessage = $('#BookmarkMessage').val();
+
+            showModal(bookmarkMessage, function () {
+                submitSelection('', action);
+            });
+        }
+
+    }
+
+    function showModal(message, yesButtonCallback) {
+        $('#comfirmation-message').text(message);
+
+        $('#ModalDialog').modal('show');
+
+        $('#YesButton').off('click').on('click', function () {
+            if (yesButtonCallback) {
+                $('#ModalDialog').one('hidden.bs.modal', function () {
+                    yesButtonCallback();
+                });
+            }
+
+            $('#ModalDialog').modal('hide');
+        });
+    }
 
     function scrollToLastSelection() {
         var bookmark = $('.bookmark');

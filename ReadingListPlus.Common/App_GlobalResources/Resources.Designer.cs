@@ -79,6 +79,15 @@ namespace ReadingListPlus.Common.App_GlobalResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to evaluate the article without bookmarking it first?.
+        /// </summary>
+        public static string BookmarkConfirmation {
+            get {
+                return ResourceManager.GetString("BookmarkConfirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Topic.
         /// </summary>
         public static string Collection {
@@ -156,6 +165,15 @@ namespace ReadingListPlus.Common.App_GlobalResources {
         public static string MediumPriority {
             get {
                 return ResourceManager.GetString("MediumPriority", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to evaluate not the first note?.
+        /// </summary>
+        public static string PositionConfirmation {
+            get {
+                return ResourceManager.GetString("PositionConfirmation", resourceCulture);
             }
         }
     }

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
+using ReadingListPlus.Common.App_GlobalResources;
 using ReadingListPlus.Services;
 using ReadingListPlus.Services.Attributes;
 using ReadingListPlus.Services.ViewModels;
@@ -47,6 +48,10 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
 
         [BindProperty]
         public bool IsBookmarked { get; set; }
+
+        public string PositionMessage => Resources.PositionConfirmation;
+
+        public string BookmarkMessage => Resources.BookmarkConfirmation;
 
         public async Task<IActionResult> OnPostAsync()
         {

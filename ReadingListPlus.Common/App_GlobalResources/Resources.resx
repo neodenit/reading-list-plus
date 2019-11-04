@@ -150,4 +150,10 @@
   <data name="MediumPriority" xml:space="preserve">
     <value>Medium</value>
   </data>
+  <data name="BookmarkConfirmation" xml:space="preserve">
+    <value>Are you sure you want to evaluate the article without bookmarking it first?</value>
+  </data>
+  <data name="PositionConfirmation" xml:space="preserve">
+    <value>Are you sure you want to evaluate not the first note?</value>
+  </data>
 </root>
