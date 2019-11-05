@@ -57,9 +57,9 @@ namespace ReadingListPlus.Services
 
             Card card = await cardRepository.GetCardAsync(id);
 
-            string textWithoutBookmarks = textConverterService.DeleteTagByName(text, "bookmark");
+            string textWithoutBookmarks = textConverterService.DeleteTagByName(text, Constants.BookmarkLabel);
 
-            string newText = textConverterService.ReplaceTag(textWithoutBookmarks, Constants.SelectionLabel, "bookmark");
+            string newText = textConverterService.ReplaceTag(textWithoutBookmarks, Constants.SelectionLabel, Constants.BookmarkLabel);
 
             card.Text = newText;
 

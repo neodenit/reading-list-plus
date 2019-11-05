@@ -1,4 +1,6 @@
-﻿namespace ReadingListPlus.Common
+﻿using System.Collections.Generic;
+
+namespace ReadingListPlus.Common
 {
     public class Constants
     {
@@ -20,6 +22,9 @@
         public const string RepetitionCardLabel = "repetition";
         public const string SelectionLabel = "selection";
         public const string ExtractLabel = "extract";
+        public const string BookmarkLabel = "bookmark";
+        public const string HighlightLabel = "highlight";
+        public const string ClozeLabel = "cloze";
 
         public const string ViewTitle = "Title";
         public const string ViewMessage = "Message";
@@ -28,5 +33,16 @@
         public const int MaxIndexTextLength = 256;
         public const int MaxTreeTextLength = 128;
         public const int MaxDeleteTextLength = 128;
+
+        public static readonly IReadOnlyCollection<string> TagNames = new HashSet<string>
+        {
+            SelectionLabel,
+            ExtractLabel,
+            BookmarkLabel,
+            HighlightLabel,
+            ClozeLabel,
+            NewRepetitionCardLabel,
+            RepetitionCardLabel
+        };
     }
 }

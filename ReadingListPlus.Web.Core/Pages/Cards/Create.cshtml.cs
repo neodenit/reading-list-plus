@@ -43,7 +43,7 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
                 var viewModelJson = viewModel as string;
                 Card = JsonConvert.DeserializeObject<CreateCardViewModel>(viewModelJson);
             }
-            else if(!string.IsNullOrEmpty(text))
+            else if (!string.IsNullOrEmpty(text))
             {
                 Card = new CreateCardViewModel
                 {
@@ -91,7 +91,16 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
 
         public async Task<ActionResult> OnPostAsync()
         {
-            if (ModelState.IsValid)
+            IEnumerable<string> invalidTagNames = cardService.ValidateTagNames(Card.Text);
+
+            if (invalidTagNames.Any())
+            {
+                foreach (var name in invalidTagNames)
+                {
+                    ModelState.AddModelError(string.Empty, $"Invalid name: {name}");
+                }
+            }
+            else if (ModelState.IsValid)
             {
                 Guid newCardDeckId = await cardService.AddAsync(Card);
 
@@ -104,18 +113,16 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
                     ? RedirectToAction(nameof(DecksController.Read), DecksController.Name, new { Id = Card.OldDeckID, IsBookmarked = true }) as ActionResult
                     : RedirectToPage(CardIndexModel.PageName, new { DeckId = newCardDeckId });
             }
-            else
-            {
-                DeckListItems = AllowDeckSelection
-                    ? await deckService.GetUserDecks(User.Identity.Name).ToList()
-                    : null;
 
-                PriorityList = Card.CreationMode == CreationMode.Extract || !settings.AllowHighestPriority
-                    ? cardService.GetShortPriorityList()
-                    : cardService.GetFullPriorityList();
+            DeckListItems = AllowDeckSelection
+                ? await deckService.GetUserDecks(User.Identity.Name).ToList()
+                : null;
 
-                return Page();
-            }
+            PriorityList = Card.CreationMode == CreationMode.Extract || !settings.AllowHighestPriority
+                ? cardService.GetShortPriorityList()
+                : cardService.GetFullPriorityList();
+
+            return Page();
         }
     }
 }

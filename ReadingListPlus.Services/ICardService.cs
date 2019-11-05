@@ -35,5 +35,7 @@ namespace ReadingListPlus.Services
         Task MoveAsync(Guid cardId, Guid newDeckId, Priority priority);
 
         Task RemoveAsync(Guid id);
+
+        IEnumerable<string> ValidateTagNames(string text);
     }
 }

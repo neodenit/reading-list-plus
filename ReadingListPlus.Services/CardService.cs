@@ -273,6 +273,14 @@ namespace ReadingListPlus.Services
             await cardRepository.SaveChangesAsync();
         }
 
+        public IEnumerable<string> ValidateTagNames(string text)
+        {
+            IEnumerable<string> tagNames = textConverterService.GetTagNames(text);
+
+            var invalidTagNames = tagNames.Where(n => !Constants.TagNames.Contains(n));
+            return invalidTagNames;
+        }
+
         private IEnumerable<KeyValuePair<string, string>> GetPriorities(IEnumerable<Priority> priorities) =>
             priorities.Select(p => new KeyValuePair<string, string>(p.ToString("d"), GetPriorityLabel(p)));
 

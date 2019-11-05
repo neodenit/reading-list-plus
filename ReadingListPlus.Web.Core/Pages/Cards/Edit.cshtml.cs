@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -45,7 +47,16 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
 
         public async Task<ActionResult> OnPostAsync()
         {
-            if (ModelState.IsValid)
+            IEnumerable<string> invalidTagNames = cardService.ValidateTagNames(Card.Text);
+
+            if (invalidTagNames.Any())
+            {
+                foreach (var name in invalidTagNames)
+                {
+                    ModelState.AddModelError(string.Empty, $"Invalid name: {name}");
+                }
+            }
+            else if (ModelState.IsValid)
             {
                 await cardService.UpdateAsync(Card);
 
@@ -53,10 +64,8 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
                     ? RedirectToPage(DeckIndexModel.PageName) as ActionResult
                     : Redirect(ReturnUrl);
             }
-            else
-            {
-                return Page();
-            }
+
+            return Page();
         }
     }
 }

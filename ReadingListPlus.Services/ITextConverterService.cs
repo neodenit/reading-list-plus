@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ReadingListPlus.Services
 {
@@ -29,5 +30,7 @@ namespace ReadingListPlus.Services
         string GetPatternForSelection(string text);
 
         string GetPatternForDeletion(string text);
+
+        IEnumerable<string> GetTagNames(string text);
     }
 }

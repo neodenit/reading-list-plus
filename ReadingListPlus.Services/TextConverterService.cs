@@ -11,12 +11,12 @@ namespace ReadingListPlus.Services
     {
         public string AddHighlight(string initialText, string selectionPattern)
         {
-            return GetReplacement(initialText, selectionPattern, "highlight");
+            return GetReplacement(initialText, selectionPattern, Constants.HighlightLabel);
         }
 
         public string AddCloze(string initialText, string selectionPattern)
         {
-            return GetReplacement(initialText, selectionPattern, "cloze");
+            return GetReplacement(initialText, selectionPattern, Constants.ClozeLabel);
         }
 
         public string GetHtml(string text, string cardUrlTemplate, string repetitionCardUrlTemplate, string newRepetitionCardUrlTemplate, string newRepetitionCardClass)
@@ -102,6 +102,12 @@ namespace ReadingListPlus.Services
             var pattern = $@"\W*{wordPattern}\W*";
             return pattern;
         }
+
+        public IEnumerable<string> GetTagNames(string text) =>
+            Regex.Matches(text, @"{{(\w+)::(?s)(.+?)(?m)}}")
+            .Cast<Match>()
+            .Select(m => m.Groups[1].Value);
+                
 
         private string TrimSpecialCharacters(string text) =>
             Regex.Replace(text, @"^\W*(.+?)\W*$", "$1");
