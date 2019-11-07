@@ -19,7 +19,7 @@
     @if (Model.DeckListItems != null)
     {
         <div class="form-group row">
-            <label asp-for="Card.DeckID" class="col-form-label col-md-2"></label>
+            <label asp-for="Card.DeckID" class="col-form-label col-md-2 @(Model.Card.DeckID == null ? "font-weight-bold" : string.Empty)"></label>
             <div class="col-md-8">
                 <select asp-for="Card.DeckID" asp-items="@(new SelectList(Model.DeckListItems, "ID", "Title"))" class="form-control no-zoom">
                     @if (Model.Card.DeckID == null)
@@ -69,7 +69,7 @@
     </div>
 
     <div class="form-group row">
-        <label asp-for="Priority" class="col-form-label col-md-2"></label>
+        <label asp-for="Priority" class="col-form-label col-md-2 @(Model.Priority == null ? "font-weight-bold" : string.Empty)"></label>
         <div class="col-md-8">
             <select asp-for="Priority" asp-items="@(new SelectList(Model.PriorityList, "Key", "Value"))" class="form-control">
                 @if (Model.Priority == null)

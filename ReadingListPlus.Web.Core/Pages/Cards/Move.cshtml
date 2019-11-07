@@ -24,7 +24,7 @@
     </div>
 
     <div class="form-group row">
-        <label class="col-form-label col-md-2">To</label>
+        <label class="col-form-label col-md-2 font-weight-bold">To</label>
         <div class="col-md-8">
             <select asp-for="NewDeckId" asp-items="@(new SelectList(Model.DeckListItems, "ID", "Title"))" class="form-control no-zoom">
                 <option></option>
@@ -55,7 +55,7 @@
     </div>
 
     <div class="form-group row">
-        <label asp-for="Priority" class="col-form-label col-md-2"></label>
+        <label asp-for="Priority" class="col-form-label col-md-2 @(Model.Priority == null ? "font-weight-bold" : string.Empty)"></label>
         <div class="col-md-8">
             <select asp-for="Priority" asp-items="@(new SelectList(Model.PriorityList, "Key", "Value"))" class="form-control">
                 @if (Model.Priority == null)
