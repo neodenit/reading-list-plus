@@ -17,6 +17,7 @@ namespace ReadingListPlus.Services.ViewModels
 
         public string DeckTitle { get; set; }
 
+        [Display(Name = "Type")]
         public CardType CardType { get; set; }
 
         public string Title { get; set; }
