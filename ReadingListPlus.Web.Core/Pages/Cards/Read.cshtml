@@ -120,12 +120,10 @@
         case NewRepetitionCardState.Pending:
             <h4>Please finish the new repetition card creation.</h4>
             <a href="javascript:undefined" data-act="CancelRepetitionCardCreation" class="act btn btn-danger">Cancel</a>
-            <hr />
             break;
         case NewRepetitionCardState.Done:
             <h4>The new repetition card has been created.</h4>
             <a href="javascript:undefined" data-act="CompleteRepetitionCardCreation" class="act btn btn-success">OK</a>
-            <hr />
             break;
         default:
             break;
@@ -150,9 +148,10 @@
         </div>
     </div>
 
+    <hr />
+
     @if (!string.IsNullOrEmpty(Model.Card.Url))
     {
-        <hr />
         <label>Source:</label>
         <a href="@Model.Card.Url" class="url">@Model.Card.Url</a>
         <hr />
