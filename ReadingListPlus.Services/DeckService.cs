@@ -15,19 +15,21 @@ namespace ReadingListPlus.Services
 {
     public class DeckService : IDeckService
     {
+        private readonly IMapper mapper;
         private readonly IDeckRepository deckRepository;
         private readonly ICardRepository cardRepository;
         private readonly IUserRepository userRepository;
         private readonly ISchedulerService schedulerService;
-        private readonly IMapper mapper;
+        private readonly ITextConverterService textConverterService;
 
-        public DeckService(IDeckRepository deckRepository, ICardRepository cardRepository, IUserRepository userRepository, ISchedulerService schedulerService, IMapper mapper)
+        public DeckService(IMapper mapper, IDeckRepository deckRepository, ICardRepository cardRepository, IUserRepository userRepository, ISchedulerService schedulerService, ITextConverterService textConverterService)
         {
+            this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.deckRepository = deckRepository ?? throw new System.ArgumentNullException(nameof(deckRepository));
             this.cardRepository = cardRepository ?? throw new ArgumentNullException(nameof(cardRepository));
             this.userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
             this.schedulerService = schedulerService ?? throw new ArgumentNullException(nameof(schedulerService));
-            this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            this.textConverterService = textConverterService ?? throw new ArgumentNullException(nameof(textConverterService));
         }
 
         public IAsyncEnumerable<DeckViewModel> GetUserDecks(string userName)
@@ -168,6 +170,20 @@ namespace ReadingListPlus.Services
         public async Task DeleteDeckAsync(Guid id)
         {
             Deck deck = await deckRepository.GetDeckAsync(id);
+
+            foreach (var card in deck.Cards)
+            {
+                if (card.ParentCardID == null &&
+                    card.ChildCards?.Any() != true &&
+                    string.IsNullOrEmpty(textConverterService.GetTagText(card.Text, Constants.RepetitionCardLabel)))
+                {
+                    cardRepository.Remove(card);
+                }
+                else
+                {
+                    card.Position = Constants.DisconnectedCardPosition;
+                }
+            }
 
             deckRepository.Remove(deck);
 

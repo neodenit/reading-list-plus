@@ -30,7 +30,7 @@ namespace ReadingListPlus.Services
 
             Card card = await cardRepository.GetCardAsync(id);
 
-            string selection = textConverterService.GetSelection(text);
+            string selection = textConverterService.GetTagText(text, Constants.SelectionLabel);
 
             var newCard = new CreateCardViewModel
             {
@@ -75,7 +75,7 @@ namespace ReadingListPlus.Services
 
             Card card = await cardRepository.GetCardAsync(cardId);
 
-            string repetitionCardText = textConverterService.GetSelection(text);
+            string repetitionCardText = textConverterService.GetTagText(text, Constants.SelectionLabel);
             var encodedRepetitionCardText = Uri.EscapeDataString(repetitionCardText);
 
             string textWithNewRepetitionCard = textConverterService.ReplaceTag(text, Constants.SelectionLabel, Constants.NewRepetitionCardLabel);

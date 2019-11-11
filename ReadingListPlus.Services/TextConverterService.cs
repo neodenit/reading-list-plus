@@ -26,9 +26,9 @@ namespace ReadingListPlus.Services
             return html;
         }
 
-        public string GetSelection(string text)
+        public string GetTagText(string text, string tagName)
         {
-            var result = Regex.Match(text, $@"{{{{{Constants.SelectionLabel}::(?s)(.+?)(?m)}}}}").Groups[1].Value;
+            var result = Regex.Match(text, $@"{{{{{tagName}::(?s)(.+?)(?m)}}}}").Groups[1].Value;
 
             return result;
         }

@@ -17,7 +17,7 @@ namespace ReadingListPlus.Services
 
         string GetHtml(string text, string cardUrlTemplate, string repetitionCardUrlTemplate, string newRepetitionCardUrlTemplate, string newRepetitionCardClass);
 
-        string GetSelection(string text);
+        string GetTagText(string text, string tagName);
 
         string ReplaceTag(string text, string oldTag, string newTag);
 
