@@ -69,7 +69,7 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
             AllowDeckSelection = settings.AllowDeckSelection && deckId == null;
 
             DeckListItems = AllowDeckSelection
-                ? await deckService.GetUserDecks(User.Identity.Name).ToList()
+                ? deckService.GetUserDecks(User.Identity.Name)
                 : null;
 
             PriorityList = Card.CreationMode == CreationMode.Extract || !settings.AllowHighestPriority
@@ -102,7 +102,7 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
             }
             else if (ModelState.IsValid)
             {
-                Guid newCardDeckId = await cardService.AddAsync(Card);
+                Guid newCardDeckId = await cardService.AddAsync(Card, User.Identity.Name);
 
                 if (Card.CreationMode == CreationMode.FromUrl)
                 {
@@ -115,7 +115,7 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
             }
 
             DeckListItems = AllowDeckSelection
-                ? await deckService.GetUserDecks(User.Identity.Name).ToList()
+                ? deckService.GetUserDecks(User.Identity.Name)
                 : null;
 
             PriorityList = Card.CreationMode == CreationMode.Extract || !settings.AllowHighestPriority

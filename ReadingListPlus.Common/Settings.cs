@@ -14,6 +14,8 @@
 
         public bool ResetKeysOnImport { get; set; }
 
+        public bool FixOnImport { get; set; }
+
         public bool ExtractEnabled { get; set; }
 
         public bool BookmarkEnabled { get; set; }

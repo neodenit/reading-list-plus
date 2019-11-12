@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using AutoMapper;
 using ReadingListPlus.Common;
 using ReadingListPlus.Common.App_GlobalResources;
 using ReadingListPlus.Common.Enums;
@@ -13,6 +15,7 @@ namespace ReadingListPlus.Services
 {
     public class CardService : ICardService
     {
+        private readonly IMapper mapper;
         private readonly ICardRepository cardRepository;
         private readonly IDeckRepository deckRepository;
         private readonly ITextConverterService textConverterService;
@@ -20,8 +23,9 @@ namespace ReadingListPlus.Services
         private readonly ISchedulerService schedulerService;
         private readonly IMappingService mappingService;
 
-        public CardService(ICardRepository cardRepository, IDeckRepository deckRepository, ITextConverterService textConverterService, IRepetitionCardService repetitionCardService, ISchedulerService schedulerService, IMappingService mappingService)
+        public CardService(IMapper mapper, ICardRepository cardRepository, IDeckRepository deckRepository, ITextConverterService textConverterService, IRepetitionCardService repetitionCardService, ISchedulerService schedulerService, IMappingService mappingService)
         {
+            this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.cardRepository = cardRepository ?? throw new System.ArgumentNullException(nameof(cardRepository));
             this.deckRepository = deckRepository ?? throw new ArgumentNullException(nameof(deckRepository));
             this.textConverterService = textConverterService ?? throw new ArgumentNullException(nameof(textConverterService));
@@ -74,6 +78,15 @@ namespace ReadingListPlus.Services
             IEnumerable<CardViewModel> result = deck.Cards.Select(c => mappingService.MapCardToViewModel(c));
             return result;
         }
+
+        public async Task<IEnumerable<CardViewModel>> GetUnparentedCardsAsync(string userName)
+        {
+            IEnumerable<Card> cards = await cardRepository.GetUnparentedCards(userName).ToList();
+
+            var result = mapper.Map<IEnumerable<CardViewModel>>(cards);
+            return result;
+        }
+
 
         public async Task<IEnumerable<CardViewModel>> GetConnectedCardsAsync(Guid deckId)
         {
@@ -146,7 +159,7 @@ namespace ReadingListPlus.Services
             return GetPriorities(priorities);
         }
 
-        public async Task<Guid> AddAsync(CreateCardViewModel card)
+        public async Task<Guid> AddAsync(CreateCardViewModel card, string userName)
         {
             Deck deck = await deckRepository.GetDeckAsync(card.DeckID.Value);
             Deck oldDeck = card.OldDeckID.HasValue ? await deckRepository.GetDeckAsync(card.OldDeckID.Value) : null;
@@ -163,6 +176,7 @@ namespace ReadingListPlus.Services
                 Url = card.Url,
                 CardType = card.CardType,
                 ParentCardID = card.ParentCardID,
+                OwnerID = userName
             };
 
             schedulerService.PrepareForAdding(deck, newCard, priority);
@@ -299,6 +313,15 @@ namespace ReadingListPlus.Services
                 default:
                     return string.Empty;
             }
+        }
+
+        public async Task FixCardOwnerAsync(string defaultOwner)
+        {
+            var cards = await cardRepository.GetAllCards().ToList();
+
+            cards.ForEach(c => c.OwnerID = c.Deck?.OwnerID ?? defaultOwner);
+
+            await cardRepository.SaveChangesAsync();
         }
     }
 }

@@ -7,6 +7,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using ReadingListPlus.Common;
+using ReadingListPlus.Common.App_GlobalResources;
 using ReadingListPlus.DataAccess.Models;
 using ReadingListPlus.Repositories;
 using ReadingListPlus.Services.ViewModels;
@@ -21,8 +22,9 @@ namespace ReadingListPlus.Services
         private readonly IUserRepository userRepository;
         private readonly ISchedulerService schedulerService;
         private readonly ITextConverterService textConverterService;
+        private readonly ICardService cardService;
 
-        public DeckService(IMapper mapper, IDeckRepository deckRepository, ICardRepository cardRepository, IUserRepository userRepository, ISchedulerService schedulerService, ITextConverterService textConverterService)
+        public DeckService(IMapper mapper, IDeckRepository deckRepository, ICardRepository cardRepository, IUserRepository userRepository, ISchedulerService schedulerService, ITextConverterService textConverterService, ICardService cardService)
         {
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.deckRepository = deckRepository ?? throw new System.ArgumentNullException(nameof(deckRepository));
@@ -30,9 +32,10 @@ namespace ReadingListPlus.Services
             this.userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
             this.schedulerService = schedulerService ?? throw new ArgumentNullException(nameof(schedulerService));
             this.textConverterService = textConverterService ?? throw new ArgumentNullException(nameof(textConverterService));
+            this.cardService = cardService ?? throw new ArgumentNullException(nameof(cardService));
         }
 
-        public IAsyncEnumerable<DeckViewModel> GetUserDecks(string userName)
+        public IEnumerable<DeckViewModel> GetUserDecks(string userName)
         {
             IAsyncEnumerable<Deck> decks = deckRepository.GetUserDecks(userName);
 
@@ -43,9 +46,17 @@ namespace ReadingListPlus.Services
                     ID = d.ID,
                     Title = d.Title,
                     CardCount = d.ConnectedCards.Count()
-                });
+                }).ToEnumerable();
 
-            return viewModel;
+            IEnumerable<Card> unparentedCards = cardRepository.GetUnparentedCards(userName).ToEnumerable();
+            var unparentedDeck = new DeckViewModel
+            {
+                Title = $"No {Resources.Collection}",
+                CardCount = unparentedCards.Count()
+            };
+
+            var result = viewModel.Append(unparentedDeck);
+            return result;
         }
 
         public async Task<DeckViewModel> GetDeckAsync(Guid id)
@@ -64,7 +75,7 @@ namespace ReadingListPlus.Services
         public async Task<string> GetExportDataAsync()
         {
             IEnumerable<Deck> decks = await deckRepository.GetAllDecks().ToList();
-            var exportDecks = mapper.Map<IEnumerable<ImportExportDeck2>>(decks);
+            var exportDecks = mapper.Map<IEnumerable<ImportExportDeck3>>(decks);
 
             var orderedDecks = exportDecks
                 .OrderBy(d => d.OwnerID)
@@ -82,7 +93,7 @@ namespace ReadingListPlus.Services
             return result;
         }
 
-        public async Task ImportAsync(Stream stream, bool resetKeysOnImport)
+        public async Task ImportAsync(Stream stream, bool resetKeysOnImport, bool fixOnImport)
         {
             IEnumerable<IImportExportDeck> GetDecksFromStream()
             {
@@ -94,20 +105,34 @@ namespace ReadingListPlus.Services
                     {
                         using (var jsonReader = new JsonTextReader(streamReader) { CloseInput = false })
                         {
-                            var decks = jsonSerializer.Deserialize<IEnumerable<ImportExportDeck2>>(jsonReader);
+                            var decks = jsonSerializer.Deserialize<IEnumerable<ImportExportDeck3>>(jsonReader);
                             return decks;
                         }
 
                     }
                     catch (JsonSerializationException)
                     {
-                        streamReader.BaseStream.Position = 0;
-                        streamReader.DiscardBufferedData();
-
-                        using (var jsonReader = new JsonTextReader(streamReader))
+                        try
                         {
-                            var decks = jsonSerializer.Deserialize<IEnumerable<ImportExportDeck>>(jsonReader);
-                            return decks;
+                            streamReader.BaseStream.Position = 0;
+                            streamReader.DiscardBufferedData();
+
+                            using (var jsonReader = new JsonTextReader(streamReader))
+                            {
+                                var decks = jsonSerializer.Deserialize<IEnumerable<ImportExportDeck2>>(jsonReader);
+                                return decks;
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            streamReader.BaseStream.Position = 0;
+                            streamReader.DiscardBufferedData();
+
+                            using (var jsonReader = new JsonTextReader(streamReader))
+                            {
+                                var decks = jsonSerializer.Deserialize<IEnumerable<ImportExportDeck>>(jsonReader);
+                                return decks;
+                            }
                         }
                     }
                 }
@@ -126,6 +151,17 @@ namespace ReadingListPlus.Services
                     {
                         card.ID = Guid.NewGuid();
                         card.ParentCardID = null;
+                    }
+                }
+            }
+
+            if (fixOnImport)
+            {
+                foreach (var deck in newDecks)
+                {
+                    foreach (var card in deck.Cards)
+                    {
+                        card.OwnerID = deck.OwnerID;
                     }
                 }
             }

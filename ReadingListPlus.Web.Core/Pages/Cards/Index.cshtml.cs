@@ -28,26 +28,41 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
             this.cardService = cardService ?? throw new ArgumentNullException(nameof(cardService));
         }
 
-        public async Task<ActionResult> OnGetAsync([Required, DeckFound, DeckOwned]Guid? deckId)
+        public async Task<ActionResult> OnGetAsync([DeckFound, DeckOwned]Guid? deckId)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            IEnumerable<CardViewModel> cards = settings.ShowHiddenCardsInIndex
-                ? await cardService.GetAllCardsAsync(deckId.Value)
-                : await cardService.GetConnectedCardsAsync(deckId.Value);
-
-            if (!cards.Any())
+            if (deckId == null)
             {
-                return RedirectToPage(DeckIndexModel.PageName);
-            }
+                IEnumerable<CardViewModel> cards = await cardService.GetUnparentedCardsAsync(User.Identity.Name);
 
-            Cards = cards
-                .OrderByDescending(c => c.IsConnected)
-                .ThenBy(c => c.Position)
-                .ThenBy(c => c.DisplayText);
+                if (!cards.Any())
+                {
+                    return RedirectToPage(DeckIndexModel.PageName);
+                }
+
+                Cards = cards.OrderBy(c => c.DisplayText);
+            }
+            else
+            {
+                IEnumerable<CardViewModel> cards = settings.ShowHiddenCardsInIndex
+                    ? await cardService.GetAllCardsAsync(deckId.Value)
+                    : await cardService.GetConnectedCardsAsync(deckId.Value);
+
+                if (!cards.Any())
+                {
+                    return RedirectToPage(DeckIndexModel.PageName);
+                }
+
+                Cards = cards
+                    .OrderByDescending(c => c.IsConnected)
+                    .ThenBy(c => c.Position)
+                    .ThenBy(c => c.DisplayText);
+
+            }
 
             return Page();
         }

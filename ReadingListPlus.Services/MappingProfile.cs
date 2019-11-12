@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ReadingListPlus.DataAccess.Models;
+using ReadingListPlus.Services.ViewModels;
 
 namespace ReadingListPlus.Services
 {
@@ -7,14 +8,18 @@ namespace ReadingListPlus.Services
     {
         public MappingProfile()
         {
-            CreateMap<Deck, ImportExportDeck2>();
+            CreateMap<Deck, ImportExportDeck3>();
             CreateMap<ImportExportDeck, Deck>();
             CreateMap<ImportExportDeck2, Deck>();
+            CreateMap<ImportExportDeck3, Deck>();
 
-            CreateMap<Card, ImportExportCard2>();
+            CreateMap<Card, ImportExportCard3>();
             CreateMap<ImportExportCard, Card>()
                 .ForMember(dest => dest.CardType, opt => opt.MapFrom(src => src.Type));
             CreateMap<ImportExportCard2, Card>();
+            CreateMap<ImportExportCard3, Card>();
+
+            CreateMap<Card, CardViewModel>();
         }
     }
 }

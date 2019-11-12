@@ -29,7 +29,7 @@ namespace ReadingListPlus.Services.Attributes
                 return DefaultValidationResult;
             }
 
-            var validationResult = card.Deck.OwnerID == userName ? ValidationResult.Success : FailedValidationResult;
+            var validationResult = card.OwnerID == userName ? ValidationResult.Success : FailedValidationResult;
 
             return validationResult;
         }

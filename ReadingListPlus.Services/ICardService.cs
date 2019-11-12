@@ -16,6 +16,8 @@ namespace ReadingListPlus.Services
 
         Task<IEnumerable<CardViewModel>> GetAllCardsAsync(Guid deckId);
 
+        Task<IEnumerable<CardViewModel>> GetUnparentedCardsAsync(string userName);
+
         Task<IEnumerable<CardViewModel>> GetConnectedCardsAsync(Guid deckId);
 
         Task<CardViewModel> PostponeAsync(Guid id, Priority priority);
@@ -24,7 +26,7 @@ namespace ReadingListPlus.Services
 
         IEnumerable<KeyValuePair<string, string>> GetShortPriorityList();
 
-        Task<Guid> AddAsync(CreateCardViewModel card);
+        Task<Guid> AddAsync(CreateCardViewModel card, string userName);
 
         Task<CardViewModel> UpdateAsync(EditCardViewModel card);
 
@@ -37,5 +39,7 @@ namespace ReadingListPlus.Services
         Task RemoveAsync(Guid id);
 
         IEnumerable<string> ValidateTagNames(string text);
+
+        Task FixCardOwnerAsync(string defaultOwner);
     }
 }

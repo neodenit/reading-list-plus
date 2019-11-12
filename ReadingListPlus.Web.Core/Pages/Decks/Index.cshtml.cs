@@ -22,9 +22,9 @@ namespace ReadingListPlus.Web.Core.Pages.Decks
             this.deckService = deckService ?? throw new System.ArgumentNullException(nameof(deckService));
         }
 
-        public async Task OnGet()
+        public void OnGet()
         {
-            Decks = await deckService.GetUserDecks(User.Identity.Name).ToList();
+            Decks = deckService.GetUserDecks(User.Identity.Name);
         }
     }
 }

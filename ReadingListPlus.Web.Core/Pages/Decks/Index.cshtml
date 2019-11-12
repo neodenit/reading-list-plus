@@ -39,7 +39,14 @@
         {
             <tr>
                 <td>
-                    <a asp-action="@nameof(DecksController.Read)" asp-controller="@DecksController.Name" asp-route-id="@item.ID">@item.Title</a>
+                    @if (item.ID != Guid.Empty)
+                    {
+                        <a asp-action="@nameof(DecksController.Read)" asp-controller="@DecksController.Name" asp-route-id="@item.ID">@item.Title</a>
+                    }
+                    else
+                    {
+                        <a asp-page="@CardIndexModel.PageName">@item.Title</a>
+                    }
                 </td>
 
                 <td>
@@ -47,7 +54,10 @@
                 </td>
 
                 <td>
-                    <a asp-page="@DeckEditModel.PageName" asp-route-id="@item.ID" class="btn btn-outline-secondary btn-block">Options</a>
+                    @if (item.ID != Guid.Empty)
+                    {
+                        <a asp-page="@DeckEditModel.PageName" asp-route-id="@item.ID" class="btn btn-outline-secondary btn-block">Options</a>
+                    }
                 </td>
             </tr>
         }
@@ -55,9 +65,24 @@
     </tbody>
 </table>
 
+@if (User.HasClaim(Constants.FixClaim, Constants.FixClaim))
+{
+    <hr />
+
+    <div class="row">
+        <div class="col-md-2 pt-2 pb-2">
+            <a asp-controller="@CardsController.Name" asp-action="@nameof(CardsController.FixCardOwner)" class="btn btn-outline-secondary btn-block">Fix</a>
+        </div>
+    </div>
+}
+
 @if (User.HasClaim(Constants.BackupClaim, Constants.BackupClaim))
 {
     <hr />
 
-    <a asp-page="@ImportModel.PageName" class="btn btn-outline-secondary">Backup/Restore</a>
+    <div class="row">
+        <div class="col-md-2 pt-2 pb-2">
+            <a asp-page="@ImportModel.PageName" class="btn btn-outline-secondary btn-block">Backup/Restore</a>
+        </div>
+    </div>
 }

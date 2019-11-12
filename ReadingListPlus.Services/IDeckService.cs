@@ -8,13 +8,13 @@ namespace ReadingListPlus.Services
 {
     public interface IDeckService
     {
-        IAsyncEnumerable<DeckViewModel> GetUserDecks(string userName);
+        IEnumerable<DeckViewModel> GetUserDecks(string userName);
 
         Task<DeckViewModel> GetDeckAsync(Guid id);
 
         Task<string> GetExportDataAsync();
 
-        Task ImportAsync(Stream stream, bool resetKeysOnImport);
+        Task ImportAsync(Stream stream, bool resetKeysOnImport, bool fixOnImport);
 
         Task<Guid> GetFirstCardIdOrDefaultAsync(Guid deckId);
 

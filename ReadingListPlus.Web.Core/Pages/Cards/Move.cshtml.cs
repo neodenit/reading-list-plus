@@ -40,10 +40,9 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
 
             Card = await cardService.GetCardAsync(id.Value);
 
-            DeckListItems = await deckService
+            DeckListItems = deckService
                 .GetUserDecks(User.Identity.Name)
-                .Where(d => d.ID != Card.DeckID)
-                .ToList();
+                .Where(d => d.ID != Card.DeckID);
 
             PriorityList = settings.AllowHighestPriority
                 ? cardService.GetFullPriorityList()
@@ -77,10 +76,9 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
             }
             else
             {
-                DeckListItems = await deckService
+                DeckListItems = deckService
                     .GetUserDecks(User.Identity.Name)
-                    .Where(d => d.ID != Card.DeckID)
-                    .ToList();
+                    .Where(d => d.ID != Card.DeckID);
 
                 PriorityList = settings.AllowHighestPriority
                     ? cardService.GetFullPriorityList()

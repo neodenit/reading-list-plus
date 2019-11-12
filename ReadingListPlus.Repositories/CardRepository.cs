@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +16,12 @@ namespace ReadingListPlus.Repositories
         {
             this.context = context ?? throw new System.ArgumentNullException(nameof(context));
         }
+
+        public IAsyncEnumerable<Card> GetAllCards() =>
+            context.Cards.ToAsyncEnumerable();
+
+        public IAsyncEnumerable<Card> GetUnparentedCards(string userName) =>
+            context.Cards.Where(c => c.DeckID == null && c.OwnerID == userName).ToAsyncEnumerable();
 
         public Task<Card> GetCardAsync(Guid id) =>
             context.Cards.Include(c => c.Deck.Cards).SingleOrDefaultAsync(c => c.ID == id);

@@ -19,6 +19,9 @@ namespace ReadingListPlus.DataAccess.Models
         [JsonIgnore]
         public Deck Deck { get; set; }
 
+        [Required]
+        public string OwnerID { get; set; }
+
         public CardType CardType { get; set; }
 
         public string Title { get; set; }
