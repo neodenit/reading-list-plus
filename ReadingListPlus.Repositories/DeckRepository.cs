@@ -18,13 +18,13 @@ namespace ReadingListPlus.Repositories
         }
 
         public IAsyncEnumerable<Deck> GetAllDecks() =>
-            context.Decks.Include(d => d.Cards).ThenInclude(c => c.ChildCards).ToAsyncEnumerable();
+            context.Decks.Include(d => d.Cards).ToAsyncEnumerable();
 
         public IAsyncEnumerable<Deck> GetUserDecks(string userName) =>
             context.Decks.Include(d => d.Cards).Where(item => item.OwnerID == userName).ToAsyncEnumerable();
 
         public Task<Deck> GetDeckAsync(Guid id) =>
-            context.Decks.Include(d => d.Cards).SingleOrDefaultAsync(d => d.ID == id);
+            context.Decks.Include(d => d.Cards).ThenInclude(c => c.ChildCards).SingleOrDefaultAsync(d => d.ID == id);
 
         public Deck GetDeck(Guid id) =>
             context.Decks.Include(d => d.Cards).SingleOrDefault(d => d.ID == id);
