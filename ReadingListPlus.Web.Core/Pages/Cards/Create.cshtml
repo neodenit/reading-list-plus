@@ -105,14 +105,17 @@
 
     <div class="form-group row">
         <div class="offset-md-2 col-md-2">
-            @if (Model.Card.DeckID.HasValue)
+
+            @switch (Model.Card.CreationMode)
             {
-                <a asp-page="@CardIndexModel.PageName" asp-route-deckId="@Model.Card.DeckID" class="btn btn-outline-secondary btn-block">Back</a>
+                case CreationMode.Add:
+                    <a asp-page="@CardIndexModel.PageName" asp-route-deckId="@Model.Card.DeckID" class="btn btn-outline-secondary btn-block">Back</a>
+                    break;
+                case CreationMode.Extract:
+                    <a asp-page="@CardReadModel.PageName" asp-route-id="@Model.Card.ParentCardID" class="btn btn-outline-secondary btn-block">Back</a>
+                    break;
             }
-            else
-            {
-                <a asp-page="@DeckIndexModel.PageName" class="btn btn-outline-secondary btn-block">Back</a>
-            }
+
         </div>
     </div>
 </form>

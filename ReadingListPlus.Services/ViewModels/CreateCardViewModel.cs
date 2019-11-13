@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using ReadingListPlus.Common.App_GlobalResources;
 using ReadingListPlus.Common.Enums;
