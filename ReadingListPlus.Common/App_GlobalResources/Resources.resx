@@ -156,4 +156,7 @@
   <data name="PositionConfirmation" xml:space="preserve">
     <value>Are you sure you want to evaluate not the first note?</value>
   </data>
+  <data name="PrivacyTerms" xml:space="preserve">
+    <value>This website uses cookies to improve your experience.</value>
+  </data>
 </root>

@@ -176,5 +176,14 @@ namespace ReadingListPlus.Common.App_GlobalResources {
                 return ResourceManager.GetString("PositionConfirmation", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This website uses cookies to improve your experience..
+        /// </summary>
+        public static string PrivacyTerms {
+            get {
+                return ResourceManager.GetString("PrivacyTerms", resourceCulture);
+            }
+        }
     }
 }
