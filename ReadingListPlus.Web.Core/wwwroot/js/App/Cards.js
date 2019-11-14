@@ -222,7 +222,7 @@ $(function () {
         var isValid =
             (anchorNodeClassName === 'article' || anchorNodeParentClassName === 'article') &&
             (focusNodeClassName === 'article' || focusNodeParentClassName === 'article') &&
-            selection.toString();
+            /\w/.test(selection.toString());
 
         if (isValid) {
             $('.selection-panel a[data-act].btn-primary').removeClass('disabled');
