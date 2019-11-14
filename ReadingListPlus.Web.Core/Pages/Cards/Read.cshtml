@@ -3,7 +3,9 @@
 @model CardReadModel
 
 @{
-    ViewData[Constants.ViewTitle] = $"{Model.Card.DeckTitle} - Review";
+    var segments = new[] { Model.Card.Title, Model.Card.DeckTitle, "Review" };
+
+    ViewData[Constants.ViewTitle] = string.Join(" - ", segments.Where(s => !string.IsNullOrEmpty(s)));
 }
 
 @inject ISettings settings
