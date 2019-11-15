@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using ReadingListPlus.Common;
 using ReadingListPlus.DataAccess;
 using ReadingListPlus.Repositories;
@@ -64,8 +65,12 @@ namespace ReadingListPlus.Web.Core
                     policy => policy.RequireClaim(Constants.FixClaim, Constants.FixClaim));                
             });
 
-            services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+            services.AddControllers()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
+                .AddSessionStateTempDataProvider();
+
+            services.AddRazorPages()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddSessionStateTempDataProvider();
 
             services.AddSession();
@@ -80,7 +85,7 @@ namespace ReadingListPlus.Web.Core
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ApplicationContext context)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApplicationContext context)
         {
             if (env.IsDevelopment())
             {
@@ -100,11 +105,13 @@ namespace ReadingListPlus.Web.Core
             app.UseAuthentication();
             app.UseSession();
 
-            app.UseMvc(routes =>
+            app.UseRouting();
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();
+                endpoints.MapControllerRoute("default", "{controller}/{action}/{id?}");
             });
         }
 
