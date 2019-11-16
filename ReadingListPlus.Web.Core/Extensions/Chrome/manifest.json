@@ -1,0 +1,17 @@
+{
+  "name": "Knowledge Manager",
+  "version": "1.0",
+  "description": "Knowledge Manager Extension",
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_icon": "32.png"
+  },
+  "permissions": [
+    "activeTab",
+    "contextMenus"
+  ],
+  "background": {
+    "scripts": ["menu.js"]
+  },
+  "manifest_version": 2
+}

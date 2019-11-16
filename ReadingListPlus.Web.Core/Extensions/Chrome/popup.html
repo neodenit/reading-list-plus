@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Knowledge Manager Popup</title>
+
+    <style>
+        body {
+            font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
+            font-size: 100%;
+        }
+
+        .menu {
+            background-color: #eee;
+            border-top: 1px solid #555;
+            border-right: 1px solid #555;
+            border-left: 1px solid #555;
+        }
+
+        .menuItem {
+            cursor: pointer;
+            white-space: nowrap;
+            display: block;
+            color: black;
+            padding: 8px 16px;
+            border-bottom: 1px solid #555;
+        }
+
+            .menuItem:hover {
+                background-color: #555;
+                color: white;
+            }
+    </style>
+
+    <script src="popup.js"></script>
+
+</head>
+
+<body>
+    <div class="menu">
+        <div class="menuItem" id="addArticle">Import Article</div>
+        <div class="menuItem" id="addExtract">Import Selected Text</div>
+        <div class="menuItem" id="openList">My Workspace</div>
+    </div>
+</body>
+
+</html>
