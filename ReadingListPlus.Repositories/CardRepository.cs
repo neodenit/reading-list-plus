@@ -18,10 +18,10 @@ namespace ReadingListPlus.Repositories
         }
 
         public IAsyncEnumerable<Card> GetAllCards() =>
-            context.Cards.ToAsyncEnumerable();
+            context.Cards.AsAsyncEnumerable();
 
         public IAsyncEnumerable<Card> GetUnparentedCards(string userName) =>
-            context.Cards.Where(c => c.DeckID == null && c.OwnerID == userName).ToAsyncEnumerable();
+            context.Cards.Where(c => c.DeckID == null && c.OwnerID == userName).AsAsyncEnumerable();
 
         public Task<Card> GetCardAsync(Guid id) =>
             context.Cards.Include(c => c.Deck.Cards).SingleOrDefaultAsync(c => c.ID == id);
@@ -29,8 +29,8 @@ namespace ReadingListPlus.Repositories
         public Card GetCard(Guid id) =>
             context.Cards.Include(c => c.Deck.Cards).SingleOrDefault(c => c.ID == id);
 
-        public Task AddAsync(Card card) =>
-            context.Cards.AddAsync(card);
+        public async Task AddAsync(Card card) =>
+            await context.Cards.AddAsync(card);
 
         public void RemoveAll()
         {

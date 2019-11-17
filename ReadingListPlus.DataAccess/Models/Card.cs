@@ -40,7 +40,6 @@ namespace ReadingListPlus.DataAccess.Models
         public Guid? ParentCardID { get; set; }
 
         [JsonIgnore]
-        [ForeignKey(nameof(ParentCardID))]
         public Card ParentCard { get; set; }
 
         [JsonIgnore]

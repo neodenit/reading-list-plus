@@ -8,7 +8,7 @@ namespace ReadingListPlus.Services
 {
     public interface IDeckService
     {
-        IEnumerable<DeckViewModel> GetUserDecks(string userName);
+        Task<IEnumerable<DeckViewModel>> GetUserDecksAsync(string userName);
 
         Task<DeckViewModel> GetDeckAsync(Guid id);
 

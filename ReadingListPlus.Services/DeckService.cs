@@ -35,24 +35,39 @@ namespace ReadingListPlus.Services
             this.cardService = cardService ?? throw new ArgumentNullException(nameof(cardService));
         }
 
-        public IEnumerable<DeckViewModel> GetUserDecks(string userName)
+        public async Task<IEnumerable<DeckViewModel>> GetUserDecksAsync(string userName)
         {
             IAsyncEnumerable<Deck> decks = deckRepository.GetUserDecks(userName);
 
-            var viewModel = decks
+            var deckList = new List<Deck>();
+
+            await foreach (var deck in decks)
+            {
+                deckList.Add(deck);
+            }
+
+            var viewModel = deckList
                 .OrderBy(d => d.Title)
                 .Select(d => new DeckViewModel
                 {
                     ID = d.ID,
                     Title = d.Title,
                     CardCount = d.ConnectedCards.Count()
-                }).ToEnumerable();
+                });
 
-            IEnumerable<Card> unparentedCards = cardRepository.GetUnparentedCards(userName).ToEnumerable();
+            IAsyncEnumerable<Card> unparentedCards = cardRepository.GetUnparentedCards(userName);
+
+            var cardList = new List<Card>();
+
+            await foreach (var card in unparentedCards)
+            {
+                cardList.Add(card);
+            }
+
             var unparentedDeck = new DeckViewModel
             {
                 Title = $"No {Resources.Collection}",
-                CardCount = unparentedCards.Count()
+                CardCount = cardList.Count()
             };
 
             var result = viewModel.Append(unparentedDeck);
@@ -74,7 +89,7 @@ namespace ReadingListPlus.Services
 
         public async Task<string> GetExportDataAsync()
         {
-            IEnumerable<Deck> decks = await deckRepository.GetAllDecks().ToList();
+            IAsyncEnumerable<Deck> decks = deckRepository.GetAllDecks();
             var exportDecks = mapper.Map<IEnumerable<ImportExportDeck3>>(decks);
 
             var orderedDecks = exportDecks

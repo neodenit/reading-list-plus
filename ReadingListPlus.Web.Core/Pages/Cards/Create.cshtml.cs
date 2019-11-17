@@ -69,7 +69,7 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
             AllowDeckSelection = settings.AllowDeckSelection && deckId == null;
 
             DeckListItems = AllowDeckSelection
-                ? deckService.GetUserDecks(User.Identity.Name)
+                ? await deckService.GetUserDecksAsync(User.Identity.Name)
                 : null;
 
             PriorityList = Card.CreationMode == CreationMode.Extract || !settings.AllowHighestPriority
@@ -115,7 +115,7 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
             }
 
             DeckListItems = AllowDeckSelection
-                ? deckService.GetUserDecks(User.Identity.Name)
+                ? await deckService.GetUserDecksAsync(User.Identity.Name)
                 : null;
 
             PriorityList = Card.CreationMode == CreationMode.Extract || !settings.AllowHighestPriority

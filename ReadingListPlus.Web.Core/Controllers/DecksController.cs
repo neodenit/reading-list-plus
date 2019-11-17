@@ -51,11 +51,11 @@ namespace ReadingListPlus.Web.Core.Controllers
             return Content(exportData, MediaTypeNames.Application.Json);
         }
 
-        public ActionResult Tree(string id)
+        public async Task<ActionResult> Tree(string id)
         {
             _ = id;
 
-            IEnumerable<DeckViewModel> decks = deckService.GetUserDecks(UserName);
+            IEnumerable<DeckViewModel> decks = await deckService.GetUserDecksAsync(UserName);
 
             var json = decks.Select(d => new
             {

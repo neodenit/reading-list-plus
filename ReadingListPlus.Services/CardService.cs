@@ -81,7 +81,7 @@ namespace ReadingListPlus.Services
 
         public async Task<IEnumerable<CardViewModel>> GetUnparentedCardsAsync(string userName)
         {
-            IEnumerable<Card> cards = await cardRepository.GetUnparentedCards(userName).ToList();
+            IAsyncEnumerable<Card> cards = cardRepository.GetUnparentedCards(userName);
 
             var result = mapper.Map<IEnumerable<CardViewModel>>(cards);
             return result;
@@ -317,9 +317,12 @@ namespace ReadingListPlus.Services
 
         public async Task FixCardOwnerAsync(string defaultOwner)
         {
-            var cards = await cardRepository.GetAllCards().ToList();
+            IAsyncEnumerable<Card> cards = cardRepository.GetAllCards();
 
-            cards.ForEach(c => c.OwnerID = c.Deck?.OwnerID ?? defaultOwner);
+            await foreach (var card in cards)
+            {
+                card.OwnerID = card.Deck?.OwnerID ?? defaultOwner;
+            }
 
             await cardRepository.SaveChangesAsync();
         }

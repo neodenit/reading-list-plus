@@ -43,7 +43,7 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
 
             if (Card.DeckID == null)
             {
-                DeckListItems = deckService.GetUserDecks(User.Identity.Name);
+                DeckListItems = await deckService.GetUserDecksAsync(User.Identity.Name);
             }
 
             PriorityList = settings.AllowHighestPriority
@@ -81,7 +81,7 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
             {
                 if (Card.DeckID == null)
                 {
-                    DeckListItems = deckService.GetUserDecks(User.Identity.Name);
+                    DeckListItems = await deckService.GetUserDecksAsync(User.Identity.Name);
                 }
 
                 PriorityList = settings.AllowHighestPriority
