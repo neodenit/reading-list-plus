@@ -1,7 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using ReadingListPlus.Common.App_GlobalResources;
 using ReadingListPlus.Services;
 using ReadingListPlus.Services.ViewModels;
 
@@ -29,12 +31,20 @@ namespace ReadingListPlus.Web.Core.Pages.Decks
 
         public async Task<IActionResult> OnPostAsync()
         {
+            var title = Deck.Title.Trim();
+            var decks = await deckService.GetUserDecksAsync(User.Identity.Name);
+
+            if (decks.Any(d => d.Title == title))
+            {
+                ModelState.AddModelError(string.Empty, $"{Resources.Collection} '{title}' already exists");
+            }
+
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            await deckService.CreateDeckAsync(Deck.Title, User.Identity.Name);
+            await deckService.CreateDeckAsync(title, User.Identity.Name);
 
             return RedirectToPage(DeckIndexModel.PageName);
         }
