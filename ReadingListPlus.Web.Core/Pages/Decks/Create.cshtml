@@ -13,6 +13,8 @@
 <form method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
+    <input type="hidden" asp-for="ReturnUrl" />
+
     <div class="form-group row">
         <label asp-for="Deck.Title" class="col-form-label col-md-2 font-weight-bold"></label>
         <div class="col-md-8">

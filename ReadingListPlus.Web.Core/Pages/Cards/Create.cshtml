@@ -37,6 +37,9 @@
                 </select>
                 <span asp-validation-for="Card.DeckID" class="text-danger"></span>
             </div>
+            <div class="col-md-2">
+                <button formnovalidate type="submit" name="action" value="@CreateAction.CreateDeck" class="btn btn-success btn-block">New @Resources.Collection</button>
+            </div>
         </div>
     }
     else
@@ -99,7 +102,7 @@
 
     <div class="form-group row">
         <div class="offset-md-2 col-md-2">
-            <input type="submit" value="Create" class="btn btn-success btn-block" />
+            <button type="submit" name="action" value="@CreateAction.CreateCard" class="btn btn-success btn-block" >Create</button>
         </div>
     </div>
 

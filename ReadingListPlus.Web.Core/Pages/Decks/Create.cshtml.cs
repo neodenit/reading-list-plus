@@ -21,10 +21,14 @@ namespace ReadingListPlus.Web.Core.Pages.Decks
             this.deckService = deckService ?? throw new System.ArgumentNullException(nameof(deckService));
         }
 
-        public void OnGet()
+        public void OnGet(string returnUrl)
         {
+            ReturnUrl = returnUrl;
             Deck = new CreateDeckViewModel();
         }
+
+        [BindProperty]
+        public string ReturnUrl { get; set; }
 
         [BindProperty]
         public CreateDeckViewModel Deck { get; set; }
@@ -46,7 +50,9 @@ namespace ReadingListPlus.Web.Core.Pages.Decks
 
             await deckService.CreateDeckAsync(title, User.Identity.Name);
 
-            return RedirectToPage(DeckIndexModel.PageName);
+            return string.IsNullOrEmpty(ReturnUrl)
+                ? RedirectToPage(DeckIndexModel.PageName) as IActionResult
+                : Redirect(ReturnUrl);
         }
     }
 }

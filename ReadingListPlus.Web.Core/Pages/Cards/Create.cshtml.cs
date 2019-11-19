@@ -11,7 +11,7 @@ using ReadingListPlus.Common.Enums;
 using ReadingListPlus.Services;
 using ReadingListPlus.Services.Attributes;
 using ReadingListPlus.Services.ViewModels;
-using ReadingListPlus.Web.Core.Controllers;
+using ReadingListPlus.Web.Core.Pages.Decks;
 
 namespace ReadingListPlus.Web.Core.Pages.Cards
 {
@@ -89,29 +89,38 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
 
         public IEnumerable<KeyValuePair<string, string>> PriorityList { get; set; }
 
-        public async Task<ActionResult> OnPostAsync()
+        public async Task<ActionResult> OnPostAsync(CreateAction action)
         {
-            IEnumerable<string> invalidTagNames = cardService.ValidateTagNames(Card.Text);
-
-            if (invalidTagNames.Any())
+            switch (action)
             {
-                foreach (var name in invalidTagNames)
-                {
-                    ModelState.AddModelError(string.Empty, $"Invalid name: {name}");
-                }
-            }
-            else if (ModelState.IsValid)
-            {
-                Guid newCardDeckId = await cardService.AddAsync(Card, User.Identity.Name);
+                case CreateAction.CreateCard:
+                    IEnumerable<string> invalidTagNames = cardService.ValidateTagNames(Card.Text);
 
-                if (Card.CreationMode == CreationMode.FromUrl)
-                {
-                    await deckService.SetUserLastDeckAsync(User.Identity.Name, newCardDeckId);
-                }
+                    if (invalidTagNames.Any())
+                    {
+                        foreach (var name in invalidTagNames)
+                        {
+                            ModelState.AddModelError(string.Empty, $"Invalid name: {name}");
+                        }
+                    }
+                    else if (ModelState.IsValid)
+                    {
+                        Guid newCardDeckId = await cardService.AddAsync(Card, User.Identity.Name);
 
-                return Card.CreationMode == CreationMode.Extract
-                    ? RedirectToPage(CardReadModel.PageName, new { Id = Card.ParentCardID, IsBookmarked = true })
-                    : RedirectToPage(CardIndexModel.PageName, new { DeckId = newCardDeckId });
+                        if (Card.CreationMode == CreationMode.FromUrl)
+                        {
+                            await deckService.SetUserLastDeckAsync(User.Identity.Name, newCardDeckId);
+                        }
+
+                        return Card.CreationMode == CreationMode.Extract
+                            ? RedirectToPage(CardReadModel.PageName, new { Id = Card.ParentCardID, IsBookmarked = true })
+                            : RedirectToPage(CardIndexModel.PageName, new { DeckId = newCardDeckId });
+                    }
+
+                    break;
+                case CreateAction.CreateDeck:
+                    TempData[nameof(CreateCardViewModel)] = JsonConvert.SerializeObject(Card);
+                    return RedirectToPage(DeckCreateModel.PageName, new { ReturnUrl = Url.Page(CardCreateModel.PageName) });
             }
 
             DeckListItems = AllowDeckSelection
