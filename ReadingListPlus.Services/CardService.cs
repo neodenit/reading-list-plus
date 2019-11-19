@@ -79,12 +79,15 @@ namespace ReadingListPlus.Services
             return result;
         }
 
-        public async Task<IEnumerable<CardViewModel>> GetUnparentedCardsAsync(string userName)
+        public async IAsyncEnumerable<CardViewModel> GetUnparentedCardsAsync(string userName)
         {
             IAsyncEnumerable<Card> cards = cardRepository.GetUnparentedCards(userName);
 
-            var result = mapper.Map<IEnumerable<CardViewModel>>(cards);
-            return result;
+            await foreach (var card in cards)
+            {
+                var result = mapper.Map<CardViewModel>(card);
+                yield return result;
+            }
         }
 
 

@@ -55,23 +55,8 @@ namespace ReadingListPlus.Services
                     CardCount = d.ConnectedCards.Count()
                 });
 
-            IAsyncEnumerable<Card> unparentedCards = cardRepository.GetUnparentedCards(userName);
 
-            var cardList = new List<Card>();
-
-            await foreach (var card in unparentedCards)
-            {
-                cardList.Add(card);
-            }
-
-            var unparentedDeck = new DeckViewModel
-            {
-                Title = $"No {Resources.Collection}",
-                CardCount = cardList.Count()
-            };
-
-            var result = viewModel.Append(unparentedDeck);
-            return result;
+            return viewModel;
         }
 
         public async Task<DeckViewModel> GetDeckAsync(Guid id)

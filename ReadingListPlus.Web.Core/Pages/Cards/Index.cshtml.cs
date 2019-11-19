@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ReadingListPlus.Common;
+using ReadingListPlus.Common.App_GlobalResources;
 using ReadingListPlus.Services;
 using ReadingListPlus.Services.Attributes;
 using ReadingListPlus.Services.ViewModels;
@@ -37,14 +38,21 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
 
             if (deckId == null)
             {
-                IEnumerable<CardViewModel> cards = await cardService.GetUnparentedCardsAsync(User.Identity.Name);
+                IAsyncEnumerable<CardViewModel> cards = cardService.GetUnparentedCardsAsync(User.Identity.Name);
 
-                if (!cards.Any())
+                var cardList = new List<CardViewModel>();
+
+                await foreach (var card in cards)
+                {
+                    cardList.Add(card);
+                }
+
+                if (!cardList.Any())
                 {
                     return RedirectToPage(DeckIndexModel.PageName);
                 }
 
-                Cards = cards.OrderBy(c => c.DisplayText);
+                Cards = cardList.OrderBy(c => c.DisplayText);
             }
             else
             {
