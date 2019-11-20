@@ -29,7 +29,7 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
             this.repetitionCardService = repetitionCardService ?? throw new ArgumentNullException(nameof(repetitionCardService));
         }
 
-        public async Task<ActionResult> OnGetAsync([Required, CardFound, CardOwned]Guid? id, bool? isBookmarked)
+        public async Task<ActionResult> OnGetAsync([Required, CardFound, CardOwned]Guid? id, bool? isBookmarked, Guid? extract)
         {
             if (!ModelState.IsValid)
             {
@@ -48,6 +48,8 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
 
         [BindProperty]
         public bool IsBookmarked { get; set; }
+
+        public Guid? Extract { get; set; }
 
         public string PositionMessage => Resources.PositionConfirmation;
 

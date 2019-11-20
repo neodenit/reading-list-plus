@@ -26,6 +26,7 @@
     <input type="hidden" asp-for="PositionMessage" />
     <input type="hidden" asp-for="BookmarkMessage" />
     <input type="hidden" asp-for="IsBookmarked" />
+    <input type="hidden" asp-for="Extract" />
 
     @{
         var mobile = "d-md-none btn-lg";
@@ -50,8 +51,8 @@
 
                     @if (Model.Card.ParentCardID != null)
                     {
-                        <a asp-page="@CardReadModel.PageName" asp-route-id="@Model.Card.ParentCardID" class="@mobile @topPanelButton oi oi-caret-top"></a>
-                        <a asp-page="@CardReadModel.PageName" asp-route-id="@Model.Card.ParentCardID" class="@desktop @topPanelButton">Parent @Resources.Item</a>
+                        <a asp-page="@CardReadModel.PageName" asp-route-id="@Model.Card.ParentCardID" asp-route-extract="@Model.Card.ID" class="@mobile @topPanelButton oi oi-caret-top"></a>
+                        <a asp-page="@CardReadModel.PageName" asp-route-id="@Model.Card.ParentCardID" asp-route-extract="@Model.Card.ID" class="@desktop @topPanelButton">Parent @Resources.Item</a>
                     }
 
                 </div>

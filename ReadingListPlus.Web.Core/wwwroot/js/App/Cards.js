@@ -141,17 +141,26 @@ $(function () {
     }
 
     function scrollToLastSelection() {
-        var bookmark = $('.bookmark');
-        var bookmarkOffset = bookmark.length && bookmark.offset().top;
 
-        var extractOffset = Math.max.apply(null, $('.extract').map(function () {
-            return $(this).offset().top;
-        }));
+        var targetExtractId = $('#Extract').val();
 
-        var maxOffset = Math.max(bookmarkOffset, extractOffset);
+        if (targetExtractId) {
+            var targetExtract = $('.extract[data-id-param="' + targetExtractId + '"]');
+            var targetExtractOffset = targetExtract.offset().top;
+            scrollTo(targetExtractOffset);
+        } else {
+            var bookmark = $('.bookmark');
+            var bookmarkOffset = bookmark.length && bookmark.offset().top;
 
-        if (maxOffset) {
-            scrollTo(maxOffset);
+            var extractOffset = Math.max.apply(null, $('.extract').map(function () {
+                return $(this).offset().top;
+            }));
+
+            var maxOffset = Math.max(bookmarkOffset, extractOffset);
+
+            if (maxOffset) {
+                scrollTo(maxOffset);
+            }
         }
     }
 
