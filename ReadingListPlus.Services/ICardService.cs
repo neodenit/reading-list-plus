@@ -28,9 +28,9 @@ namespace ReadingListPlus.Services
 
         Task<Guid> AddAsync(CreateCardViewModel card, string userName);
 
-        Task<CardViewModel> UpdateAsync(EditCardViewModel card);
+        Task UpdateAsync(EditCardViewModel card);
 
-        Task<CardViewModel> HideCardAsync(Guid id);
+        Task HideCardAsync(Guid id);
 
         Task RestoreAsync(CardViewModel card, Priority priority);
 

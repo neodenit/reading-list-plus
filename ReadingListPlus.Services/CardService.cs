@@ -37,14 +37,14 @@ namespace ReadingListPlus.Services
         public async Task<CardViewModel> GetCardAsync(Guid id)
         {
             Card card = await cardRepository.GetCardAsync(id);
-            CardViewModel viewModel = mappingService.MapCardToViewModel(card);
+            var viewModel = mapper.Map<CardViewModel>(card);
             return viewModel;
         }
 
         public async Task<EditCardViewModel> GetCardForEditingAsync(Guid id)
         {
             Card card = await cardRepository.GetCardAsync(id);
-            EditCardViewModel viewModel = mappingService.MapCardToEditViewModel(card);
+            var viewModel = mapper.Map<EditCardViewModel>(card);
             return viewModel;
         }
 
@@ -75,8 +75,8 @@ namespace ReadingListPlus.Services
         public async Task<IEnumerable<CardViewModel>> GetAllCardsAsync(Guid deckId)
         {
             Deck deck = await deckRepository.GetDeckAsync(deckId);
-            IEnumerable<CardViewModel> result = deck.Cards.Select(c => mappingService.MapCardToViewModel(c));
-            return result;
+            var viewModel = mapper.Map<IEnumerable<CardViewModel>>(deck.Cards);
+            return viewModel;
         }
 
         public async IAsyncEnumerable<CardViewModel> GetUnparentedCardsAsync(string userName)
@@ -85,8 +85,8 @@ namespace ReadingListPlus.Services
 
             await foreach (var card in cards)
             {
-                var result = mapper.Map<CardViewModel>(card);
-                yield return result;
+                var viewModel = mapper.Map<CardViewModel>(card);
+                yield return viewModel;
             }
         }
 
@@ -94,8 +94,8 @@ namespace ReadingListPlus.Services
         public async Task<IEnumerable<CardViewModel>> GetConnectedCardsAsync(Guid deckId)
         {
             Deck deck = await deckRepository.GetDeckAsync(deckId);
-            IEnumerable<CardViewModel> result = deck.ConnectedCards.Select(c => mappingService.MapCardToViewModel(c));
-            return result;
+            var viewModel = mapper.Map<IEnumerable<CardViewModel>>(deck.Cards);
+            return viewModel;
         }
 
         public async Task<CardViewModel> PostponeAsync(Guid id, Priority priority)
@@ -111,7 +111,7 @@ namespace ReadingListPlus.Services
 
             await cardRepository.SaveChangesAsync();
 
-            CardViewModel viewModel = mappingService.MapCardToViewModel(card);
+            var viewModel = mapper.Map<CardViewModel>(card);
             return viewModel;
         }
 
@@ -206,7 +206,7 @@ namespace ReadingListPlus.Services
             return newCard.DeckID.Value;
         }
 
-        public async Task<CardViewModel> UpdateAsync(EditCardViewModel card)
+        public async Task UpdateAsync(EditCardViewModel card)
         {
             Card dbCard = await cardRepository.GetCardAsync(card.ID);
 
@@ -216,21 +216,15 @@ namespace ReadingListPlus.Services
             dbCard.CardType = card.CardType;
 
             await cardRepository.SaveChangesAsync();
-
-            CardViewModel viewModel = mappingService.MapCardToViewModel(dbCard);
-            return viewModel;
         }
 
-        public async Task<CardViewModel> HideCardAsync(Guid id)
+        public async Task HideCardAsync(Guid id)
         {
             Card card = await cardRepository.GetCardAsync(id);
 
             schedulerService.PrepareForDeletion(card);
 
             await cardRepository.SaveChangesAsync();
-
-            CardViewModel viewModel = mappingService.MapCardToViewModel(card);
-            return viewModel;
         }
 
         public async Task RestoreAsync(CardViewModel card, Priority priority)

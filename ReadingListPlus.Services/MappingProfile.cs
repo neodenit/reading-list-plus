@@ -19,7 +19,12 @@ namespace ReadingListPlus.Services
             CreateMap<ImportExportCard2, Card>();
             CreateMap<ImportExportCard3, Card>();
 
-            CreateMap<Card, CardViewModel>();
+            CreateMap<Card, CardViewModel>()
+                .ForMember(dest => dest.DeckTitle,
+                    opt => opt.MapFrom(src => src.Deck == null ? null : src.Deck.Title));
+            CreateMap<Card, EditCardViewModel>()
+                .ForMember(dest => dest.DeckTitle,
+                    opt => opt.MapFrom(src => src.Deck == null ? null : src.Deck.Title));
         }
     }
 }

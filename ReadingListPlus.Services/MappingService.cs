@@ -17,31 +17,6 @@ namespace ReadingListPlus.Services
             this.textConverterService = textConverterService ?? throw new ArgumentNullException(nameof(textConverterService));
         }
 
-        public CardViewModel MapCardToViewModel(Card card) =>
-            new CardViewModel
-            {
-                ID = card.ID,
-                DeckID = card.DeckID,
-                DeckTitle = card.Deck?.Title,
-                CardType = card.CardType,
-                Title = card.Title,
-                Text = card.Text,
-                Url = card.Url,
-                Position = card.Position
-            };
-
-        public EditCardViewModel MapCardToEditViewModel(Card card) =>
-            new EditCardViewModel
-            {
-                ID = card.ID,
-                DeckID = card.DeckID,
-                DeckTitle = card.Deck?.Title,
-                CardType = card.CardType,
-                Title = card.Title,
-                Text = card.Text,
-                Url = card.Url
-            };
-
         public ReadCardViewModel MapCardToHtmlViewModel(Card card, NewRepetitionCardState newRepetitionCardState)
         {
             var cardUrlTemplate = $"/Cards/Read/${{{Constants.IdGroup}}}";
