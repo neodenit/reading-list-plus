@@ -41,5 +41,7 @@ namespace ReadingListPlus.Services
         IEnumerable<string> ValidateTagNames(string text);
 
         Task FixCardOwnerAsync(string defaultOwner);
+
+        Task FixSyntax();
     }
 }

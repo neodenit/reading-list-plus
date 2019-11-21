@@ -323,5 +323,22 @@ namespace ReadingListPlus.Services
 
             await cardRepository.SaveChangesAsync();
         }
+
+        public async Task FixSyntax()
+        {
+            static async Task FixAmpersands(IAsyncEnumerable<Card> cards)
+            {
+                await foreach (var card in cards)
+                {
+                    card.Text = Regex.Replace(card.Text, "&(amp;)+", "&");
+                }
+            }
+
+            IAsyncEnumerable<Card> cards = cardRepository.GetAllCards();
+
+            await FixAmpersands(cards);
+
+            await cardRepository.SaveChangesAsync();
+        }
     }
 }
