@@ -35,7 +35,7 @@ $(function () {
             var form = $(this);
 
             if (form.valid()) {
-                form.find('input[type="submit"]').prop('disabled', true);
+                form.find('input[type="submit"], button[type="submit"]').prop('disabled', true);
             }
         });
     }
