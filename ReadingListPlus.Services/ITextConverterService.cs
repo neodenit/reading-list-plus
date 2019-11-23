@@ -32,5 +32,7 @@ namespace ReadingListPlus.Services
         string GetPatternForDeletion(string text);
 
         IEnumerable<string> GetTagNames(string text);
+
+        IEnumerable<string> GetTags(string text, string tagName);
     }
 }

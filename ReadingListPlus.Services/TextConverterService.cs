@@ -28,7 +28,7 @@ namespace ReadingListPlus.Services
 
         public string GetTagText(string text, string tagName)
         {
-            var result = Regex.Match(text, $@"{{{{{tagName}::(?s)(.+?)(?m)}}}}").Groups[1].Value;
+            var result = Regex.Match(text, $@"{{{{{tagName}::({Constants.GuidRegex}::)?(?s)(.+?)(?m)}}}}").Groups[2].Value;
 
             return result;
         }
@@ -167,5 +167,10 @@ namespace ReadingListPlus.Services
 
         private string GenerateTag(string text, string tag) =>
             $"{{{{{tag}::{text}}}}}";
+
+        public IEnumerable<string> GetTags(string text, string tagName) =>
+            Regex.Matches(text, @$"{{{{{tagName}::(?s)(.+?)(?m)}}}}")
+            .Cast<Match>()
+            .Select(m => m.Value);
     }
 }

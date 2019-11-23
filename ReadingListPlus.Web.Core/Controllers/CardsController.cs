@@ -22,19 +22,23 @@ namespace ReadingListPlus.Web.Core.Controllers
     {
         public const string Name = "Cards";
 
+        private readonly ISettings settings;
         private readonly IDeckService deckService;
         private readonly ICardService cardService;
         private readonly IArticleExtractorService articleExtractor;
         private readonly IRepetitionCardService repetitionCardService;
+        private readonly ITextConverterService textConverterService;
 
         private string UserName => User.Identity.Name;
 
-        public CardsController(IDeckService deckService, ICardService cardService, IArticleExtractorService articleExtractor, IRepetitionCardService repetitionCardService)
+        public CardsController(ISettings settings, IDeckService deckService, ICardService cardService, IArticleExtractorService articleExtractor, IRepetitionCardService repetitionCardService, ITextConverterService textConverterService)
         {
+            this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
             this.deckService = deckService ?? throw new ArgumentNullException(nameof(deckService));
             this.cardService = cardService ?? throw new ArgumentNullException(nameof(cardService));
             this.articleExtractor = articleExtractor ?? throw new ArgumentException(nameof(articleExtractor));
             this.repetitionCardService = repetitionCardService ?? throw new ArgumentNullException(nameof(repetitionCardService));
+            this.textConverterService = textConverterService ?? throw new ArgumentNullException(nameof(textConverterService));
         }
 
         [Authorize(Policy = Constants.FixPolicy)]
@@ -104,13 +108,26 @@ namespace ReadingListPlus.Web.Core.Controllers
         public async Task<ActionResult> Tree(Guid id)
         {
             IEnumerable<CardViewModel> cards = await cardService.GetConnectedCardsAsync(id);
+
             var json = cards
                 .OrderBy(d => d.Text)
                 .Select(c => new
                 {
                     c.ID,
                     Text = c.Text.Truncate(Constants.MaxTreeTextLength),
-                    a_attr = new { href = Url.Page(CardReadModel.PageName, new { c.ID }) }
+                    a_attr = new { href = Url.Page(CardReadModel.PageName, new { c.ID }) },
+                    Children = textConverterService
+                        .GetTags(c.Text, Constants.RepetitionCardLabel)
+                        .Select(x => new
+                        {
+                            Text = textConverterService.GetTagText(x, Constants.RepetitionCardLabel),
+                            a_attr = new
+                            {
+                                href = new Uri(
+                                    new Uri(settings.SpacedRepetitionServer),
+                                    $"Cards/Edit/{textConverterService.GetIdParameter(x, Constants.RepetitionCardLabel)}").AbsoluteUri,
+                            }
+                        })
                 });
 
             return Json(json);
