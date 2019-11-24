@@ -56,14 +56,6 @@ namespace ReadingListPlus.Web.Core.Controllers
             return RedirectToPage(DeckIndexModel.PageName);
         }
 
-        [Authorize(Policy = Constants.FixPolicy)]
-        public async Task<ActionResult> FixSyntax()
-        {
-            await cardService.FixSyntax();
-
-            return RedirectToPage(DeckIndexModel.PageName);
-        }
-
         public async Task<ActionResult> CreateFromUrl(string url, [DeckFound, DeckOwned]Guid? deckId)
         {
             (string text, string title) = await articleExtractor.GetTextAndTitleAsync(url);

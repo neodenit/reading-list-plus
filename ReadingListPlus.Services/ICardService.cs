@@ -42,6 +42,6 @@ namespace ReadingListPlus.Services
 
         Task FixCardOwnerAsync(string defaultOwner);
 
-        Task FixSyntax();
+        Task FixAsync(FixAction action);
     }
 }

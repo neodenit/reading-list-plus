@@ -324,9 +324,9 @@ namespace ReadingListPlus.Services
             await cardRepository.SaveChangesAsync();
         }
 
-        public async Task FixSyntax()
+        public async Task FixAsync(FixAction action)
         {
-            static async Task FixAmpersands(IAsyncEnumerable<Card> cards)
+            static async Task FixAmpersandsAsync(IAsyncEnumerable<Card> cards)
             {
                 await foreach (var card in cards)
                 {
@@ -334,9 +334,25 @@ namespace ReadingListPlus.Services
                 }
             }
 
+            static async Task FixSpacesAsync(IAsyncEnumerable<Card> cards)
+            {
+                await foreach (var card in cards)
+                {
+                    card.Text = Regex.Replace(card.Text, "&nbsp;", " ");
+                }
+            }
+
             IAsyncEnumerable<Card> cards = cardRepository.GetAllCards();
 
-            await FixAmpersands(cards);
+            switch (action)
+            {
+                case FixAction.FixAmpersands:
+                    await FixAmpersandsAsync(cards);
+                    break;
+                case FixAction.FixSpaces:
+                    await FixSpacesAsync(cards);
+                    break;
+            }
 
             await cardRepository.SaveChangesAsync();
         }

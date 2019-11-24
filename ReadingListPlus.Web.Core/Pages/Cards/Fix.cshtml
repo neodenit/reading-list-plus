@@ -1,0 +1,28 @@
+﻿@page
+
+@model CardFixModel
+
+@{
+    ViewData[Constants.ViewTitle] = "Fix";
+}
+
+<h2>@ViewData[Constants.ViewTitle]</h2>
+
+<hr />
+
+@if (User.HasClaim(Constants.FixClaim, Constants.FixClaim))
+{
+    <form method="post" >
+        <div class="row">
+            <div class="col-md-2 pt-2 pb-2">
+                <button asp-page-handler="FixAmpersands" class="btn btn-primary btn-block">Fix Ampersands</button>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-2 pt-2 pb-2">
+                <button asp-page-handler="FixSpaces" class="btn btn-primary btn-block">Fix Spaces</button>
+            </div>
+        </div>
+    </form>
+}
