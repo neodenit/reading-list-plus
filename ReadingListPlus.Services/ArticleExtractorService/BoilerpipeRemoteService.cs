@@ -14,7 +14,9 @@ namespace ReadingListPlus.Services.ArticleExtractorService
         {
             { "\n", Environment.NewLine + Environment.NewLine },
             { " ,", "," },
-            { " .", "." }
+            { " .", "." },
+            { " !", "!" },
+            { " ?", "?" }
         };
 
         public BoilerpipeRemoteService(IHttpClientWrapper httpClientWrapper)
