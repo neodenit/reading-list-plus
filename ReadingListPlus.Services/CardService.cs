@@ -196,9 +196,12 @@ namespace ReadingListPlus.Services
                 await cardRepository.SaveChangesAsync();
 
                 string textWithNewCardID = textConverterService.AddParameter(card.ParentCardUpdatedText, Constants.SelectionLabel, newCard.ID.ToString());
+
                 string textWithoutSelection = textConverterService.ReplaceTag(textWithNewCardID, Constants.SelectionLabel, Constants.ExtractLabel);
 
-                parentCard.Text = textWithoutSelection;
+                string textWithoutBookmarks = textConverterService.DeleteTagByName(textWithoutSelection, Constants.BookmarkLabel);
+
+                parentCard.Text = textWithoutBookmarks;
             }
 
             await cardRepository.SaveChangesAsync();
