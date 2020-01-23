@@ -197,7 +197,9 @@ namespace ReadingListPlus.Services
 
                 string textWithNewCardID = textConverterService.AddParameter(card.ParentCardUpdatedText, Constants.SelectionLabel, newCard.ID.ToString());
 
-                string textWithoutSelection = textConverterService.ReplaceTag(textWithNewCardID, Constants.SelectionLabel, Constants.ExtractLabel);
+                string textWithoutLastExtract = textConverterService.ReplaceTag(textWithNewCardID, Constants.LastExtractLabel, Constants.ExtractLabel);
+
+                string textWithoutSelection = textConverterService.ReplaceTag(textWithoutLastExtract, Constants.SelectionLabel, Constants.LastExtractLabel);
 
                 string textWithoutBookmarks = textConverterService.DeleteTagByName(textWithoutSelection, Constants.BookmarkLabel);
 

@@ -147,19 +147,31 @@ $(function () {
         if (targetExtractId) {
             var targetExtract = $('.extract[data-id-param="' + targetExtractId + '"]');
             var targetExtractOffset = targetExtract.offset().top;
+
             scrollTo(targetExtractOffset);
         } else {
             var bookmark = $('.bookmark');
-            var bookmarkOffset = bookmark.length && bookmark.offset().top;
 
-            var extractOffset = Math.max.apply(null, $('.extract').map(function () {
-                return $(this).offset().top;
-            }));
+            if (bookmark.length) {
+                var bookmarkOffset = bookmark.offset().top;
 
-            var maxOffset = Math.max(bookmarkOffset, extractOffset);
+                scrollTo(bookmarkOffset);
+            } else {
+                var lastExtract = $('.lastExtract');
 
-            if (maxOffset) {
-                scrollTo(maxOffset);
+                if (lastExtract.length) {
+                    var lastExtractOffset = lastExtract.offset().top;
+
+                    scrollTo(lastExtractOffset);
+                } else {
+                    var extractOffset = Math.max.apply(null, $('.extract').map(function () {
+                        return $(this).offset().top;
+                    }));
+
+                    if (extractOffset) {
+                        scrollTo(extractOffset);
+                    }
+                }
             }
         }
     }

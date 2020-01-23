@@ -22,6 +22,7 @@ namespace ReadingListPlus.Common
         public const string RepetitionCardLabel = "repetition";
         public const string SelectionLabel = "selection";
         public const string ExtractLabel = "extract";
+        public const string LastExtractLabel = "lastExtract";
         public const string BookmarkLabel = "bookmark";
         public const string HighlightLabel = "highlight";
         public const string ClozeLabel = "cloze";
@@ -38,6 +39,7 @@ namespace ReadingListPlus.Common
         {
             SelectionLabel,
             ExtractLabel,
+            LastExtractLabel,
             BookmarkLabel,
             HighlightLabel,
             ClozeLabel,

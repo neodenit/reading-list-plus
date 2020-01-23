@@ -124,22 +124,21 @@ namespace ReadingListPlus.Services
 
         private string ConvertTemplateToHtml(string template, string cardUrlTemplate, string repetitionCardUrlTemplate, string newRepetitionCardUrlTemplate, string newRepetitionCardClass)
         {
-            var htmlText1 = Regex.Replace(template, Environment.NewLine, "<br/>");
-            var htmlText2 = Regex.Replace(htmlText1,
-                $"{{{{{Constants.ExtractLabel}::(?<{Constants.IdGroup}>{Constants.GuidRegex})::(?s)(?<{Constants.TextGroup}>.+?)(?m)}}}}",
-                $@"<a href='{cardUrlTemplate}' class=""{Constants.ExtractLabel}"" data-id-param=""${{{Constants.IdGroup}}}"">${{{Constants.TextGroup}}}</a>");
+            static string ReplaceUrl(string text, string label, string cssClass, string urlTemplate) =>
+                Regex.Replace(text,
+                    $"{{{{{label}::(?<{Constants.IdGroup}>{Constants.GuidRegex})::(?s)(?<{Constants.TextGroup}>.+?)(?m)}}}}",
+                    $@"<a href=""{urlTemplate}"" class=""{cssClass}"" data-id-param=""${{{Constants.IdGroup}}}"">${{{Constants.TextGroup}}}</a>");
 
-            var htmlText3 = Regex.Replace(htmlText2,
-                $"{{{{{Constants.NewRepetitionCardLabel}::(?<{Constants.IdGroup}>{Constants.GuidRegex})::(?s)(?<{Constants.TextGroup}>.+?)(?m)}}}}",
-                $@"<a href='{newRepetitionCardUrlTemplate}' class=""{newRepetitionCardClass}"" data-id-param=""${{{Constants.IdGroup}}}"">${{{Constants.TextGroup}}}</a>");
+            var htmlText1 = Regex.Replace(template, Environment.NewLine, "<br />");
 
-            var htmlText4 = Regex.Replace(htmlText3,
-                $"{{{{{Constants.RepetitionCardLabel}::(?<{Constants.IdGroup}>{Constants.GuidRegex})::(?s)(?<{Constants.TextGroup}>.+?)(?m)}}}}",
-                $@"<a href='{repetitionCardUrlTemplate}' class=""{Constants.RepetitionCardLabel}"" data-id-param=""${{{Constants.IdGroup}}}"">${{{Constants.TextGroup}}}</a>");
+            var htmlText2 = ReplaceUrl(htmlText1, Constants.ExtractLabel, Constants.ExtractLabel, cardUrlTemplate);
+            var htmlText3 = ReplaceUrl(htmlText2, Constants.LastExtractLabel, Constants.LastExtractLabel, cardUrlTemplate);
+            var htmlText4 = ReplaceUrl(htmlText3, Constants.NewRepetitionCardLabel, newRepetitionCardClass, newRepetitionCardUrlTemplate);
+            var htmlText5 = ReplaceUrl(htmlText4, Constants.RepetitionCardLabel, Constants.RepetitionCardLabel, repetitionCardUrlTemplate);
 
-            var htmlText5 = Regex.Replace(htmlText4, @"{{(\w+)::(?s)(.+?)(?m)}}", @"<span class=""$1"">$2</span>");
+            var htmlText6 = Regex.Replace(htmlText5, $@"{{{{(?<{Constants.TagGroup}>\w+)::(?s)(?<{Constants.TextGroup}>.+?)(?m)}}}}", $@"<span class=""${{{Constants.TagGroup}}}"">${{{Constants.TextGroup}}}</span>");
 
-            return htmlText5;
+            return htmlText6;
         }
 
         private string MatchEvaluator(Match newTagCandidate, IEnumerable<Match> existingTags, string tag)
