@@ -1,4 +1,6 @@
-﻿namespace ReadingListPlus.Common
+﻿using ReadingListPlus.Common.Enums;
+
+namespace ReadingListPlus.Common
 {
     public interface ISettings
     {
@@ -27,5 +29,17 @@
         bool ClozeEnabled { get; }
 
         bool DropEnabled { get; }
+
+        bool EnableArticlePrioritySelection { get; }
+
+        bool EnableExtractPrioritySelection { get; }
+
+        bool EnableCommonNotePrioritySelection { get; }
+
+        Priority DefaultArticlePriority { get; }
+
+        Priority DefaultExtractPriority { get; }
+
+        Priority DefaultCommonNotePriority { get; }
     }
 }

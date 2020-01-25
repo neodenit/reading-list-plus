@@ -72,12 +72,37 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
                 ? await deckService.GetUserDecksAsync(User.Identity.Name)
                 : null;
 
-            PriorityList = Card.CreationMode == CreationMode.Extract || !settings.AllowHighestPriority
-                ? cardService.GetShortPriorityList()
-                : cardService.GetFullPriorityList();
+            if (ShowPriorities)
+            {
+                PriorityList = Card.CreationMode == CreationMode.Extract || !settings.AllowHighestPriority
+                    ? cardService.GetShortPriorityList()
+                    : cardService.GetFullPriorityList();
+            }
+            else
+            {
+                Card.Priority = DefaultPriority;
+            }
 
             return Page();
         }
+
+        public bool ShowPriorities =>
+            Card.CreationMode switch
+            {
+                CreationMode.FromUrl => settings.EnableArticlePrioritySelection,
+                CreationMode.Extract => settings.EnableExtractPrioritySelection,
+                CreationMode.Add => settings.EnableCommonNotePrioritySelection,
+                _ => false
+            };
+
+        public Priority DefaultPriority =>
+            Card.CreationMode switch
+            {
+                CreationMode.FromUrl => settings.DefaultArticlePriority,
+                CreationMode.Extract => settings.DefaultExtractPriority,
+                CreationMode.Add => settings.DefaultCommonNotePriority,
+                _ => Priority.Low
+            };
 
         [BindProperty]
         public CreateCardViewModel Card { get; set; }
@@ -105,6 +130,11 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
                     }
                     else if (ModelState.IsValid)
                     {
+                        if (!ShowPriorities)
+                        {
+                            Card.Priority = DefaultPriority;
+                        }
+
                         Guid newCardDeckId = await cardService.AddAsync(Card, User.Identity.Name);
 
                         if (Card.CreationMode == CreationMode.FromUrl)
@@ -127,9 +157,16 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
                 ? await deckService.GetUserDecksAsync(User.Identity.Name)
                 : null;
 
-            PriorityList = Card.CreationMode == CreationMode.Extract || !settings.AllowHighestPriority
+            if (ShowPriorities)
+            {
+                PriorityList = Card.CreationMode == CreationMode.Extract || !settings.AllowHighestPriority
                 ? cardService.GetShortPriorityList()
                 : cardService.GetFullPriorityList();
+            }
+            else
+            {
+                Card.Priority = DefaultPriority;
+            }
 
             return Page();
         }
