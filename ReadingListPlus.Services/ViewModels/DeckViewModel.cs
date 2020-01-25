@@ -14,5 +14,9 @@ namespace ReadingListPlus.Services.ViewModels
         public string Title { get; set; }
 
         public int CardCount { get; set; }
+
+        public int ArticleCount { get; set; }
+
+        public int ExtractCount { get; set; }
     }
 }

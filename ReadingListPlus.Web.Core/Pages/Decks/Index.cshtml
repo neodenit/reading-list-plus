@@ -28,6 +28,14 @@
                 @Resources.Items
             </th>
 
+            <th class="d-none d-md-table-cell">
+                @Resources.Articles
+            </th>
+
+            <th class="d-none d-md-table-cell">
+                @Resources.Extracts
+            </th>
+
             <th>
             </th>
         </tr>
@@ -51,6 +59,14 @@
 
                 <td>
                     @item.CardCount
+                </td>
+
+                <td class="d-none d-md-table-cell">
+                    @item.ArticleCount
+                </td>
+
+                <td class="d-none d-md-table-cell">
+                    @item.ExtractCount
                 </td>
 
                 <td>

@@ -159,4 +159,10 @@
   <data name="PrivacyTerms" xml:space="preserve">
     <value>This website uses cookies to improve your experience.</value>
   </data>
+  <data name="Articles" xml:space="preserve">
+    <value>Articles</value>
+  </data>
+  <data name="Extracts" xml:space="preserve">
+    <value>Extracts</value>
+  </data>
 </root>

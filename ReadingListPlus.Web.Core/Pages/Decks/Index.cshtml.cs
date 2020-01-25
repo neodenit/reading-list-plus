@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ReadingListPlus.Common.App_GlobalResources;
+using ReadingListPlus.Common.Enums;
 using ReadingListPlus.Services;
 using ReadingListPlus.Services.ViewModels;
 
@@ -41,7 +42,9 @@ namespace ReadingListPlus.Web.Core.Pages.Decks
             var unparentedDeck = new DeckViewModel
             {
                 Title = $"No {Resources.Collection}",
-                CardCount = cardList.Count()
+                CardCount = cardList.Count(),
+                ArticleCount = cardList.Count(c => c.CardType == CardType.Article),
+                ExtractCount = cardList.Count(c => c.CardType == CardType.Extract)
             };
 
             Decks = userDecks.Append(unparentedDeck);

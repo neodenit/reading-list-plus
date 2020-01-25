@@ -4,10 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using ReadingListPlus.Common;
-using ReadingListPlus.Common.App_GlobalResources;
+using ReadingListPlus.Common.Enums;
 using ReadingListPlus.DataAccess.Models;
 using ReadingListPlus.Repositories;
 using ReadingListPlus.Services.ViewModels;
@@ -52,7 +51,9 @@ namespace ReadingListPlus.Services
                 {
                     ID = d.ID,
                     Title = d.Title,
-                    CardCount = d.ConnectedCards.Count()
+                    CardCount = d.ConnectedCards.Count(),
+                    ArticleCount = d.ConnectedCards.Count(c => c.CardType == CardType.Article),
+                    ExtractCount = d.ConnectedCards.Count(c => c.CardType == CardType.Extract)
                 });
 
 

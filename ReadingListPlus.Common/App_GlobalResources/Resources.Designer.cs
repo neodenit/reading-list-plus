@@ -79,6 +79,15 @@ namespace ReadingListPlus.Common.App_GlobalResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Articles.
+        /// </summary>
+        public static string Articles {
+            get {
+                return ResourceManager.GetString("Articles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to evaluate the article without bookmarking it first?.
         /// </summary>
         public static string BookmarkConfirmation {
@@ -102,6 +111,15 @@ namespace ReadingListPlus.Common.App_GlobalResources {
         public static string Collections {
             get {
                 return ResourceManager.GetString("Collections", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Extracts.
+        /// </summary>
+        public static string Extracts {
+            get {
+                return ResourceManager.GetString("Extracts", resourceCulture);
             }
         }
         
