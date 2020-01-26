@@ -165,4 +165,7 @@
   <data name="Extracts" xml:space="preserve">
     <value>Extracts</value>
   </data>
+  <data name="NoteLength" xml:space="preserve">
+    <value>Length</value>
+  </data>
 </root>

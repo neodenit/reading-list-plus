@@ -187,6 +187,15 @@ namespace ReadingListPlus.Common.App_GlobalResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Length.
+        /// </summary>
+        public static string NoteLength {
+            get {
+                return ResourceManager.GetString("NoteLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to evaluate not the first note?.
         /// </summary>
         public static string PositionConfirmation {

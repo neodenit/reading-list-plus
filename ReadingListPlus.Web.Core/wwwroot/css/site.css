@@ -113,6 +113,11 @@ table.notes-table {
             white-space: nowrap;
         }
 
+        table.notes-table tr td:nth-child(4) {
+            width: 1%;
+            white-space: nowrap;
+        }
+
 
 table.decks-table tr td {
     vertical-align: middle;
