@@ -67,7 +67,7 @@
                         var returnUrl = Url.Page(CardIndexModel.PageName, new { item.DeckID });
                     }
 
-                    <a class="btn btn-outline-secondary btn-block" data-toggle="collapse" href="#@(id)">&hellip;</a>
+                    <a class="btn btn-outline-secondary btn-block d-block d-md-none" data-toggle="collapse" href="#@(id)">&hellip;</a>
 
                     <div class="collapse pt-2" id="@(id)">
                         <a asp-page="@CardReadModel.PageName" asp-route-id="@item.ID" class="btn btn-outline-secondary btn-block">Read</a>
@@ -83,6 +83,21 @@
                             <a asp-page="@CardDeleteModel.PageName" asp-route-id="@item.ID" asp-route-returnUrl="@returnUrl" class="btn btn-danger btn-block">Delete</a>
                         }
 
+                    </div>
+
+                    <div  class="d-none d-md-block">
+                        <a asp-page="@CardReadModel.PageName" asp-route-id="@item.ID" class="btn btn-outline-secondary">Read</a>
+
+                        @if (item.IsConnected)
+                        {
+                            <a asp-page="@CardEditModel.PageName" asp-route-id="@item.ID" asp-route-returnUrl="@returnUrl" class="btn btn-outline-secondary">Edit</a>
+                            <a asp-controller="@CardsController.Name" asp-action="@nameof(CardsController.Hide)" asp-route-id="@item.ID" asp-route-returnUrl="@returnUrl" class="btn btn-outline-secondary">Hide</a>
+                        }
+                        else
+                        {
+                            <a asp-page="@CardRestoreModel.PageName" asp-route-id="@item.ID" asp-route-returnUrl="@returnUrl" class="btn btn-success">Restore</a>
+                            <a asp-page="@CardDeleteModel.PageName" asp-route-id="@item.ID" asp-route-returnUrl="@returnUrl" class="btn btn-danger">Delete</a>
+                        }
                     </div>
                 </td>
             </tr>
