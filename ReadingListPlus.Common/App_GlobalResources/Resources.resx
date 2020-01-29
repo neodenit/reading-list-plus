@@ -148,7 +148,7 @@
     <value>Low</value>
   </data>
   <data name="MediumPriority" xml:space="preserve">
-    <value>Medium</value>
+    <value>Normal</value>
   </data>
   <data name="BookmarkConfirmation" xml:space="preserve">
     <value>Are you sure you want to evaluate the article without bookmarking it first?</value>

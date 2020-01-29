@@ -178,7 +178,7 @@ namespace ReadingListPlus.Common.App_GlobalResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Medium.
+        ///   Looks up a localized string similar to Normal.
         /// </summary>
         public static string MediumPriority {
             get {
