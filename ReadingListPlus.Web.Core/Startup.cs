@@ -66,11 +66,9 @@ namespace ReadingListPlus.Web.Core
             });
 
             services.AddControllers()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddSessionStateTempDataProvider();
 
             services.AddRazorPages()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddSessionStateTempDataProvider();
 
             services.AddSession();
