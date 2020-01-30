@@ -66,10 +66,12 @@ namespace ReadingListPlus.Web.Core
             });
 
             services.AddControllers()
-                .AddSessionStateTempDataProvider();
+                .AddSessionStateTempDataProvider()
+                .AddRazorRuntimeCompilation();
 
             services.AddRazorPages()
-                .AddSessionStateTempDataProvider();
+                .AddSessionStateTempDataProvider()
+                .AddRazorRuntimeCompilation();
 
             services.AddSession();
 
