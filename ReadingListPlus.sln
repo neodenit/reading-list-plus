@@ -3,13 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29102.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{DA5D5C92-2525-4DCA-9B77-6235D2E288D1}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\NuGet.Config = .nuget\NuGet.Config
-		.nuget\NuGet.exe = .nuget\NuGet.exe
-		.nuget\NuGet.targets = .nuget\NuGet.targets
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadingListPlus.Services", "ReadingListPlus.Services\ReadingListPlus.Services.csproj", "{E28DAA11-0CFF-4843-BA28-54C4D3E8757F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadingListPlus.Repositories", "ReadingListPlus.Repositories\ReadingListPlus.Repositories.csproj", "{0A6289C5-7FC5-4850-B1F7-44A30E7E1B90}"
