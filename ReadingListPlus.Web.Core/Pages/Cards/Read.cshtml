@@ -59,10 +59,10 @@
             </div>
 
             <div id="mainPanel" class="actions">
-                <div class="row pb-1">
+                <div class="row justify-content-between pb-1">
                     @if (Model.Card.IsConnected)
                     {
-                        <div class="col-md-7 d-flex flex-nowrap pt-1">
+                        <div class="col-md-auto d-flex flex-nowrap pt-1">
                             <div class="selection-panel ml-auto ml-md-0">
 
                                 @if (settings.ExtractEnabled)
@@ -98,7 +98,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-4 d-flex pt-1">
+                        <div class="col-md-auto order-md-last d-flex pt-2 pt-md-1">
                             <div class="ml-auto">
                                 <label for="priority-buttons">Priority</label>
                                 <div id="priority-buttons" class="btn-group">
@@ -110,7 +110,7 @@
                         </div>
                     }
 
-                    <div class="@(Model.Card.IsConnected ? string.Empty : "offset-11") col-md-1 d-flex pt-1">
+                    <div class="@(Model.Card.IsConnected ? string.Empty : "offset-11") col-md-auto d-flex pt-1">
                         <div id="delete-panel" class="ml-auto ml-md-0 d-none">
                             @if (settings.DropEnabled)
                             {
