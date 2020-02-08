@@ -145,7 +145,7 @@ $(function () {
         var targetExtractId = $('#Extract').val();
 
         if (targetExtractId) {
-            var targetExtract = $('.extract[data-id-param="' + targetExtractId + '"]');
+            var targetExtract = $('[data-id-param="' + targetExtractId + '"]');
             var targetExtractOffset = targetExtract.offset().top;
 
             scrollTo(targetExtractOffset);
