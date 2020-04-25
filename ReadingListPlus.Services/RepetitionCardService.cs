@@ -13,14 +13,15 @@ namespace ReadingListPlus.Services
     public class RepetitionCardService : IRepetitionCardService
     {
         private readonly ISettings settings;
-        private readonly IHttpClientWrapper httpClientWrapper;
+        private readonly HttpClient httpClient;
         private readonly ITextConverterService textConverterService;
         private readonly ICardRepository cardRepository;
 
-        public RepetitionCardService(ISettings settings, IHttpClientWrapper httpClientWrapper, ITextConverterService textConverterService, ICardRepository cardRepository)
+        public RepetitionCardService(IHttpClientFactory httpClientFactory, ISettings settings, ITextConverterService textConverterService, ICardRepository cardRepository)
         {
+            httpClient = httpClientFactory is null ? throw new ArgumentNullException(nameof(httpClientFactory)) : httpClientFactory.CreateClient();
+
             this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
-            this.httpClientWrapper = httpClientWrapper ?? throw new ArgumentNullException(nameof(httpClientWrapper));
             this.textConverterService = textConverterService ?? throw new ArgumentNullException(nameof(textConverterService));
             this.cardRepository = cardRepository ?? throw new ArgumentNullException(nameof(cardRepository));
         }
@@ -55,7 +56,7 @@ namespace ReadingListPlus.Services
             {
                 var baseUri = new Uri(settings.SpacedRepetitionServer);
                 var uri = new Uri(baseUri, $"Cards/IsValid?readingCardId={readingCardId}&repetitionCardId={repetitionCardId}");
-                HttpResponseMessage response = await httpClientWrapper.GetAsync(uri);
+                HttpResponseMessage response = await httpClient.GetAsync(uri);
                 var responseString = await response.Content.ReadAsStringAsync();
                 var isValid = JsonConvert.DeserializeObject<bool>(responseString);
                 return isValid;

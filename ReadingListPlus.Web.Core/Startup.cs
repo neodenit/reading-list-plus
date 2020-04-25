@@ -79,7 +79,7 @@ namespace ReadingListPlus.Web.Core
             AddRepositories(services);
             AddServices(services);
 
-            services.AddSingleton<IHttpClientWrapper>(new HttpClientWrapper());
+            services.AddHttpClient();
 
             services.AddAutoMapper(typeof(MappingProfile));
         }

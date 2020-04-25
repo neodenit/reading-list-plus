@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Boilerpipe.Net.Extractors;
 using HtmlAgilityPack;
@@ -7,17 +8,17 @@ namespace ReadingListPlus.Services.ArticleExtractorService
 {
     public class BoilerpipeLocalService : ILocalExtractorService
     {
-        private readonly IHttpClientWrapper httpClientWrapper;
+        private readonly HttpClient httpClient;
 
-        public BoilerpipeLocalService(IHttpClientWrapper httpClientWrapper)
+        public BoilerpipeLocalService(IHttpClientFactory httpClientFactory)
         {
-            this.httpClientWrapper = httpClientWrapper ?? throw new ArgumentNullException(nameof(httpClientWrapper));
+            httpClient = httpClientFactory is null ? throw new ArgumentNullException(nameof(httpClientFactory)): httpClientFactory.CreateClient();
         }
 
         public async Task<(string text, string title)> GetTextAndTitleAsync(string url)
         {
             var uri = new Uri(url);
-            var response = await httpClientWrapper.GetAsync(uri);
+            var response = await httpClient.GetAsync(uri);
             var html = await response.Content.ReadAsStringAsync();
 
             var text = CommonExtractors.ArticleExtractor.GetText(html);

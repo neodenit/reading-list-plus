@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
@@ -8,7 +9,7 @@ namespace ReadingListPlus.Services.ArticleExtractorService
 {
     public class BoilerpipeRemoteService : IRemoteExtractorService
     {
-        private readonly IHttpClientWrapper httpClientWrapper;
+        private readonly HttpClient httpClient;
 
         private readonly Dictionary<string, string> replacements = new Dictionary<string, string>
         {
@@ -19,9 +20,9 @@ namespace ReadingListPlus.Services.ArticleExtractorService
             { " ?", "?" }
         };
 
-        public BoilerpipeRemoteService(IHttpClientWrapper httpClientWrapper)
+        public BoilerpipeRemoteService(IHttpClientFactory httpClientFactory)
         {
-            this.httpClientWrapper = httpClientWrapper ?? throw new ArgumentNullException(nameof(httpClientWrapper));
+            httpClient = httpClientFactory is null ? throw new ArgumentNullException(nameof(httpClientFactory)) : httpClientFactory.CreateClient();
         }
 
         public async Task<(string text, string title)> GetTextAndTitleAsync(string url)
@@ -30,7 +31,7 @@ namespace ReadingListPlus.Services.ArticleExtractorService
             var fullUrl = $"https://boilerpipe-web.appspot.com/extract?url={urlParameter}&output=json";
 
             var uri = new Uri(fullUrl);
-            var response = await httpClientWrapper.GetAsync(uri);
+            var response = await httpClient.GetAsync(uri);
             var jsonString = await response.Content.ReadAsStringAsync();
 
             var json = JsonConvert.DeserializeAnonymousType(jsonString, new
