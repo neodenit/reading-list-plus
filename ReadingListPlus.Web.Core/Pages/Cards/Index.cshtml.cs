@@ -40,12 +40,7 @@ namespace ReadingListPlus.Web.Core.Pages.Cards
             {
                 IAsyncEnumerable<CardViewModel> cards = cardService.GetUnparentedCardsAsync(User.Identity.Name);
 
-                var cardList = new List<CardViewModel>();
-
-                await foreach (var card in cards)
-                {
-                    cardList.Add(card);
-                }
+                var cardList = await cards.ToListAsync();
 
                 if (!cardList.Any())
                 {

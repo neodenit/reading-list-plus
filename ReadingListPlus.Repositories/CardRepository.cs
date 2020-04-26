@@ -18,10 +18,10 @@ namespace ReadingListPlus.Repositories
         }
 
         public IAsyncEnumerable<Card> GetAllCards() =>
-            context.Cards.AsAsyncEnumerable();
+            context.Cards.AsQueryable().AsAsyncEnumerable();
 
         public IAsyncEnumerable<Card> GetUnparentedCards(string userName) =>
-            context.Cards.Where(c => c.DeckID == null && c.OwnerID == userName).AsAsyncEnumerable();
+            context.Cards.AsQueryable().Where(c => c.DeckID == null && c.OwnerID == userName).AsAsyncEnumerable();
 
         public Task<Card> GetCardAsync(Guid id) =>
             context.Cards.Include(c => c.Deck.Cards).SingleOrDefaultAsync(c => c.ID == id);

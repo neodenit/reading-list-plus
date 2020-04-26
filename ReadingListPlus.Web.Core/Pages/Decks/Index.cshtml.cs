@@ -29,13 +29,7 @@ namespace ReadingListPlus.Web.Core.Pages.Decks
         public async Task OnGet()
         {
             IAsyncEnumerable<CardViewModel> cards = cardService.GetUnparentedCardsAsync(User.Identity.Name);
-
-            var cardList = new List<CardViewModel>();
-
-            await foreach (var card in cards)
-            {
-                cardList.Add(card);
-            }
+            var cardList = await cards.ToListAsync();
 
             IEnumerable<DeckViewModel> userDecks = await deckService.GetUserDecksAsync(User.Identity.Name);
 

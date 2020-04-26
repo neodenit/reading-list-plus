@@ -37,13 +37,7 @@ namespace ReadingListPlus.Services
         public async Task<IEnumerable<DeckViewModel>> GetUserDecksAsync(string userName)
         {
             IAsyncEnumerable<Deck> decks = deckRepository.GetUserDecks(userName);
-
-            var deckList = new List<Deck>();
-
-            await foreach (var deck in decks)
-            {
-                deckList.Add(deck);
-            }
+            var deckList = await decks.ToListAsync();
 
             var viewModel = deckList
                 .OrderBy(d => d.Title)
@@ -76,7 +70,8 @@ namespace ReadingListPlus.Services
         public async Task<string> GetExportDataAsync()
         {
             IAsyncEnumerable<Deck> decks = deckRepository.GetAllDecks();
-            var exportDecks = mapper.Map<IEnumerable<ImportExportDeck3>>(decks);
+            var deckList = await decks.ToListAsync();
+            var exportDecks = mapper.Map<IEnumerable<ImportExportDeck3>>(deckList);
 
             var orderedDecks = exportDecks
                 .OrderBy(d => d.OwnerID)
