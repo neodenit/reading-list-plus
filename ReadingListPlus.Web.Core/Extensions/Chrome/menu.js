@@ -1,4 +1,4 @@
-var baseUrl = "https://knowledge-manager.azurewebsites.net";
+var baseUrl = "https://knowledge-manager-demo.azurewebsites.net";
 
 var menuItem = chrome.contextMenus.create(
     {

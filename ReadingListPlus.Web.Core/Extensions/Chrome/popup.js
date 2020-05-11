@@ -1,4 +1,4 @@
-var baseUrl = "https://knowledge-manager.azurewebsites.net";
+var baseUrl = "https://knowledge-manager-demo.azurewebsites.net";
 
 function getCurrentTab(callback) {
     var queryInfo = {
